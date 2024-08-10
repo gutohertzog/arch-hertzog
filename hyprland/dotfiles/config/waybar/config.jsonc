@@ -1,0 +1,597 @@
+// vim:fileencoding=utf-8:foldmethod=marker
+// =============================================================================
+//
+// Waybar Settings File
+//
+// Docs : https://github.com/Alexays/Waybar/wiki/Configuration
+//
+// =============================================================================
+
+[
+  // Upper Bar
+  {
+    // Global {{{
+    "name": "upper",
+    "layer": "top",
+    "position": "top",
+    "height": 34,
+    "margin-top": 3,
+    "spacing": 10,
+    "reload_style_on_change": true,
+    "modules-left": [
+      "group/hardware",
+      "group/network",
+      "pulseaudio",
+      "custom/pacman",
+      "idle_inhibitor",
+      "hyprland/workspaces",
+      "hyprland/submap"
+    ],
+    "modules-center": [
+      "group/apps",
+      "hyprland/window"
+    ],
+    "modules-right": [
+      "tray",
+      "custom/weather",
+      "hyprland/language",
+      "clock",
+      "group/power"
+    ],
+    // }}}
+    // Left Modules {{{
+    "custom/storage": {
+      "format": "  {percentage}%",
+      "format-alt": " {}",
+      "format-alt-click": "click-right",
+      "return-type": "json",
+      "interval": 60,
+      "exec": "$HOME/.config/waybar/scripts/storage.sh"
+    },
+    "memory": {
+      "format": "  {}%",
+      "tooltip-format": "{used:0.1f}G / {total:0.1f}G"
+    },
+    "cpu": {
+      "interval": "1",
+      // "format": "  {usage}%",
+      "format": "  ",
+      "on-click": "kitty -e htop --sort-key PERCENT_CPU"
+      // "tooltip": true
+    },
+    "network#disconnected": {
+      "tooltip-format": "No Connection!",
+      "format-ethernet": "",
+      "format-wifi": "",
+      "format-linked": "",
+      "format-disconnected": "<big>󰌙 </big>",
+      "on-click": "nm-connection-editor"
+    },
+    "network#ethernet": {
+      "interface": "enp*",
+      "format-ethernet": "<big>󰈀 </big>",
+      "format-wifi": "",
+      "format-linked": "",
+      "format-disconnected": "",
+      "tooltip-format": "{ifname}: {ipaddr}/{cidr}",
+      "on-click": "nm-connection-editor"
+    },
+    "network#wifi": {
+      "interface": "wlp*",
+      "format-ethernet": "",
+      "format-wifi": "<big> </big>{essid} ({signalStrength}%)",
+      "format-linked": "",
+      "format-disconnected": "",
+      "tooltip-format": "{ifname}: {ipaddr}/{cidr}",
+      "on-click": "nm-connection-editor"
+    },
+    "network#vpn": {
+      "interface": "tun0",
+      "format": "<big>󰦝 </big>",
+      "format-disconnected": "",
+      "tooltip-format": "{ifname}: {ipaddr}/{cidr}",
+      "on-click": "nm-connection-editor"
+    },
+    "pulseaudio": {
+      "scroll-step": 1,
+      // "format": "<big>{icon}</big>{volume}%",
+      "format": "<big>{icon}</big>",
+      "tooltip-format": "{icon}{volume}%",
+      // "format-bluetooth": "{icon} {volume}%{format_source}",
+      // "format-bluetooth-muted": " {icon} {format_source}",
+      "format-muted": "󰸈 {format_source}",
+      // "format-source": " {volume}%",
+      // "format-source-muted": " ",
+      "format-icons": {
+        "headphone": "󰋋 ",
+        "hands-free": "󰋎 ",
+        "headset": "󰋎 ",
+        "phone": " ",
+        "portable": " ",
+        "car": " ",
+        "default": ["󰕿 ", "󰖀 ", "󰕾 ", " "]
+      },
+      "on-click": "pavucontrol",
+      "on-click-right": "pactl set-source-mute @DEFAULT_SOURCE@ toggle"
+    },
+    "custom/pacman": {
+      // Pᗣᗧ•••MᗣN
+      "format": "<big>󰮯 ·•··{icon}</big>",
+      "return-type": "json",
+      "format-icons": {
+        "has-updates": "󰊠 ",
+        "updated": " "
+      },
+      "exec-if": "which waybar-module-pacman-updates",
+      "exec": "waybar-module-pacman-updates --interval-seconds 7200", // every 2 hours
+      "on-click-right": "$HOME/.config/waybar/scripts/system_update.sh"
+    },
+    "idle_inhibitor": {
+      "format": "<big>{icon}</big>",
+      "format-icons": {
+        "activated": "󰅶 ",
+        "deactivated": "󰾪 "
+      },
+      "tooltip": true
+    },
+    "hyprland/workspaces": {
+      "disable-scroll": true,
+      "all-outputs": false,
+      "active-only": false,
+      "on-click": "activate",
+      "on-scroll-up": "hyprctl dispatch workspace m-1 > /dev/null",
+      "on-scroll-down": "hyprctl dispatch workspace m+1 > /dev/null",
+      // "format": "{name}: {icon}",
+      // "format": "<big>{icon}</big>",
+      // "format-icons": {
+      //   "active": " ",
+      //   "default": " ",
+      //   "1": " ",
+      //   "2": " ",
+      //   "3": " ",
+      //   "4": " ",
+      //   "5": " ",
+      //   "urgent": " ",
+      //   "focused": " ",
+      //   "default": " "
+      // },
+      // "persistent-workspaces": {
+      //   "1": ["DVI-D-1"],
+      //   "2": ["HDMI-A-1"],
+      //   "3": ["DVI-D-1"],
+      //   "4": ["HDMI-A-1"]
+      // }
+    },
+    "hyprland/submap": {
+      "format": "<span style=\"italic\">{}</span> ",
+      //"format": "{} ",
+      "always-on": true,
+      "default-submap": "No Mode",
+      // "max-length": 8,
+      "tooltip": false
+    },
+    // "sway/mode": {
+    //   "format": " {}",
+    //   "max-length": 50
+    // }
+    // }}}
+    // Center Modules {{{
+    "custom/arch": {
+      "format": " <big> </big>"
+      // "on-click": "./.config/rofi/launchers/aplicativos.sh",
+      // "on-click-right": "./.config/rofi/launchers/geral.sh"
+    },
+    "hyprland/window": {
+      "format": "{} ",
+      "separate-outputs": true,
+      "rewrite": {
+        "(.*) — Mozilla Firefox ": "$1 <big>󰈹 </big>",
+        "(.*) - Code - OSS ": "$1 <big>󰨞 </big>",
+        "nvim (.*) ": "$1 <big> </big>",
+        // ,"(.*)Spotify": "Spotify <big>󰓇 </big>"
+        "(.*)RetroArch": "RetroArch <big>󰊗 </big>"
+      },
+      // "on-click": "swaymsg kill",
+      "max-length": 120
+    },
+    // }}}
+    // Right Modules {{{
+    "tray": {
+      "icon-size": 18,
+      "spacing": 12
+    },
+    "custom/weather": {
+      "format": " {}",
+      "format-alt": "{alt} {}",
+      "format-alt-click": "click-right",
+      "interval": 1800, // busca a cada 30'
+      "return-type": "json",
+      "exec": "~/.config/waybar/scripts/weather.sh",
+      "on-click": "firefox https://wttr.in/Porto+Alegre",
+      "exec-if": "ping wttr.in -c1"
+    },
+    "hyprland/language": {
+      "format": "{short}-{variant} <big>󰼭 </big>",
+      "on-click": "hyprctl switchxkblayout dell-computer-corp-dell-universal-receiver next"
+      // "format-alt": "{} <big> </big>",
+      // "max-length": 50,
+      // "tooltip": true,
+      // "tooltip-format": "<big> </big>{}",
+      // "min-length": 1
+    },
+    "clock": {
+      "format": "{:%H:%M}  ",
+      "format-alt": "{:%A, %B %d, %Y (%R)}  ",
+      "tooltip-format": "<tt><small>{calendar}</small></tt>",
+      "timezone": "America/Sao_Paulo",
+      "calendar": {
+        "mode": "month",
+        "mode-mon-col": 3,
+        "weeks-pos": "right",
+        "on-scroll": 1,
+        "on-click-right": "mode",
+        "format": {
+          "months": "<span color='#ffead3'><b>{}</b></span>",
+          // "days": "<span color='#ecc6d9'><b>{}</b></span>",
+          "weeks": "<span color='#99ffdd'><b>W{}</b></span>",
+          "weekdays": "<span color='#ffcc66'><b>{}</b></span>",
+          "today": "<span color='#ff6699'><b><u>{}</u></b></span>"
+        }
+      },
+      "actions": {
+        "on-click-right": "mode",
+        "on-click-forward": "tz_up",
+        "on-click-backward": "tz_down",
+        "on-scroll-up": "shift_down",
+        "on-scroll-down": "shift_up"
+      }
+    },
+    // }}}
+    // Apps Menu {{{
+    "custom/kitty": {
+      "format": "<big>  </big>",
+      "tooltip": false,
+      "on-click": "kitty"
+    },
+    "custom/firefox": {
+      "format": "<big>󰈹 </big>",
+      "tooltip": false,
+      "on-click": "firefox",
+      "on-click-right": "firefox -private-window"
+    },
+    "custom/code": {
+      "format": "<big>󰨞 </big>",
+      "tooltip": false,
+      "on-click": "code"
+    },
+    "custom/remmina": {
+      "format": "<big>󰢹 </big>",
+      "tooltip": false,
+      "on-click": "remmina"
+    },
+    "custom/keepass": {
+      "format": "<big>󰩪 </big>",
+      "tooltip": false,
+      "on-click": "keepassxc"
+    },
+    "custom/retroarch": {
+      "format": "<big>󰊗 </big>",
+      "tooltip": false,
+      "on-click": "retroarch"
+    },
+    "custom/nautilus": {
+      "format": "<big>󰉋 </big>",
+      "on-click": "nautilus",
+      "on-click-right": "nautilus /home/guto/Downloads",
+      "on-click-middle": "nautilus /"
+    },
+    // }}}
+    // Power Menu {{{
+    "custom/poweroff": {
+      "tooltip": false,
+      "format": "<big> </big>",
+      // "on-click": "bash $HOME/.config/waybar/scripts/poweroff.sh",
+      // "on-click": "~/.config/rofi/powermenu/menu.sh"
+      "on-click": "systemctl poweroff"
+    },
+    "custom/hibernate": {
+      "tooltip": false,
+      "format": "<big>󰏦 </big>",
+      // "tooltip-format": "<big>Hibernar</big>",
+      "on-click": "systemctl hibernate"
+    },
+    "custom/reboot": {
+      "tooltip": false,
+      "format": "<big> </big>",
+      // "on-click": "bash $HOME/.config/waybar/scripts/poweroff.sh",
+      // "on-click": "~/.config/rofi/powermenu/menu.sh"
+      "on-click": "systemctl reboot"
+    },
+    "custom/logout": {
+      "tooltip": false,
+      "format": "<big>󰍃 </big>",
+      // "on-click": "bash $HOME/.config/waybar/scripts/poweroff.sh",
+      // "on-click": "~/.config/rofi/powermenu/menu.sh"
+      "on-click": "hyprctl dispatch exit"
+    },
+    "custom/space": {
+      "tooltip": false,
+      "format": " "
+    },
+    // }}}
+    // Groups {{{
+    "group/network": {
+      "orientation": "inherit",
+      "drawer": {
+        "transition-duration": 500,
+        "transition-left-to-right": false
+      },
+      "modules": [
+        "network#ethernet",
+        "network#disconnected",
+        "network#wifi",
+        "network#vpn"
+      ]
+    },
+    "group/hardware": {
+      "orientation": "horizontal",
+      "drawer": {
+        "transition-duration": 500,
+        // "children-class": "not-power",
+        "transition-left-to-right": true
+      },
+      "modules": [
+        "cpu",
+        "custom/storage",
+        "memory"
+      ]
+    },
+    "group/apps": {
+      "orientation": "horizontal",
+      "drawer": {
+        "transition-duration": 500,
+        "transition-left-to-right": true
+      },
+      "modules": [
+        "custom/arch",
+        "custom/kitty",
+        "custom/firefox",
+        "custom/code",
+        //"custom/nautilus",
+        "custom/keepass",
+        "custom/remmina",
+        "custom/retroarch"
+      ]
+    },
+    "group/power": {
+      "orientation": "horizontal",
+      "drawer": {
+        "transition-duration": 500,
+        "transition-left-to-right": false
+      },
+      "modules": [
+        "custom/poweroff",
+        "custom/hibernate",
+        "custom/space",
+        "custom/reboot",
+        "custom/space"
+      ]
+    }
+    // }}}
+  },
+  // Lower Bar
+  // {
+    // Global {{{
+    // "name": "lower",
+    // "layer": "top",
+    // "position": "bottom",
+    // "height": 50,
+    // "modules-left": [
+    //   "hyprland/submap"
+    // ],
+    // "modules-center": [
+    //   "wlr/taskbar"
+    // ],
+    // "modules-right": [
+    //   "hyprland/workspaces"
+    // ],
+    // }}}
+    // Left Modules {{{
+    // }}}
+    // Center Modules {{{
+    // "wlr/taskbar": {
+    //   // "tooltip": false,
+    //   "on-click": "activate",
+    //   "on-click-right": "close",
+    //   "format": "{icon}",
+    //   "icon-size": 42,
+    //   // "icon-theme": "Numix-Circle",
+    //   "tooltip-format": "{title}",
+    //   "on-click-middle": "close",
+    //   "ignore-list": [
+    //     "kitty"
+    //   ],
+    // },
+    // }}}
+    // Right Modules {{{
+    // }}}
+  // },
+  // Experimental Modules (Not Active) {{{
+  {
+    "custom/spotify": {
+      "interval": 1,
+      "return-type": "json",
+      "exec": "~/.config/waybar/modules/mediaplayer.sh",
+      "exec-if": "pgrep spotify",
+      "escape": true
+    },
+    "custom/notification": {
+      // erro GDBus.Error:org.freedesktop.DBus.Error.ServiceUnknown: The name is not activatable
+      "tooltip": false,
+      "format": "{} {icon}",
+      "format-icons": {
+        "notification": "<span foreground='red'><sup></sup></span> ",
+        "none": "",
+        "dnd-notification": "<span foreground='red'><sup></sup></span> ",
+        "dnd-none": "",
+        "inhibited-notification": "<span foreground='red'><sup></sup></span> ",
+        "inhibited-none": "",
+        "dnd-inhibited-notification": "<span foreground='red'><sup></sup></span> ",
+        "dnd-inhibited-none": ""
+      },
+      "return-type": "json",
+      "exec-if": "which swaync-client",
+      "exec": "swaync-client -swb",
+      "on-click": "sleep 0.1 && swaync-client -t -sw",
+      "on-click-right": "swaync-client -d -sw",
+      "escape": true,
+      "min-length": 5
+    },
+    "battery#bat1": {
+      "bat": "BAT0",
+      "adapter": "AC",
+      "interval": 10,
+      "full-at": 99,
+      "states": {
+        "full": 100,
+        "good": 75,
+        "warning": 30,
+        "critical": 15,
+        "empty": 5
+      },
+      "format": "{icon} {capacity}%",
+      "format-charging": " {capacity}%",
+      "format-plugged": " {capacity}%",
+      "format-empty": "",
+      "format-full": "",
+      "format-alt": "{time} {icon}",
+      "format-icons": ["", "", "", "", ""]
+    },
+    "battery#bat2": {
+      "bat": "BAT1",
+      "adapter": "AC",
+      "interval": 10,
+      "states": {
+        "full": 100,
+        "good": 75,
+        "warning": 30,
+        "critical": 15,
+        "empty": 5
+      },
+      "format": "{icon} {capacity}%",
+      "format-charging": " {capacity}%",
+      "format-plugged": " {capacity}%",
+      "format-full": "",
+      "format-icons": ["", "", "", "", ""]
+    },
+    "bluetooth": {
+      "interval": 30,
+      "format": "<big>{icon}</big>",
+      // "format-alt": "{status}",
+      "format-icons": {
+        "enabled": "󰂯",
+        "disabled": "󰂲"
+      },
+      "on-click": "blueberry"
+    },
+    "backlight": {
+      "device": "intel_backlight",
+      "interval": 1,
+      "on-scroll-down": "brightlight -pd 1",
+      "on-scroll-up": "brightlight -pi 1",
+      "format": "{icon} {percent}%",
+      "format-icons": ["", "", "", "", "", "", "", "", ""],
+      "on-click": "wdisplays"
+    },
+    "temperature": {
+      //"thermal-zone": 1,
+      "interval": "4",
+      "hwmon-path": "/sys/class/hwmon/hwmon3/temp1_input",
+      "critical-threshold": 80,
+      "format-critical": "  {temperatureC}°C",
+      "format": "{icon}  {temperatureC}°C",
+      "format-icons": ["", "", "", "", ""],
+      "max-length": 7,
+      "min-length": 7
+    },
+    "custom/gpu": {
+      "exec": "$HOME/.config/waybar/custom_modules/custom-gpu.sh",
+      "return-type": "json",
+      "format": " {}",
+      "interval": 2,
+      "tooltip": "{tooltip}",
+      "max-length": 19,
+      "min-length": 19,
+      "on-click": "powerupp"
+    },
+    "custom/cpugovernor": {
+      "format": "{icon}",
+      "interval": "30",
+      "return-type": "json",
+      "exec": "$HOME/.config/waybar/custom_modules/cpugovernor.sh",
+      "min-length": 2,
+      "max-length": 2,
+      "format-icons": {
+      "perf": "",
+      "sched": ""
+    }
+    },
+    "custom/media": {
+      "format": "{icon} {}",
+      "return-type": "json",
+      "max-length": 40,
+      "format-icons": {
+        "spotify": "󰓇",
+        "default": "🎜"
+      },
+      "escape": true,
+      "exec": "$HOME/.config/waybar/mediaplayer.py 2> /dev/null" // Script in resources folder
+      // "exec": "$HOME/.config/waybar/mediaplayer.py --player spotify 2> /dev/null" // Filter player based on name
+    },
+    "custom/mail": {
+      "format": "",
+      "format-alt": "{alt} ",
+      "format-alt-click": "click-right",
+      "interval": 60,
+      "return-type": "json",
+      // "exec": "$HOME/.venv/bin/python3 $HOME/.config/waybar/scripts/mail.py",
+      "tooltip": false
+    },
+    "keyboard-state": {
+      "numlock": false,
+      "capslock": false,
+      "format": "{name} {icon}",
+      "format-icons": {
+        "locked": "",
+        "unlocked": ""
+      }
+    },
+    "mpd": {
+      "format": "{stateIcon} {consumeIcon}{randomIcon}{repeatIcon}{singleIcon}{artist} - {album} - {title} ({elapsedTime:%M:%S}/{totalTime:%M:%S}) ⸨{songPosition}|{queueLength}⸩ {volume}% ",
+      "format-disconnected": "Disconnected ",
+      "format-stopped": "{consumeIcon}{randomIcon}{repeatIcon}{singleIcon}Stopped ",
+      "unknown-tag": "N/A",
+      "interval": 2,
+      "consume-icons": {
+        "on": " "
+      },
+      "random-icons": {
+        "off": "<span color=\"#f53c3c\"></span> ",
+        "on": " "
+      },
+        "repeat-icons": {
+        "on": " "
+      },
+        "single-icons": {
+        "on": "1 "
+      },
+      "state-icons": {
+        "paused": "",
+        "playing": ""
+      },
+      "tooltip-format": "MPD (connected)",
+      "tooltip-format-disconnected": "MPD (disconnected)"
+    },
+  }
+  // }}}
+]

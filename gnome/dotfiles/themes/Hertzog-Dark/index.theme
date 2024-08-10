@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=X-GNOME-Metatheme
+Name=Hertzog-Dark
+Comment=Meu tema customizado para minhas necessidades (tema base WhiteSul Dark)
+Encoding=UTF-8
+
+[X-GNOME-Metatheme]
+GtkTheme=Hertzog-Dark
+MetacityTheme=Hertzog-Dark
+IconTheme=Hertzog-Dark
+ButtonLayout=close,minimize,maximize:menu

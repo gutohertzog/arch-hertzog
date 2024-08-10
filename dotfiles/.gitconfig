@@ -1,0 +1,5 @@
+[user]
+	email = <meu_email>
+	name = Guto Hertzog
+[core]
+	editor = /usr/bin/vim
