@@ -15,6 +15,10 @@ sudo pacman -S kitty
 # fontes
 sudo pacman -S ttf-cascadia-code-nerd ttf-cascadia-mono-nerd
 
+# instala o Go e desativa a telemetria
+sudo pacman -S go
+go telemetry off
+
 # gerenciador de pacotes aur
 git clone https://aur.archlinux.org/yay.git
 cd yay
@@ -30,6 +34,7 @@ yay -S gnome-shell-extension-dash-to-dock
 yay -S gnome-shell-extension-caffeine
 yay -S gnome-shell-extension-clipboard-indicator
 yay -S gnome-shell-extension-blur-my-shell
+yay -S gnome-shell-extension-lockkeys-git
 
 # extensões do zsh
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
@@ -49,28 +54,31 @@ sudo pacman -S firefox gvim code keepassxc remmina pavucontrol
 # https://archlinux.org/packages/extra/any/words/
 sudo pacman -S words
 
-# extensões do code-oss
-code-oss --install-extension vscodevim.vim
-code-oss --install-extension vscode-icons-team.vscode-icons
-code-oss --install-extension oderwat.indent-rainbow
-code-oss --install-extension tomoki1207.vscode-pdf
-code-oss --install-extension s-nlf-fh.glassit
+# instala code features para melhorar alguns usos
+yay -S code-features
+
+# extensões do code
+code --install-extension vscodevim.vim
+code --install-extension vscode-icons-team.vscode-icons
+code --install-extension oderwat.indent-rainbow
+code --install-extension tomoki1207.vscode-pdf
+code --install-extension s-nlf-fh.glassit
 
 # instalar o oreo-cursor diretamente do yay necessita de MUITAS dependências,
 # então ele é copiado e descompactado diretamente do meu repositório
 # yay -S oreo-cursors-git
 rm -rf $HOME/.icons
 mkdir $HOME/.icons/
-cp -rv $HOME/arch-gnome/dotfiles/.icons/defaults $HOME/.icons/
-for f in $HOME/arch-gnome/dotfiles/.icons/*.tar.gz; do tar xfv "$f" -C $HOME/.icons/; done
+cp -rv $HOME/arch-hertzog/dotfiles/icons/defaults $HOME/.icons/
+for f in $HOME/arch-hertzog/dotfiles/icons/*.tar.gz; do tar xfv "$f" -C $HOME/.icons/; done
 
 # copia o meu tema personalizado
 mkdir $HOME/.themes
-cp -rv $HOME/arch-gnome/dotfiles/themes/* $HOME/.themes
+cp -rv $HOME/arch-hertzog/gnome/dotfiles/themes/* $HOME/.themes
 
 # clones para instalar os temas do sistema
 mkdir -p $HOME/GitHub
-cd $HOME/GitHub
+# cd $HOME/GitHub
 # tema do grub
 # git clone https://github.com/vinceliuice/grub2-themes
 # temas do sistema
@@ -91,11 +99,14 @@ sudo mv $HOME/hosts /etc/
 sudo systemctl restart NetworkManager.service
 
 # cria o ambiente virtual para o Python
-python -m venv ~/.venv
+python -m venv $HOME/.venv
 pip install pylint
 
 # instalações para ale
 sudo pacman -S bash-language-server
+
+# esconde o mouse
+sudo pacman -S unclutter
 
 # testar o timeshift junto com o btrfs
 
@@ -103,23 +114,26 @@ sudo pacman -S bash-language-server
 cd $HOME/GitHub
 git clone https://github.com/datguypiko/Firefox-Mod-Blur
 cd Firefox-Mod-Blur
-mkdir -p $HOME/.mozilla/firefox/firefox-themes
-cp -r ASSETS $HOME/.mozilla/firefox/firefox-themes
-cp userContent.css $HOME/.mozilla/firefox/firefox-themes
-cp userChrome.css $HOME/.mozilla/firefox/firefox-themes
+printf "Ir em about:config : toolkit.legacyUserProfileCustomizations.stylesheets -> 'True'"
+mkdir -p $HOME/raposa/
+cp -r ASSETS $HOME/raposa/
+cp userContent.css $HOME/raposa/
+cp userChrome.css $HOME/raposa/
 cp EXTRA\ MODS/Compact\ extensions\ menu/Style\ 2/cleaner_extensions_menu.css $HOME/mozilla/firefox/firefox-themes
-cp EXTRA\ MODS/Tabs\ Bar\ Mods/Colored\ sound\ playing\ tab/colored_soundplaying_tab.css $HOME/.mozilla/firefox/firefox-themes
-cp EXTRA\ MODS/Icon\ and\ Button\ Mods/Firefox\ view\ icon\ change/firefox_view_icon_change.css $HOME/.mozilla/firefox/firefox-themes
-cp EXTRA\ MODS/Icon\ and\ Button\ Mods/Hide\ list-all-tabs\ button/hide_list-all-tabs_button.css $HOME/.mozilla/firefox/firefox-themes
-cp EXTRA\ MODS/Icon\ and\ Button\ Mods/Icons\ in\ main\ menu/icons_in_main_menu.css $HOME/.mozilla/firefox/firefox-themes
-cp EXTRA\ MODS/Icon\ and\ Button\ Mods/Menu\ icon\ change/menu_icon_change_to_firefox.css $HOME/.mozilla/firefox/firefox-themes
-cp EXTRA\ MODS/Min-max-close\ control\ buttons/Right\ side\ MacOS\ style\ buttons/min-max-close_buttons.css $HOME/.mozilla/firefox/firefox-themes/
-cp EXTRA\ MODS/Bookmarks\ Bar\ Mods/Remove\ folder\ icons\ from\ bookmars/remove_folder_icons_from_bookmarks.css $HOME/.mozilla/firefox/firefox-themes
-cp EXTRA\ MODS/Homepage\ mods/Remove\ text\ from\ homepage\ shortcuts/remove_homepage_shortcut_title_text.css $HOME/.mozilla/firefox/firefox-themes
-cp EXTRA\ MODS/Tabs\ Bar\ Mods/Tabs\ -\ reversed\ background\ color/reversed_tabs_bg_color.css $HOME/.mozilla/firefox/firefox-themes
-cp EXTRA\ MODS/Tabs\ Bar\ Mods/Tabs\ -\ selected\ tabs\ static\ width/selected_tabs_static_width.css $HOME/.mozilla/firefox/firefox-themes
-cp EXTRA\ MODS/Icon\ and\ Button\ Mods/uBlock\ icon\ change/ublock-icon-change.css $HOME/.mozilla/firefox/firefox-themes
+cp EXTRA\ MODS/Tabs\ Bar\ Mods/Colored\ sound\ playing\ tab/colored_soundplaying_tab.css $HOME/raposa/
+cp EXTRA\ MODS/Icon\ and\ Button\ Mods/Firefox\ view\ icon\ change/firefox_view_icon_change.css $HOME/raposa/
+cp EXTRA\ MODS/Icon\ and\ Button\ Mods/Hide\ list-all-tabs\ button/hide_list-all-tabs_button.css $HOME/raposa/
+cp EXTRA\ MODS/Icon\ and\ Button\ Mods/Icons\ in\ main\ menu/icons_in_main_menu.css $HOME/raposa/
+cp EXTRA\ MODS/Icon\ and\ Button\ Mods/Menu\ icon\ change/menu_icon_change_to_firefox.css $HOME/raposa/
+cp EXTRA\ MODS/Min-max-close\ control\ buttons/Right\ side\ MacOS\ style\ buttons/min-max-close_buttons.css $HOME/raposa/
+cp EXTRA\ MODS/Bookmarks\ Bar\ Mods/Remove\ folder\ icons\ from\ bookmars/remove_folder_icons_from_bookmarks.css $HOME/raposa/
+cp EXTRA\ MODS/Homepage\ mods/Remove\ text\ from\ homepage\ shortcuts/remove_homepage_shortcut_title_text.css $HOME/raposa/
+cp EXTRA\ MODS/Tabs\ Bar\ Mods/Tabs\ -\ reversed\ background\ color/reversed_tabs_bg_color.css $HOME/raposa/
+cp EXTRA\ MODS/Tabs\ Bar\ Mods/Tabs\ -\ selected\ tabs\ static\ width/selected_tabs_static_width.css $HOME/raposa/
+cp EXTRA\ MODS/Icon\ and\ Button\ Mods/uBlock\ icon\ change/ublock-icon-change.css $HOME/raposa/
+
+printf "agora, copie todo o conteúdo da pasta 'raposa' no HOME"
+printf "ache a pasta de perfil em 'about:support', e depois usando 'Open folder' na seção 'Profile'."
 
 # carrega as configurações para o gnome
-dconf load / < $HOME/arch-gnome/dotfiles/config/dconf/user-settings.conf
-
+dconf load / < $HOME/arch-hertzog/gnome/dotfiles/config/dconf/user-settings.conf

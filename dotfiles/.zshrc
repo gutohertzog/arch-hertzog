@@ -60,9 +60,14 @@ alias pfless="fzf --preview='less {}' --bind up:preview-page-up,down:preview-pag
 alias pfbat="fzf --preview 'bat --style=numbers --color=always --line-range :500 {}'"
 alias vim="vim -S ~/.config/vim/vimrc"
 alias odia="vim ~/Documents/dia.txt"
+alias tempo="/usr/bin/time -p"
 
-alias orfaos="pacman -Qqtd"
-alias orfaos_remove="sudo pacman -Rns $(pacman -Qqdt)"
+# controle dos leds da gpu
+alias gpu_100="nvidia-settings --assign GPULogoBrightness=100 >> /dev/null"
+alias gpu_0="nvidia-settings --assign GPULogoBrightness=0 >> /dev/null"
+
+alias orfaos="pacman -Qtd"
+alias orfaos_remove="sudo pacman -Rns $(pacman -Qdt)"
 alias update="sudo pacman -Suvy"
 alias instalados="pacman -Qe"
 # alias cdf="cd './$(find -type d | fzf)'"

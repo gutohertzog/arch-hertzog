@@ -58,7 +58,6 @@ Plug 'dense-analysis/ale'
 " para testar
 "Plug 'ycm-core/YouCompleteMe'
 "Plug 'TaDaa/vimade'
-"Plug 'jiangmiao/auto-pairs'
 "Plug 'tpope/vim-surround'
 
 call plug#end()
@@ -100,14 +99,6 @@ let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#formatter = 'default'
 let g:airline#extensions#tabline#show_buffers = 1
-" }}}
-
-" codedark {{{
-" https://github.com/tomasiser/vim-code-dark
-let g:codedark_modern = 1
-let g:codedark_italics = 1
-let g:codedark_transparent = 1
-let g:airline_theme = 'codedark'
 " }}}
 
 " highlightedyank {{{
@@ -193,8 +184,45 @@ map ]c <Nop>
 map [c <Nop>
 " }}}
 
+" extensões instaladas manualmente {{{
+" reservado a extensões que são apenas poucos arquivos vim
+" codedark {{{
+" https://github.com/tomasiser/vim-code-dark
+let g:codedark_modern = 1
+let g:codedark_italics = 1
+let g:codedark_transparent = 1
+let g:airline_theme = 'codedark'
+" }}}
+
+" clock {{{
+let g:airline#extensions#clock#auto = 1
+let g:airline#extensions#clock#format = '%H:%M'
+let g:airline#extensions#clock#updatetime = 1000
+" }}}
+
+" }}}
+
 " }}}
 " FUNÇÕES ----------------------------------------------------------------- {{{
+" ToggleChars {{{
+" função para ativar e desativar os caracteres de marcação
+"let g:t_flag = 0
+"
+"function! ToggleChars()
+"  if g:t_flag
+"    echom "listchar desativado"
+"    set nolist
+"    let g:t_flag = 0
+"  else
+"    echom "listchar ativado"
+"    set list
+"    set listchars=tab:<->,eol:↲,nbsp:║,space:␣,trail:•,extends:⟩,precedes:⟨
+"    let g:t_flag = 1
+"  endif
+"endfunction
+"
+"nnoremap <F12> :call ToggleChars()<CR>
+" }}}
 
 " ToggleTransparency {{{
 " função para ativar e desativar a transparência
@@ -242,6 +270,13 @@ inoremap <C-c> <Esc>:set relativenumber<CR>
 "   Ps = 6  -> steady bar (xterm)
 let &t_SI = "\e[6 q"
 let &t_EI = "\e[2 q"
+" }}}
+
+" ftpplugin {{{
+" troca o sql completation de ctrl+c para abaixo
+" let g:ftplugin_sql_omni_key = '<Leader>sql'
+" desativa o comando
+let g:ftplugin_sql_omni_key = '<Plug>DisableSqlOmni'
 " }}}
 
 " tema {{{
@@ -325,11 +360,11 @@ set nolist
 set undolevels=1000
 
 " tabs {{{
-set shiftwidth=2
+set shiftwidth=4
 set smarttab
 set shiftround
-set tabstop=2
-set softtabstop=2
+set tabstop=4
+set softtabstop=4
 set expandtab
 set autoindent
 " }}}
