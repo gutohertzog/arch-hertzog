@@ -11,3 +11,10 @@ Então agrupei todas as instalações/configurações em um repositório, de mod
 - [Hyprland](hyprland/README.md)
 - [Gnome](gnome/README.md)
 - [WSL](wsl/README.md)
+
+## testes
+
+Alguns arquivos de configuração de testes que acho interessante.
+
+- [ML4W](hyprland/dot-ml4w/README.md)
+
