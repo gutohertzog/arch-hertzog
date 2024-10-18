@@ -1,0 +1,180 @@
+/* vim:fileencoding=utf-8:foldmethod=marker */
+
+/* Styles reset {{{
+ * ---------------------------------------------------------------------
+ */
+* {
+  /* all: unset; */
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  font-family: "CaskaydiaCove Nerd Font", "Font Awesome 6 Free";
+  font-size: 15px;
+}
+/*}}}*/
+
+/* Ajustes da Waybar {{{
+ * ---------------------------------------------------------------------
+ */
+#waybar.upper,
+#waybar.lower {
+  background-color: transparent;
+  color: #ffffff;
+  transition-duration: .5s;
+}
+/*}}}*/
+
+/* Ajustes dos módulos {{{
+ * ---------------------------------------------------------------------
+ */
+#waybar.upper .modules-left,
+#waybar.upper .modules-center,
+#waybar.upper .modules-right,
+#waybar.lower .modules-left,
+#waybar.lower .modules-center,
+#waybar.lower .modules-right,
+#waybar.direita .modules-left {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background-color: rgba(43, 48, 59, 0.7);
+  border-radius: 8px;
+}
+
+#waybar.upper .modules-left{
+  margin-left: 2.5em;
+}
+#waybar.upper .modules-right{
+  margin-right: 2.5em;
+}
+
+/*}}}*/
+
+/* Ajustes do Worspaces {{{
+ * ---------------------------------------------------------------------
+ */
+#workspaces {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 2px 2px 2px 0;
+  padding: 1px;
+  border-radius: 5px;
+}
+
+#workspaces button {
+  box-shadow: none;
+  text-shadow: none;
+  margin: 0 1px;
+  border-radius: 4px;
+  border-color: rgba(89, 89, 89, 0.8);
+
+  color: #f1f1f1;
+  animation: gradient_f 20s ease-in infinite;
+  transition: all 0.5s cubic-bezier(0.55, -0.68, 0.48, 1.682);
+}
+
+#workspaces button.active {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  border-radius: 6px;
+  border-color: rgba(89, 89, 89, 0.8);
+  animation: gradient_f 20s ease-in infinite;
+  transition: all 0.3s cubic-bezier(0.55, -0.68, 0.48, 1.682);
+}
+
+#workspaces button:hover {
+  background: #d0ddd6;
+  color: #313244;
+  animation: gradient_f 20s ease-in infinite;
+  transition: all 0.3s cubic-bezier(0.55, -0.68, 0.48, 1.682);
+}
+/*}}}*/
+
+/* Ajustes da taskbar {{{
+ * ---------------------------------------------------------------------
+ */
+/* #taskbar {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 1px;
+  padding: 1px;
+}
+
+#taskbar button {
+  box-shadow: none;
+  text-shadow: none;
+  margin: 0 4px;
+  border-radius: 9px;
+  border-color: rgba(89, 89, 89, 0.8);
+
+  color: #f1f1f1;
+  animation: gradient_f 20s ease-in infinite;
+  transition: all 0.5s cubic-bezier(0.55, -0.68, 0.48, 1.682);
+}
+
+#taskbar button.active {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  border-color: rgba(89, 89, 89, 0.8);
+  animation: gradient_f 20s ease-in infinite;
+  transition: all 0.3s cubic-bezier(0.55, -0.68, 0.48, 1.682);
+}
+
+#taskbar button:hover {
+  background: #d0ddd6;
+  color: #313244;
+  animation: gradient_f 20s ease-in infinite;
+  transition: all 0.3s cubic-bezier(0.55, -0.68, 0.48, 1.682);
+} */
+/*}}}*/
+
+/* Ajustes Tray {{{
+ * ---------------------------------------------------------------------
+ */
+#tray {
+  padding-left: 8px;
+}
+/*}}}*/
+
+/* testes {{{ */
+/* #submap {
+  background-color: #64727D;
+  border-top: 3px solid #ffffff;
+} */
+
+/* #backlight,
+#battery.bat1,
+#battery.bat2,
+#clock,
+#cpu,
+#custom-mail,
+#custom-poweroff,
+#custom-weather,
+#disk,
+#idle_inhibitor,
+#memory,
+#submap,
+#network.vpn,
+#network.wifi,
+#network.ethernet,
+#network.disconnected,
+#pulseaudio,
+#taskbar,
+#temperature,
+#tray {
+  padding: 0 6px;
+  margin: 0 0px;
+  color: #ffffff;
+} */
+
+/* #battery.bat2.critical:not(.charging) {
+  background-color: #f53c3c;
+  color: #ffffff;
+  animation-name: blink;
+  animation-duration: 0.5s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+} */
+
+/* #temperature.critical {
+  background-color: #eb4d4b;
+} */
+/* }}}*/
