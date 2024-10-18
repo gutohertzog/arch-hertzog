@@ -303,6 +303,7 @@ au FocusGained,BufEnter * silent! checktime
 set magic
 
 set noautowrite
+set hidden
 
 set clipboard=unnamed,unnamedplus
 
@@ -445,6 +446,8 @@ nnoremap <Leader>tp :tabprevious<CR>
 
 " buffers
 nnoremap <Leader>bw :bdelete<CR>
+"nnoremap <Leader>bo :%bdelete<CR>:e#<CR>
+nnoremap <Leader>bo :w <bar> %bdelete <bar> e# <CR> <bar> '"
 nnoremap <tab> :bnext<CR>
 nnoremap <s-tab> :bprevious<CR>
 "nnoremap <tab> :blast<CR>
@@ -458,10 +461,10 @@ noremap L $
 " }}}
 
 " tamanho janela {{{
-nnoremap <C-Up> :resize +2<CR>
-nnoremap <C-Down> :resize -2<CR>
-nnoremap <C-Left> :vertical resize -2<CR>
-nnoremap <C-Right> :vertical resize +2<CR>
+nnoremap <C-A-k> :resize +2<CR>
+nnoremap <C-A-j> :resize -2<CR>
+nnoremap <C-A-h> :vertical resize -2<CR>
+nnoremap <C-A-l> :vertical resize +2<CR>
 " }}}
 
 " toggles {{{

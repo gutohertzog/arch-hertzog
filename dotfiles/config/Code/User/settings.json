@@ -254,4 +254,5 @@
     "window.commandCenter": false,
     "workbench.layoutControl.enabled": false,
     "gitlens.graph.minimap.dataType": "lines",
+    "explorer.confirmPasteNative": false,
 }
