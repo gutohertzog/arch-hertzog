@@ -2,7 +2,7 @@
 source $HOME/.venv/bin/activate
 
 # executa neofetch
-neofetch
+fastfetch
 
 # ativa p10k prompt instantâneo
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
