@@ -2,7 +2,7 @@
 source $HOME/.venv/bin/activate
 
 # executa neofetch
-neofetch
+fastfetch
 
 # ativa p10k prompt instantâneo
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
@@ -59,9 +59,9 @@ alias arq="ls -lah | grep ^-rw"
 alias pfless="fzf --preview='less {}' --bind up:preview-page-up,down:preview-page-down"
 alias pfbat="fzf --preview 'bat --style=numbers --color=always --line-range :500 {}'"
 alias vim="vim -S ~/.config/vim/vimrc"
-alias odia="vim ~/Documents/dia.txt"
 alias tempo="/usr/bin/time -p"
 alias rm='echo "This is not the command you are looking for."; false'
+alias ls='eza'
 
 # controle dos leds da gpu
 alias gpu_100="nvidia-settings --assign GPULogoBrightness=100 >> /dev/null"
@@ -70,6 +70,7 @@ alias gpu_0="nvidia-settings --assign GPULogoBrightness=0 >> /dev/null"
 # alias do pacman
 alias orfaos="pacman -Qtd"
 alias remove_orfaos="sudo pacman -Runs $(pacman -Qdt)"
+alias update="sudo pacman -Suvy"
 alias instalados="pacman -Qe"
 alias update="sudo pacman -Suvy && yay -Suvy"
 alias limpa_tudo="sudo pacman -Scc && yay -Scc"
@@ -99,3 +100,4 @@ export FZF_DEFAULT_OPTS='
   #--color=fg:-1,bg:-1,hl:#c678dd,fg+:#ffffff,bg+:#4b5263,hl+:#d858fe
   #--color=info:#98c379,prompt:#61afef,pointer:#be5046,marker:#e5c07b,spinner:#61afef,header:#61afef
 
+export EZA_ICONS_AUTO='always'

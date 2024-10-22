@@ -19,3 +19,5 @@ Esse branch vai ser usado para testar essas novas funcionalidades e ver o que va
 - `waybar` : barra de cima do sistema, gostei da versão minimalista;
 - `wlogout` : gerenciador de saída do sistema (logout, hibernar, suspender, etc);
 - `zshrc` : pasta com algumas configuracoes interessantes sobre o zshrc;
+
+yay -S bibata-cursor-theme
