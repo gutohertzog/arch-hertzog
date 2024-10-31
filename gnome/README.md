@@ -24,8 +24,9 @@ Criei ele para usar como distribuição Linux e usar enquanto realizo as configu
 | [gnome](https://www.gnome.org) | ambiente de desktop |
 |||
 
-Os pacotes abaixo são alguns de todos os pacotes quando se usa `pacman -S gnome`.
-Nem tudo do Gnome é interessante de ter instalado (como os aplicativos de documentos).
+Ao instalar o Gnome, ele instala todos seus pacotes com [`pacman -S gnome`](https://archlinux.org/groups/x86_64/gnome/), mas para mim, há diversos pacotes que não me interessam, como os aplicativos de documentos.
+
+Abaixo está a seleção de pacotes que são instalados.
 
 ## Pacotes do Gnome
 |||
@@ -51,6 +52,7 @@ Nem tudo do Gnome é interessante de ter instalado (como os aplicativos de docum
 | [gnome-shell](https://archlinux.org/packages/extra/x86_64/gnome-shell) |  próxima geração do shell do desktop |
 | [gnome-shell-extensions](https://archlinux.org/packages/extra/any/gnome-shell-extensions) | gerenciador de extensões para o shell |
 | [gnome-system-monitor](https://archlinux.org/packages/extra/x86_64/gnome-system-monitor) | monitor do sistema e |
+| [gnome-text-editor](https://archlinux.org/packages/extra/x86_64/gnome-text-editor/) | simples editor de texto |
 | [gnome-tweaks](https://archlinux.org/packages/extra/any/gnome-tweaks) | configurações avançadas do gnome 3 |
 | [gnome-user-share](https://archlinux.org/packages/extra/x86_64/gnome-user-share) | gerenciador de compartilhamento |
 | [gnome-weather](https://archlinux.org/packages/extra/any/gnome-weather) | previsão do tempo |
@@ -70,12 +72,6 @@ Nem tudo do Gnome é interessante de ter instalado (como os aplicativos de docum
 | [xdg-user-dirs-gtk](https://archlinux.org/packages/extra/x86_64/xdg-user-dirs-gtk) | cria usuários e realoca eles |
 |||
 
-## Gerenciador de Pacotes
-|||
-| :---- | :---- |
-| [yay](https://github.com/Jguer/yay) | gerenciador de pacotes aur |
-|||
-
 ## Pacotes do Sistema
 |||
 | :---- | :---- |
@@ -90,7 +86,7 @@ Nem tudo do Gnome é interessante de ter instalado (como os aplicativos de docum
 | [nvidia-settings](https://archlinux.org/packages/extra/x86_64/nvidia-settings) | ferramenta para configuração da nvidia |
 | [zsh](https://archlinux.org/packages/extra/x86_64/zsh) | shell avançado |
 | [zoxide](https://archlinux.org/packages/extra/x86_64/zoxide) | comando cd mais inteligente |
-| [neofetch](https://archlinux.org/packages/extra/any/neofetch) | mostra informações do hardware e software |
+| [fastfetch](https://archlinux.org/packages/extra/x86_64/fastfetch) | mostra informações do hardware e software |
 | [curl](https://archlinux.org/packages/core/x86_64/curl) | ferramenta de linha de comando para transferir dados com urls |
 | [unclutter](https://archlinux.org/packages/extra/x86_64/unclutter) | esconde o mouse |
 |||
@@ -98,10 +94,11 @@ Nem tudo do Gnome é interessante de ter instalado (como os aplicativos de docum
 ## Aplicativos
 |||
 | :---- | :---- |
-| [firefox](https://archlinux.org/packages/extra/x86_64/firefox) | navegador de internet |
+| [microsoft edge](https://aur.archlinux.org/packages/microsoft-edge-stable-bin) | navegador de internet microsoft edge |
+| [firefox](https://archlinux.org/packages/extra/x86_64/firefox) | navegador de internet mozilla firefox |
 | [kitty](https://archlinux.org/packages/extra/x86_64/kitty) | emulador do terminal |
 | [gvim](https://archlinux.org/packages/extra/x86_64/gvim) | editor de texto cli (gvim vem com suporte a clipboard) |
-| [code-oss](https://archlinux.org/packages/extra/x86_64/code) | editor de código gui |
+<!--| [code-oss](https://archlinux.org/packages/extra/x86_64/code) | editor de código gui |-->
 | [keepassxc](https://archlinux.org/packages/extra/x86_64/keepassxc) | gerenciador de senhas |
 | [pavucontrol](https://archlinux.org/packages/extra/x86_64/pavucontrol) | controle de volume do pulseaudio |
 | [remmina](https://archlinux.org/packages/extra/x86_64/remmina) | conexão remota |
@@ -110,17 +107,8 @@ Nem tudo do Gnome é interessante de ter instalado (como os aplicativos de docum
 ## Design
 |||
 | :---- | :---- |
-| *Grub* ||
-| [grub2-themes](https://github.com/vinceliuice/grub2-themes) | tema para o grub |
-| *Temas* ||
-| [whitesur-gtk-theme](https://github.com/vinceliuice/WhiteSur-gtk-theme) | tema big sur do macos para Gnome |
-| [orchis-theme](https://github.com/vinceliuice/Orchis-theme) | tema orchis material design |
-| [nordic](https://github.com/EliverLara/Nordic) | tema nord |
-| *Papel de Parede* |
-| [linux-dynamics-wallpapers](https://github.com/saint-13/Linux_Dynamic_Wallpapers) | papel de parede dinâmico |
 | *Ícones* ||
 | [papirus-icon-theme](https://github.com/PapirusDevelopmentTeam/papirus-icon-theme) | píxel ícones perfeitos |
-| [kora](https://github.com/bikass/kora) | ícones kora |
 | *Cursores* ||
 | [oreo-cursors](https://github.com/varlesh/oreo-cursors) | cursores oreo |
 | *Fontes* ||
@@ -131,13 +119,10 @@ Nem tudo do Gnome é interessante de ter instalado (como os aplicativos de docum
 ## Extensões Gnome
 |||
 | :---- | :---- |
-| [caffeine](https://github.com/eonpatapon/gnome-shell-extension-caffeine) | desativa desligamento de tela e auto suspensão |
-| [clipboard-indicator](https://github.com/Tudmotu/gnome-shell-extension-clipboard-indicator) | gerenciador de clipboard |
 | [dash-to-dock](https://github.com/micheleg/dash-to-dock) | move o dash para um dock |
+| [blur-my-shell](https://github.com/aunetx/blur-my-shell) | adiciona blur no gnome |
+| [caffeine](https://github.com/eonpatapon/gnome-shell-extension-caffeine) | desativa desligamento de tela e auto suspensão |
 | [vitals](https://github.com/corecoding/Vitals) | monitorador de hardware |
-| Para Teste ||
-| [logomenu](https://github.com/Aryan20/Logomenu) | acesso rápido ao menu no painel |
-| [top-bar-organizer](https://gitlab.gnome.org/julianschacher/top-bar-organizer) | organizador do painel gnome |
 |||
 
 ## Diversão

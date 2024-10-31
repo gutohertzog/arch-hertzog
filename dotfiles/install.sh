@@ -1,82 +1,77 @@
-# pacotes da nvidia
-sudo pacman -S nvidia nvidia-utils nvidia-settings
+#!/bin/bash
+OK="\e[0;32mOK\e[0m"
 
-# Kitty como terminal emulator
-sudo pacman -S kitty
+instala_pacote() {
+    local nome_pacote=$1
+    printf " %-40s" "$nome_pacote"
+    sudo pacman --noconfirm -S "$nome_pacote" > /dev/null 2>&1
+    printf "$OK\n"
+}
 
-# fontes
-sudo pacman -S ttf-cascadia-code-nerd ttf-cascadia-mono-nerd
+pacotes=(
+    # pacotes nvidia
+    "nvidia"
+    "nvidia-utils"
+    "nvidia-settings"
 
-# instala o Go e desativa a telemetria
-sudo pacman -S go
-go telemetry off
+    # pacotes terminal
+    "kitty"
+    "zsh"
+    "gvim"
+    "fzf"
+    "ripgrep"
+    "zoxide"
+    "fastfetch"
 
-# gerenciador de pacotes aur
-git clone https://aur.archlinux.org/yay.git
-cd yay
-makepkg -si
-cd ..
-rm -rf yay
+    # pacotes auxiliares do terminal
+    "git"
+    "p7zip"
+    "nm-connection-editor"
 
-# pacotes suplementares
-sudo pacman -S git p7zip fzf ripgrep zsh zoxide fastfetch curl nm-connection-editor wget
+    # fontes
+    "ttf-cascadia-code-nerd"
+    "ttf-cascadia-mono-nerd"
 
-# extensões do zsh
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-# considerar talvez substiuir pelo oh-my-posh
-# powerlevel10k está sendo abandonado, ao que parece
-# yay -S oh-my-posh
-git clone https://github.com/romkatv/powerlevel10k.git $HOME/.oh-my-zsh/custom/themes/powerlevel10k
-git clone https://github.com/zsh-users/zsh-completions.git $HOME/.oh-my-zsh/custom/plugins/zsh-completions
-git clone https://github.com/zsh-users/zsh-autosuggestions.git $HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions
-git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
-git clone https://github.com/Aloxaf/fzf-tab $HOME/.oh-my-zsh/custom/plugins/fzf-tab
+    # programas GUI
+    "firefox"
+    "keepassxc"
+    "remmina"
+    "pavucontrol"
 
-# programas
-sudo pacman -S firefox gvim code keepassxc remmina pavucontrol
+    # sistema
+    "words"
+)
 
-# dicionário para o vim
-# https://archlinux.org/packages/extra/any/words/
-sudo pacman -S words
+printf "\n"
+printf " ##############################################\n"
+printf " #              instalando gnome              #\n"
+printf " ##############################################\n"
+printf "\n"
 
-# instala code features para melhorar alguns usos
-yay -S code-features
+for pacote in "${pacotes[@]}"; do
+    instala_pacote "$pacotes"
+done
 
-# extensões do code
-code --install-extension vscodevim.vim
-code --install-extension vscode-icons-team.vscode-icons
-code --install-extension oderwat.indent-rainbow
-code --install-extension tomoki1207.vscode-pdf
-code --install-extension s-nlf-fh.glassit
+printf " ativando zsh................................"
+chsh -s $(which zsh)
+printf "$OK\n"
 
-# instalar o oreo-cursor diretamente do yay necessita de MUITAS dependências,
-# então ele é copiado e descompactado diretamente do meu repositório
-# yay -S oreo-cursors-git
+./../scripts/extensoes-zsh.sh
+./../scripts/hosts.sh
+./../scripts/microsoft-edge.sh
+
+# interface do sistema
 rm -rf $HOME/.icons
 mkdir $HOME/.icons/
-cp -rv $HOME/arch-hertzog/dotfiles/icons/defaults $HOME/.icons/
+# cursores do mouse
 for f in $HOME/arch-hertzog/dotfiles/icons/*.tar.gz; do tar xfv "$f" -C $HOME/.icons/; done
-
-# ícones do sistema
+for f in $HOME/arch-hertzog/dotfiles/icons/*.tar.xz; do tar xfv "$f" -C $HOME/.icons/; done
+# ícones
 wget -qO- https://git.io/papirus-icon-theme-install | env DESTDIR="$HOME/.icons" sh
-# # git clone https://github.com/bikass/kora
-# # cd kora
-# # mv kora* $HOME/.local/share/icons
-
-# https://github.com/StevenBlack/hosts
-curl -o $HOME/hosts https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/fakenews-gambling-porn/hosts
-sudo mv /etc/hosts /etc/hosts.bak
-sudo mv $HOME/hosts /etc/
-sudo systemctl restart NetworkManager.service
+rm -rf $HOME/.icons/ePapirus* # remove ícones não necessários
 
 # cria o ambiente virtual para o Python
 python -m venv $HOME/.venv
-pip install pylint
-
-# instalações para ale
-sudo pacman -S bash-language-server
-
-# testar o timeshift junto com o btrfs
 
 # tema para o Firefox
 cd $HOME/GitHub
@@ -102,10 +97,4 @@ cp EXTRA\ MODS/Icon\ and\ Button\ Mods/uBlock\ icon\ change/ublock-icon-change.c
 
 printf "agora, copie todo o conteúdo da pasta 'raposa' no HOME"
 printf "ache a pasta de perfil em 'about:support', e depois usando 'Open folder' na seção 'Profile'."
-
-# coisas da lixeira
-# https://github.com/andreafrancia/trash-cli
-sudo pacman -S trash-cli
-# ativa a limpeza da lixeira a cada 30 dias
-(crontab -l ; echo "@daily $(which trash-empty) 30") | crontab -
 
