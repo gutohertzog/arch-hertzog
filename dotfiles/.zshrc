@@ -59,9 +59,9 @@ alias arq="ls -lah | grep ^-rw"
 alias pfless="fzf --preview='less {}' --bind up:preview-page-up,down:preview-page-down"
 alias pfbat="fzf --preview 'bat --style=numbers --color=always --line-range :500 {}'"
 alias vim="vim -S ~/.config/vim/vimrc"
-alias odia="vim ~/Documents/dia.txt"
 alias tempo="/usr/bin/time -p"
-alias rm='echo "This is not the command you are looking for."; false'
+alias ls="eza --sort extension"
+alias ff="fastfetch"
 
 # controle dos leds da gpu
 alias gpu_100="nvidia-settings --assign GPULogoBrightness=100 >> /dev/null"
@@ -98,4 +98,6 @@ export FZF_DEFAULT_OPTS='
   #--color=dark
   #--color=fg:-1,bg:-1,hl:#c678dd,fg+:#ffffff,bg+:#4b5263,hl+:#d858fe
   #--color=info:#98c379,prompt:#61afef,pointer:#be5046,marker:#e5c07b,spinner:#61afef,header:#61afef
+
+export EZA_ICONS_AUTO='always'
 

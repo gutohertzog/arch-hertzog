@@ -16,9 +16,7 @@ rsync -av "$HOME/.config/Code/User/settings.json" "$BACKUP_DIR/config/Code/User/
 rsync -av "$HOME/.config/Code/User/keybindings.json" "$BACKUP_DIR/config/Code/User/"
 
 rsync -av --delete "$HOME/.config/kitty/" "$BACKUP_DIR/config/kitty/"
-rsync -av --delete "$HOME/.config/neofetch/" "$BACKUP_DIR/config/neofetch/"
+rsync -av --delete "$HOME/.config/fastfetch/" "$BACKUP_DIR/config/fastfetch/"
 rsync -av --delete "$HOME/.config/vim/" "$BACKUP_DIR/config/vim/"
 
-rm -v "$BACKUP_DIR/config/vim/autoload/plug.vim.old"
 rm -rfv "$BACKUP_DIR/config/vim/view/"
-

@@ -19,9 +19,11 @@ pacotes=(
     "zsh"
     "gvim"
     "fzf"
-    "ripgrep"
-    "zoxide"
-    "fastfetch"
+    "ripgrep" # busca por letra
+    "zoxide" # melhor cd
+    "fastfetch" # informação sistema
+    "eza" # melhor ls
+    "rsync" # backup
 
     # pacotes auxiliares do terminal
     "git"
@@ -59,16 +61,23 @@ printf "$OK\n"
 ./../scripts/extensoes-zsh.sh
 ./../scripts/hosts.sh
 ./../scripts/microsoft-edge.sh
+./../scripts/vs-code.sh
 
 # interface do sistema
-rm -rf $HOME/.icons
-mkdir $HOME/.icons/
-# cursores do mouse
+printf " copiando oreo cursores......................"
 for f in $HOME/arch-hertzog/dotfiles/icons/*.tar.gz; do tar xfv "$f" -C $HOME/.icons/; done
+printf "$OK\n"
+
+printf " copiando bibata cursores...................."
 for f in $HOME/arch-hertzog/dotfiles/icons/*.tar.xz; do tar xfv "$f" -C $HOME/.icons/; done
-# ícones
+printf "$OK\n"
+
+printf " copiando ícone papirus......................"
 wget -qO- https://git.io/papirus-icon-theme-install | env DESTDIR="$HOME/.icons" sh
 rm -rf $HOME/.icons/ePapirus* # remove ícones não necessários
+printf "$OK\n"
+
+# vs code (talvez...)
 
 # cria o ambiente virtual para o Python
 python -m venv $HOME/.venv
@@ -97,4 +106,3 @@ cp EXTRA\ MODS/Icon\ and\ Button\ Mods/uBlock\ icon\ change/ublock-icon-change.c
 
 printf "agora, copie todo o conteúdo da pasta 'raposa' no HOME"
 printf "ache a pasta de perfil em 'about:support', e depois usando 'Open folder' na seção 'Profile'."
-

@@ -8,7 +8,7 @@ printf " ##############################################\n"
 printf "\n"
 
 printf " oh-my-zsh..................................."
-git clone https://github.com/ohmyzsh/ohmyzsh.git ~/.oh-my-zsh > /dev/null 2>&1
+git clone https://github.com/ohmyzsh/ohmyzsh.git $HOME/.oh-my-zsh > /dev/null 2>&1
 printf "$OK\n"
 
 # considerar talvez substiuir powerlevel10k pelo oh-my-posh

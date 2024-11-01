@@ -1,3 +1,4 @@
+#!/bin/bash
 OK="\e[0;32mOK\e[0m"
 
 printf " microsoft edge stable......................."

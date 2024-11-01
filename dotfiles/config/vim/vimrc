@@ -446,7 +446,6 @@ nnoremap <Leader>tp :tabprevious<CR>
 
 " buffers
 nnoremap <Leader>bw :bdelete<CR>
-"nnoremap <Leader>bo :%bdelete<CR>:e#<CR>
 nnoremap <Leader>bo :w <bar> %bdelete <bar> e# <CR> <bar> '"
 nnoremap <tab> :bnext<CR>
 nnoremap <s-tab> :bprevious<CR>
