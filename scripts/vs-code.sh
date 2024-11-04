@@ -45,14 +45,9 @@ printf "$OK\n"
 printf " ....indent-rainbow.........................."
 code --install-extension oderwat.indent-rainbow
 printf "$OK\n"
-printf " ....vim....................................."
-code --install-extension vscodevim.vim
-printf "$OK\n"
 printf " ....glassit................................."
 code --install-extension s-nlf-fh.glassit
 printf "$OK\n"
 printf " ....vscode-pdf.............................."
 code --install-extension tomoki1207.vscode-pdf
 printf "$OK\n"
-
-

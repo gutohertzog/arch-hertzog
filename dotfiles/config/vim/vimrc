@@ -55,6 +55,7 @@ Plug 'airblade/vim-gitgutter'
 Plug 'voldikss/vim-floaterm'
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
 Plug 'dense-analysis/ale'
+"Plug 'tpope/vim-commentary'
 " para testar
 "Plug 'ycm-core/YouCompleteMe'
 "Plug 'TaDaa/vimade'
@@ -319,20 +320,53 @@ set tm=500
 set pumheight=10
 
 " divisão da tela
-set splitbelow
-set splitright
+set splitbelow splitright
+set splitkeep=screen
 
 set wildmenu
 set wildmode=list:longest
+
+set wildignore+=*.o,*.obj,*.dylib,*.bin,*.dll,*.exe
+set wildignore+=*/.git/*,*/.svn/*,*/__pycache__/*,*/build/**
+set wildignore+=*.jpg,*.png,*.jpeg,*.bmp,*.gif,*.tiff,*.svg,*.ico
+set wildignore+=*.pyc,*.pkl
+set wildignore+=*.DS_Store
+set wildignore+=*.aux,*.bbl,*.blg,*.brf,*.fls,*.fdb_latexmk,*.synctex.gz,*.xdv
+set wildignorecase  " ignore file and dir name cases in cmd-completion
 
 set history=1000
 
 set encoding=utf-8
 set fileformat=unix
 
+" diff {{{
+set diffopt=
+set diffopt+=vertical  " show diff in vertical position
+set diffopt+=filler  " show filler for deleted lines
+set diffopt+=closeoff  " turn off diff when one file window is closed
+set diffopt+=context:3  " context for diff
+set diffopt+=internal,indent-heuristic,algorithm:histogram
+" }}}
+
 " interface {{{
-set number
-set relativenumber
+set termguicolors
+
+set number relativenumber
+
+set title
+
+set undofile
+
+set synmaxcol=250
+set nostartofline
+
+if executable('rg')
+    set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
+    set grepformat=%f:%l:%c:%m
+endif
+
+set spelllang=en
+set spellsuggest+=9
 
 set laststatus=2
 set signcolumn=yes
@@ -342,7 +376,7 @@ hi clear CursorLine
 hi CursorLine cterm=underline
 set nocursorcolumn
 
-set scrolloff=1
+set scrolloff=3
 set sidescrolloff=0
 
 set wrap
@@ -354,7 +388,7 @@ set colorcolumn=80,100
 " barra inferior
 set showcmd
 
-set showmode
+set noshowmode
 
 set showbreak=↪\
 set listchars=tab:<->,eol:↲,nbsp:║,space:␣,trail:•,extends:⟩,precedes:⟨
@@ -375,10 +409,8 @@ set autoindent
 
 " busca {{{
 set wrapscan
-set incsearch
-set ignorecase
-set smartcase
-set hlsearch
+set incsearch hlsearch
+set ignorecase smartcase
 " }}}
 
 " backup {{{
@@ -505,6 +537,10 @@ vnoremap <C-s> :sort<CR>
 " substitui todas ocorrências
 vnoremap <C-r> "hy:%s/<C-r>h//g<Left><Left>
 vnoremap <Leader><C-r> "hy:%s/<C-r>h/<C-r>h/g<Left><Left>
+" }}}
+
+" vim-commentary {{{
+autocmd FileType apache setlocal commentstring=#\ %s
 " }}}
 
 " }}}

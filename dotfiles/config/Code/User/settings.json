@@ -136,6 +136,7 @@
     //     // "scminput": false
     // },
     "gitlens.graph.minimap.dataType": "lines",
+    "gitlens.telemetry.enabled": false,
     "glassit.alpha": 245,
     "markdown.updateLinksOnFileMove.enabled": "always",
     "problems.decorations.enabled": true,
@@ -169,80 +170,15 @@
     // "update.enableWindowsBackgroundUpdates": false,
     "update.mode": "manual",
     // "terminal.integrated.copyonselection": true,
-    "vim.cursorStylePerMode.insert": "line",
-    "vim.cursorStylePerMode.normal": "block",
-    "vim.cursorStylePerMode.replace": "block-outline",
-    "vim.cursorStylePerMode.visual": "block",
-    "vim.cursorStylePerMode.visualblock": "underline",
-    "vim.cursorStylePerMode.visualline": "underline",
-    "vim.foldfix": true,
-    "vim.highlightedyank.duration": 400,
-    "vim.highlightedyank.enable": true,
-    "vim.hlsearch": true,
-    "vim.incsearch": true,
-    "vim.leader": "<Space>",
-    "vim.normalModeKeyBindingsNonRecursive": [
-        // comandos de navegação no arquivo
-        // { "before": [ "J" ], "after": [ "5", "j" ] },
-        // { "before": [ "K" ], "after": [ "5", "k" ] },
-        // { "before": [ "j" ], "after": [ "g", "j" ] },
-        // { "before": [ "k" ], "after": [ "g", "k" ] },
-        // { "before": [ "g", "j" ], "after": [ "j" ] },
-        // { "before": [ "g", "k" ], "after": [ "k" ] },
-        { "before": [ "H" ], "after": [ "^" ] },
-        { "before": [ "L" ], "after": [ "$" ] },
-        { "before": [ "Y" ], "after": [ "y", "$" ] },
-        // { "before": [ "<leader>", "j" ], "after": [ "J" ] },
-        // { "before": [ "<Leader>", "k" ], "commands": [ "lineBreakInsert" ] },
-        // { "before": [ "<Leader>", "/" ], "commands": [ ":noh" ] },
-        { "before": [ "<Leader>", "w" ], "commands": [ ":w" ] },
-        // { "before": [ "<Leader>", "m" ], "commands": [ "bookmarks.toggle" ] },
-        // { "before": [ "<Leader>", "b" ], "commands": [ "bookmarks.list" ] },
-        // comandos de navegação das abas
-        // { "before": [ "<C-h>" ], "after": [ "<C-w>", "h" ] },
-        // { "before": [ "<C-j>" ], "after": [ "<C-w>", "j" ] },
-        // { "before": [ "<C-k>" ], "after": [ "<C-w>", "k" ] },
-        // { "before": [ "<C-l>" ], "after": [ "<C-w>", "l" ] },
-        // comandos para a manipulacão das abas
-        // { "before": [ "<Leader>", "t", "t" ], "commands": [ ":tabnew" ] },
-        // { "before": [ "<Leader>", "t", "n" ], "commands": [ ":tabnext" ] },
-        // { "before": [ "<Leader>", "t", "p" ], "commands": [ ":tabprev" ] },
-        // { "before": [ "<Leader>", "t", "w" ], "commands": [ ":tabclose" ] },
-        // { "before": [ "<Leader>", "t", "o" ], "commands": [ ":tabonly" ] },
-        // comandos para a central de controle do VS Code
-        // { "before": [ "<Leader>", "f", "f" ], "commands": [ "workbench.action.quickOpen" ] },
-        // { "before": [ "<Leader>", "f", "w" ], "commands": [ "workbench.action.gotoSymbol" ] },
-        // { "before": [ "<Leader>", "f", "p" ], "commands": [ "workbench.action.showCommands" ] },
-        // comandos para o workbench do VS Code
-        // { "before": [ "<Leader>", "o", "f" ], "commands": [ "workbench.action.files.openFile" ] },
-        // { "before": [ "<Leader>", "w", "b" ], "commands": [ "workbench.action.toggleSidebarVisibility" ] },
-        // { "before": [ "<Leader>", "z", "m" ], "commands": [ "workbench.action.toggleZenMode" ] },
-        // comandos para o SQL
-        // { "before": [ "<Leader>", "e", "q" ], "commands": [ "sqltools.executeCurrentQuery" ] }
-    ],
-    "vim.smartRelativeLine": true,
-    "vim.statusBarColorControl": true,
-    "vim.statusBarColors.normal": "#00000000", // transparente
-    "vim.statusBarColors.insert": ["#00FF0033", "#FFFFFF"], // verde
-    "vim.statusBarColors.visual": ["#FFFF0033", "#FFFFFF"], //amarelo
-    "vim.statusBarColors.visualline": ["#FFFF0033", "#FFFFFF"], // amarelo
-    "vim.statusBarColors.visualblock":  ["#FFFF0033", "#FFFFFF"], // amarelo
-    "vim.statusBarColors.replace": ["#FF000033", "#FFFFFF"], // vermelho
-    "vim.statusBarColors.commandlineinprogress": ["#0078D733", "#FFFFFF"], // azul VS Code
-    "vim.statusBarColors.searchinprogressmode": ["#EE82EE33", "#FFFFFF"], // violeta
-    "vim.useSystemClipboard": true,
-    // "vim.statusBarColors.easymotionmode": "#007ACC",
-    // "vim.statusBarColors.easymotioninputmode": "#007ACC",
-    // "vim.statusBarColors.surroundinputmode": "#007ACC",
     "window.commandCenter": false,
     "window.customTitleBarVisibility": "auto",
-    "workbench.colorCustomizations": {
-        "statusBar.background": "#00000000",
-        "statusBar.noFolderBackground": "#00000000",
-        "statusBar.debuggingBackground": "#00000000",
-        "statusBar.foreground": "#FFFFFF",
-        "statusBar.debuggingForeground": "#FFFFFF"
-    },
+    // "workbench.colorCustomizations": {
+    //     "statusBar.background": "#00FF0033",
+    //     "statusBar.noFolderBackground": "#00FF0033",
+    //     "statusBar.debuggingBackground": "#00FF0033",
+    //     "statusBar.foreground": "#FFFFFF",
+    //     "statusBar.debuggingForeground": "#FFFFFF"
+    // },
     "workbench.editor.decorations.colors": true,
     "workbench.editor.highlightModifiedTabs": true,
     "workbench.editor.scrollToSwitchTabs": true,
@@ -256,4 +192,7 @@
     "window.menuBarVisibility": "toggle",
     "zenMode.hideLineNumbers": false,
     "zenMode.hideStatusBar": false,
+    "extensions.experimental.affinity": {
+        "asvetliakov.vscode-neovim": 1
+    },
 }
