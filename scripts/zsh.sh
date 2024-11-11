@@ -3,9 +3,17 @@ OK="\e[0;32mOK\e[0m"
 
 printf "\n"
 printf " ##############################################\n"
-printf " #               extensões zsh                #\n"
+printf " #                    zsh                     #\n"
 printf " ##############################################\n"
 printf "\n"
+
+printf " zsh........................................."
+sudo pacman --noconfirm -S zsh > /dev/null 2>&1
+printf "$OK\n"
+
+printf " ativando zsh................................"
+chsh -s $(which zsh) > /dev/null 2>&1
+printf "$OK\n"
 
 printf " oh-my-zsh..................................."
 git clone https://github.com/ohmyzsh/ohmyzsh.git $HOME/.oh-my-zsh > /dev/null 2>&1

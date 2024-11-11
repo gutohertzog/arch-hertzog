@@ -1,6 +1,12 @@
 #!/bin/bash
 OK="\e[0;32mOK\e[0m"
 
+printf "\n"
+printf " ##############################################\n"
+printf " #                   steam                    #\n"
+printf " ##############################################\n"
+printf "\n"
+
 printf " lib32-nvidia-utils.........................."
 sudo pacman -S lib32-nvidia-utils > /dev/null 2>&1
 printf "$OK\n"

@@ -21,12 +21,12 @@ rm -rf code-features > /dev/null 2>&1
 printf "$OK\n"
 
 printf " code-marketplace............................"
-git clone https://aur.archlinux.org/code-features.git > /dev/null 2>&1
-cd code-features
+git clone https://aur.archlinux.org/code-marketplace.git > /dev/null 2>&1
+cd code-marketplace
 makepkg > /dev/null 2>&1
 makepkg --install > /dev/null 2>&1
 cd $HOME/GitHub
-rm -rf code-features > /dev/null 2>&1
+rm -rf code-marketplace > /dev/null 2>&1
 printf "$OK\n"
 
 printf " code-icons.................................."
@@ -40,14 +40,14 @@ printf "$OK\n"
 
 printf " extensões vs code...........................\n"
 printf " ....vscode-icons............................"
-code --install-extension vscode-icons-team.vscode-icons
+# code --install-extension vscode-icons-team.vscode-icons
 printf "$OK\n"
 printf " ....indent-rainbow.........................."
-code --install-extension oderwat.indent-rainbow
+# code --install-extension oderwat.indent-rainbow
 printf "$OK\n"
 printf " ....glassit................................."
-code --install-extension s-nlf-fh.glassit
+# code --install-extension s-nlf-fh.glassit
 printf "$OK\n"
 printf " ....vscode-pdf.............................."
-code --install-extension tomoki1207.vscode-pdf
+# code --install-extension tomoki1207.vscode-pdf
 printf "$OK\n"
