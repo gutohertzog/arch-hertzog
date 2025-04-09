@@ -13,24 +13,21 @@ pacotes=(
     "nvidia-settings"
 
     # pacotes terminal
-    "kitty"
-    "gvim"
-    "fzf"
+    "kitty" # emulador do terminal
+    "gvim" # tui editor
+    "fzf" # busca pelo terminal
     "ripgrep" # busca por letra
     "zoxide" # melhor cd
     "fastfetch" # informação sistema
     "eza" # melhor ls
-    "rsync" # backup
-
-    # pacotes auxiliares do terminal
-    "git"
-    "p7zip"
-    "nm-connection-editor"
+    "rsync" # gerenciador de backup
+    "git" # gerenciador de versionamento
+    "p7zip" # manipulador de arquivos compactados
+    "nm-connection-editor" # editor de conexão
 
     # fontes
     "ttf-cascadia-code-nerd"
     "ttf-cascadia-mono-nerd"
-
 
     # sistema
     "words"
@@ -69,4 +66,3 @@ printf " copiando ícone papirus......................"
 wget -qO- https://git.io/papirus-icon-theme-install | env DESTDIR="$HOME/.icons" sh
 rm -rf $HOME/.icons/ePapirus* # remove ícones não necessários
 printf "$OK\n"
-

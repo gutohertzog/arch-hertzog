@@ -7,10 +7,6 @@ Criado para que, ao criar uma nova máquina WSL do Arch Linux, basta clonar esse
 | :---- | :---- |
 | [cli](https://apps.microsoft.com/detail/9mznmnksm73x) | ambiente de CLI |
 
-| Gerenciador de Pacotes ||
-| :---- | :---- |
-| [yay](https://github.com/Jguer/yay) | gerenciador de pacotes aur |
-
 | Pacotes do Sistema ||
 | :---- | :---- |
 | [git](https://archlinux.org/packages/extra/x86_64/git) | sistema de controle de versionamento |
@@ -20,9 +16,7 @@ Criado para que, ao criar uma nova máquina WSL do Arch Linux, basta clonar esse
 | [zsh](https://archlinux.org/packages/extra/x86_64/zsh) | shell avançado |
 | [zoxide](https://archlinux.org/packages/extra/x86_64/zoxide) | comando cd mais inteligente |
 | [neofetch](https://archlinux.org/packages/extra/any/neofetch) | mostra informações do hardware e software |
-| [curl](https://archlinux.org/packages/core/x86_64/curl) | ferramenta de linha de comando para transferir dados com urls |
 
 | Aplicativos ||
 | :---- | :---- |
-| [gvim](https://archlinux.org/packages/extra/x86_64/gvim) | editor de texto cli (gvim vem com suporte a clipboard) |
-
+| [vim](https://archlinux.org/packages/extra/x86_64/vim) | editor de texto cli |

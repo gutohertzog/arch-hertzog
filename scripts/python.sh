@@ -12,7 +12,7 @@ set -e
 source "$(dirname "$0")/funcoes.sh"
 
 OK="\e[0;32mOK\e[0m\n"
-versao="3.13.0"
+versao="3.13.3"
 pasta="3.13"
 
 printf "\n"
