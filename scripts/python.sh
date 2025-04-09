@@ -35,7 +35,7 @@ printf $OK
 printf " preparando local de instalação.............."
 cd Python-$versao > /dev/null 2>&1
 rm -rf $HOME/Apps/Python-$pasta > /dev/null 2>&1
-mkdir $HOME/Apps/Python-$pasta > /dev/null 2>&1
+mkdir -p $HOME/Apps/Python-$pasta > /dev/null 2>&1
 ./configure --prefix=$HOME/Apps/Python-$pasta > /dev/null 2>&1 &
 spinner
 printf $OK
@@ -66,4 +66,3 @@ rm -rf $HOME/.venv > /dev/null 2>&1
 $HOME/Apps/Python-$pasta/bin/python3 -m venv $HOME/.venv > /dev/null 2>&1
 printf $OK
 printf " \nuse ~/pacotes-pip.txt para reinstalar os pacotes\n"
-
