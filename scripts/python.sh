@@ -22,47 +22,42 @@ printf " ##############################################\n"
 printf "\n"
 
 printf " baixando o Python-$versao...................."
-wget https://www.python.org/ftp/python/$versao/Python-$versao.tgz > /dev/null 2>&1 &
-spinner
+wget https://www.python.org/ftp/python/$versao/Python-$versao.tgz
 printf $OK
 
 printf " extraindo e removendo pacote................"
-tar -zxf Python-$versao.tgz > /dev/null 2>&1 &
-spinner
-rm Python-$versao.tgz > /dev/null 2>&1
+tar -zxf Python-$versao.tgz
+rm Python-$versao.tgz
 printf $OK
 
 printf " preparando local de instalação.............."
-cd Python-$versao > /dev/null 2>&1
-rm -rf $HOME/Apps/Python-$pasta > /dev/null 2>&1
-mkdir -p $HOME/Apps/Python-$pasta > /dev/null 2>&1
-./configure --prefix=$HOME/Apps/Python-$pasta > /dev/null 2>&1 &
-spinner
+cd Python-$versao
+rm -rf $HOME/Apps/Python-$pasta
+mkdir -p $HOME/Apps/Python-$pasta
+./configure --prefix=$HOME/Apps/Python-$pasta
 printf $OK
 
 printf " compilando.................................."
-make > /dev/null 2>&1 &
-spinner
+make
 printf $OK
 
 printf " instalando.................................."
-make install > /dev/null 2>&1 &
-spinner
+make install
 printf $OK
 
 printf " limpando...................................."
-rm -rf Python-$versao > /dev/null 2>&1
+rm -rf Python-$versao
 printf $OK
 
 printf " configurando ambiente virtual..............."
 # salva os pacotes antes de recriar
 if [[ -f "$HOME/.venv/bin/activate" ]]; then
-    source $HOME/.venv/bin/activate > /dev/null 2>&1
-    pip freeze > $HOME/pacotes-pip.txt > /dev/null 2>&1
-    deactivate > /dev/null 2>&1
+    source $HOME/.venv/bin/activate
+    pip freeze > $HOME/pacotes-pip.txt
+    deactivate
 fi
 
-rm -rf $HOME/.venv > /dev/null 2>&1
-$HOME/Apps/Python-$pasta/bin/python3 -m venv $HOME/.venv > /dev/null 2>&1
+rm -rf $HOME/.venv
+$HOME/Apps/Python-$pasta/bin/python3 -m venv $HOME/.venv
 printf $OK
 printf " \nuse ~/pacotes-pip.txt para reinstalar os pacotes\n"

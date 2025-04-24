@@ -1,9 +1,5 @@
 #!/bin/bash
 
-set -e
-
-source "$(dirname "$0")/../scripts/funcoes.sh"
-
 OK="\e[0;32mOK\e[0m"
 
 pacotes=(
@@ -20,7 +16,7 @@ pacotes=(
     "zoxide" # melhor cd
     "fastfetch" # informação sistema
     "eza" # melhor ls
-    "rsync" # gerenciador de backup
+    # "rsync" # gerenciador de backup
     "git" # gerenciador de versionamento
     "p7zip" # manipulador de arquivos compactados
     "nm-connection-editor" # editor de conexão
@@ -29,22 +25,20 @@ pacotes=(
     "ttf-cascadia-code-nerd"
     "ttf-cascadia-mono-nerd"
 
-    # sistema
+    # dicionário
     "words"
 
-    # python
+    # gui para python
     "tk"
 )
 
 printf "\n"
 printf " ##############################################\n"
-printf " #              instalando gnome              #\n"
+printf " #             instalando extras              #\n"
 printf " ##############################################\n"
 printf "\n"
 
-for pacote in "${pacotes[@]}"; do
-    instala_pacote "$pacote"
-done
+sudo pacman --noconfirm -S "${pacotes[@]}"
 
 ./../scripts/zsh.sh
 ./../scripts/hosts.sh

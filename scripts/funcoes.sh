@@ -21,8 +21,5 @@ spinner() {
 # função para instalar um pacote
 instala_pacote() {
     local nome_pacote=$1
-    printf " %-40s" "$nome_pacote"
-    sudo pacman --noconfirm -S "$nome_pacote" > /dev/null 2>&1
-    printf "$OK\n"
+    sudo pacman --noconfirm -S "$nome_pacote"
 }
-
