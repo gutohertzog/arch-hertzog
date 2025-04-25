@@ -72,7 +72,7 @@ pacotes=(
 
 printf "\n"
 printf " ##############################################\n"
-printf " #              instalando \e[0;GNOME\e[0m              #\n"
+printf " #              instalando GNOME              #\n"
 printf " ##############################################\n"
 printf "\n"
 
