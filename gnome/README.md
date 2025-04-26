@@ -74,6 +74,8 @@ Abaixo está a seleção de pacotes que são instalados.
 | [dash-to-dock](https://github.com/micheleg/dash-to-dock) | move o dash para um dock |
 | [blur-my-shell](https://github.com/aunetx/blur-my-shell) | adiciona blur no gnome |
 | [caffeine](https://github.com/eonpatapon/gnome-shell-extension-caffeine) | desativa desligamento de tela e auto suspensão |
+| [tray-icons-reloaded](https://github.com/martinpl/tray-icons-reloaded) | mostra os ícones ativos |
+| [lockkeys](https://github.com/kazysmaster/gnome-shell-extension-lockkeys) | mostra as teclas num e caps lock ativas |
 | [vitals](https://github.com/corecoding/Vitals) | monitorador de hardware |
 
 ## Pacotes Sistema
