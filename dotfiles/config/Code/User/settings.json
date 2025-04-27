@@ -1,6 +1,7 @@
 {
+    "chat.commandCenter.enabled": false,
     "diffEditor.codeLens": true,
-    "diffEditor.ignoreTrimWhitespace": true,
+    "diffEditor.ignoreTrimWhitespace": false,
     "editor.acceptSuggestionOnEnter": "off",
     "editor.autoClosingBrackets": "always",
     "editor.autoClosingDelete": "always",
@@ -137,8 +138,18 @@
     // },
     "gitlens.graph.minimap.dataType": "lines",
     "gitlens.telemetry.enabled": false,
-    "glassit.alpha": 245,
+    "indentRainbow.colors": [
+        "rgba(255,0,0,0.1)", // vermelho #ff0000
+        "rgba(255,165,0,0.1)", // laranja #ffa500
+        "rgba(255,255,0,0.1)", // amarelo #ffff00
+        "rgba(0,255,0,0.1)", // verde #00ff00
+        "rgba(0,0,255,0.1)", // azul #0000ff
+        "rgba(75,0,130,0.1)", // lilás #4b0082
+        "rgba(238,130,238,0.1)" // violeta #ee82ee
+    ],
     "markdown.updateLinksOnFileMove.enabled": "always",
+    "peacock.affectActivityBar": false,
+    "peacock.affectStatusBar": false,
     "problems.decorations.enabled": true,
     "problems.showCurrentInStatus": true,
     // "python.analysis.autoImportCompletions": true,
@@ -161,7 +172,6 @@
     "terminal.integrated.cursorBlinking": true,
     "terminal.integrated.cursorStyle": "underline",
     "terminal.integrated.cursorWidth": 2,
-    // "terminal.integrated.defaultProfile.windows": "PowerShell",
     "terminal.integrated.enablePersistentSessions": false,
     "terminal.integrated.fontFamily": "CaskaydiaMono Nerd Font",
     "terminal.integrated.fontSize": 14,
@@ -172,13 +182,6 @@
     // "terminal.integrated.copyonselection": true,
     "window.commandCenter": false,
     "window.customTitleBarVisibility": "auto",
-    // "workbench.colorCustomizations": {
-    //     "statusBar.background": "#00FF0033",
-    //     "statusBar.noFolderBackground": "#00FF0033",
-    //     "statusBar.debuggingBackground": "#00FF0033",
-    //     "statusBar.foreground": "#FFFFFF",
-    //     "statusBar.debuggingForeground": "#FFFFFF"
-    // },
     "workbench.editor.decorations.colors": true,
     "workbench.editor.highlightModifiedTabs": true,
     "workbench.editor.scrollToSwitchTabs": true,
@@ -188,11 +191,8 @@
     "workbench.enableExperiments": false,
     "workbench.layoutControl.enabled": false,
     "workbench.iconTheme": "vscode-icons",
-    "window.zoomLevel": 0,
     "window.menuBarVisibility": "toggle",
+    "window.zoomLevel": 0,
     "zenMode.hideLineNumbers": false,
     "zenMode.hideStatusBar": false,
-    "extensions.experimental.affinity": {
-        "asvetliakov.vscode-neovim": 1
-    },
 }

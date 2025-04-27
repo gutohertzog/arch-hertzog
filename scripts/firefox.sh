@@ -8,6 +8,8 @@ printf " #                  firefox                   #\n"
 printf " ##############################################\n"
 printf "\n"
 
+sudo pacman --noconfirm -S firefox
+
 cd $HOME
 git clone https://github.com/gutohertzog/firefox-mod-blur
 cd firefox-mod-blur
