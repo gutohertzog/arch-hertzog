@@ -161,7 +161,7 @@
     "python.defaultInterpreterPath": "python",
     "python.envFile": "${workspaceFolder}/.venv",
     "python.interpreter.infoVisibility": "always",
-    "python.languageServer": "Pylance",
+    "python.languageServer": "Default",
     // "python.linting.flake8Enabled": true,
     // "python.linting.mypyEnabled": true,
     "python.terminal.focusAfterLaunch": true,
