@@ -11,6 +11,9 @@ printf " vs code....................................."
 sudo pacman --noconfirm -S code
 printf "$OK\n"
 
+ln -s $HOME/arch-hertzog/dotfiles/config/Code/User/settings.json $HOME/.config/Code\ -\ OSS/User
+ln -s $HOME/arch-hertzog/dotfiles/config/Code/User/keybindings.json $HOME/.config/Code\ -\ OSS/User
+
 printf " code-features..............................."
 git clone https://aur.archlinux.org/code-features.git
 cd code-features
@@ -38,6 +41,15 @@ code --install-extension oderwat.indent-rainbow
 printf "$OK\n"
 printf " ....glassit................................."
 code --install-extension s-nlf-fh.glassit
+printf "$OK\n"
+printf " ....vim....................................."
+code --install-extension vscodevim.vim
+printf "$OK\n"
+printf " ....python.................................."
+code --install-extension ms-python.python
+printf "$OK\n"
+printf " ....peacock................................."
+code --install-extension johnpapa.vscode-peacock
 printf "$OK\n"
 printf " ....vscode-pdf.............................."
 code --install-extension tomoki1207.vscode-pdf
