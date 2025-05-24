@@ -29,7 +29,8 @@ WIDTH=38
 
 # Gets a sprite via pokeget
 random_index=$(( RANDOM % ${#POKEMON_LIST[@]} + 1 ))
-sprite=$("$HOME/Apps/pokeget" "${POKEMON_LIST[random_index]}" --hide-name)
+# sprite=$("$HOME/Apps/pokeget" "${POKEMON_LIST[random_index]}" --hide-name)
+sprite=$("$HOME/Apps/pokeget" kanto --hide-name)
 
 # Gets sprite's height
 height=$(echo "$sprite" | wc -l)
