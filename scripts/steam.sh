@@ -7,6 +7,12 @@ printf " #                   steam                    #\n"
 printf " ##############################################\n"
 printf "\n"
 
+# lembre de ativar multilib
+#   /etc/pacman.conf
+#
+#   [multilib]
+#   Include = /etc/pacman.d/mirrorlist
+
 printf " lib32-nvidia-utils.........................."
 sudo pacman -S lib32-nvidia-utils
 printf "$OK\n"
