@@ -78,6 +78,11 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 fi
 
 # -------------------------------------------------------------------------------------------------
+# troca o local de alguns arquivos gerados automaticamente
+# muda o local do .zcompdump
+export ZSH_COMPDUMP=$HOME/.cache/.zcompdump-$HOST
+
+# -------------------------------------------------------------------------------------------------
 # definições do oh-my-zsh
 export ZSH="$HOME/.oh-my-zsh"
 
@@ -104,7 +109,7 @@ source $ZSH/oh-my-zsh.sh
 
 # histórico
 HISTSIZE=5000
-HISTFILE=~/.zsh_history
+HISTFILE=$HOME/.cache/.zsh_history
 SAVEHIST=$HISTSIZE
 HISTDUP=erase
 setopt appendhistory
@@ -167,3 +172,6 @@ export FZF_DEFAULT_OPTS='
   #--color=info:#98c379,prompt:#61afef,pointer:#be5046,marker:#e5c07b,spinner:#61afef,header:#61afef
 
 export EZA_ICONS_AUTO='always'
+
+# adiciona o código abaixo no .zshrc na última linha para desativar arrumar a cor das pastas
+export LS_COLORS='rs=0:no=00:mi=00:mh=00:ln=01;36:or=01;31:di=01;34:ow=04;01;34:st=34:tw=04;34:pi=01;33:so=01;33:do=01;33:bd=01;33:cd=01;33:su=01;34:sg=01;35:ca=01;35:ex=01;32:'

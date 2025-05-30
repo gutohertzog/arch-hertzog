@@ -300,6 +300,9 @@ set backspace=indent,eol,start
 set autoread
 au FocusGained,BufEnter * silent! checktime
 
+" troca local do viminfo
+set viminfo+=n~/.cache/vim/viminfo
+
 " regex
 set magic
 

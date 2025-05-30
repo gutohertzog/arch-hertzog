@@ -167,8 +167,8 @@ function instala_tudo() {
     sudo pacman -S --noconfirm hyprland > /dev/null 2>&1
     printf $OK
 
-    printf "\n"
-    printf " Installing SDDM and dependencies............."
+    # printf "\n"
+    # printf " Installing SDDM and dependencies............."
     # https://archlinux.org/packages/extra/x86_64/sddm/
     # https://archlinux.org/packages/extra/x86_64/qt5-wayland/
     # https://archlinux.org/packages/extra/x86_64/qt6-wayland/
@@ -176,11 +176,11 @@ function instala_tudo() {
     # https://archlinux.org/packages/extra/x86_64/qt5-quickcontrols2/
     # https://archlinux.org/packages/extra/x86_64/qt5-graphicaleffects/
     # https://archlinux.org/packages/extra/x86_64/qt5-svg/
-    sudo pacman -S --noconfirm sddm qt5-wayland qt6-wayland qt5-quickcontrols qt5-quickcontrols2 qt5-graphicaleffects qt5-svg > /dev/null 2>&1
-    sudo cp -r $1/dotfiles/sddm/themes/* /usr/share/sddm/themes/ > /dev/null 2>&1
-    sudo cp $1/dotfiles/sddm/sddm.conf /etc/ > /dev/null 2>&1
-    sudo systemctl enable sddm > /dev/null 2>&1
-    printf $OK
+    # sudo pacman -S --noconfirm sddm qt5-wayland qt6-wayland qt5-quickcontrols qt5-quickcontrols2 qt5-graphicaleffects qt5-svg > /dev/null 2>&1
+    # sudo cp -r $1/dotfiles/sddm/themes/* /usr/share/sddm/themes/ > /dev/null 2>&1
+    # sudo cp $1/dotfiles/sddm/sddm.conf /etc/ > /dev/null 2>&1
+    # sudo systemctl enable sddm > /dev/null 2>&1
+    # printf $OK
 
     printf "\n"
     printf " Installing Hyprpaper........................."
