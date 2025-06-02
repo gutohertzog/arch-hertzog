@@ -46,12 +46,11 @@ printf "\n"
 
 sudo pacman --noconfirm -S "${pacotes[@]}"
 
-#./../scripts/zsh.sh
-#./../scripts/hosts.sh
-#./../scripts/microsoft-edge.sh
-#./../scripts/vs-code.sh
-#./../scripts/python.sh
-#./../scripts/firefox.sh
+./../scripts/zsh.sh
+./../scripts/hosts.sh
+./../scripts/python.sh
+./../scripts/firefox.sh
+./../scripts/vs-code.sh
 
 # interface do sistema
 printf " copiando ícone papirus......................"

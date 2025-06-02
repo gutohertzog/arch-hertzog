@@ -11,26 +11,28 @@ printf " vs code....................................."
 sudo pacman --noconfirm -S code
 printf "$OK\n"
 
+# cria a pasta para linkar as configurações
+mkdir -p $HOME/.config/Code\ -\ OSS/User
 ln -s $HOME/arch-hertzog/dotfiles/config/Code/User/settings.json $HOME/.config/Code\ -\ OSS/User
 ln -s $HOME/arch-hertzog/dotfiles/config/Code/User/keybindings.json $HOME/.config/Code\ -\ OSS/User
 
-printf " code-features..............................."
-git clone https://aur.archlinux.org/code-features.git
-cd code-features
-makepkg
-makepkg --install
-cd $HOME/GitHub
-rm -rf code-features
-printf "$OK\n"
+# printf " code-features..............................."
+# git clone https://aur.archlinux.org/code-features.git
+# cd code-features
+# makepkg
+# makepkg --install
+# cd $HOME/GitHub
+# rm -rf code-features
+# printf "$OK\n"
 
-printf " code-marketplace............................"
-git clone https://aur.archlinux.org/code-marketplace.git
-cd code-marketplace
-makepkg
-makepkg --install
-cd $HOME/GitHub
-rm -rf code-marketplace
-printf "$OK\n"
+# printf " code-marketplace............................"
+# git clone https://aur.archlinux.org/code-marketplace.git
+# cd code-marketplace
+# makepkg
+# makepkg --install
+# cd $HOME/GitHub
+# rm -rf code-marketplace
+# printf "$OK\n"
 
 printf " extensões vs code...........................\n"
 printf " ....vscode-icons............................"

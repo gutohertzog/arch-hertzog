@@ -83,8 +83,13 @@ sudo systemctl enable gdm
 
 printf " criando pastas"
 #mkdir $HOME/.icons
-#mkdir $HOME/.themes
-#mkdir $HOME/GitHub
+mkdir $HOME/GitHub
+
+# remove o vim para instalar o gvim
+sudo pacman -Runs vim
+
+./../scripts/extensoes-gnome.sh
+./../dotfiles/install.sh
 
 ln -s $HOME/arch-hertzog/dotfiles/.zshrc $HOME/.zshrc
 ln -s $HOME/arch-hertzog/dotfiles/.p10k.zsh $HOME/.p10k.zsh
@@ -95,15 +100,9 @@ ln -s $HOME/arch-hertzog/dotfiles/Pictures $HOME/Pictures
 ln -s $HOME/arch-hertzog/gnome/dotfiles/themes $HOME/.themes
 ln -s $HOME/arch-hertzog/gnome/dotfiles/.profile $HOME/.profile
 ln -s $HOME/arch-hertzog/gnome/dotfiles/.XCompose $HOME/.XCompose
-ln -s $HOME/arch-hertzog/dotfiles/config/Code/User/settings.json $HOME/.config/Code\ -\ OSS/User/settings.json
-ln -s $HOME/arch-hertzog/dotfiles/config/Code/User/keybindings.json $HOME/.config/Code\ -\ OSS/User/keybindings.json
-
-#./../dotfiles/install.sh
 
 # copia o meu tema personalizado
-#cp -rv $HOME/arch-hertzog/gnome/dotfiles/themes/* $HOME/.themes
-
-#./../scripts/extensoes-gnome.sh
+# cp -rv $HOME/arch-hertzog/gnome/dotfiles/themes/* $HOME/.themes
 
 # carrega as configurações para o gnome
 #dconf load / < $HOME/arch-hertzog/gnome/dotfiles/config/dconf/user-settings.conf
