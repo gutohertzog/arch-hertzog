@@ -14,7 +14,7 @@
     "editor.cursorBlinking": "smooth",
     "editor.cursorSmoothCaretAnimation": "on",
     "editor.cursorStyle": "line",
-    "editor.cursorSurroundingLines": 5,
+    "editor.cursorSurroundingLines": 2,
     "editor.dragAndDrop": true,
     "editor.dropIntoEditor.enabled": true,
     "editor.emptySelectionClipboard": true,
@@ -107,7 +107,7 @@
     "explorer.sortOrder": "type",
     "extensions.autoCheckUpdates": false,
     "extensions.autoUpdate": false,
-    // To improve performance
+    // para melhorar performance
     "extensions.experimental.affinity": {
         "vscodevim.vim": 1
     },
@@ -173,7 +173,7 @@
     "terminal.integrated.cursorWidth": 2,
     "terminal.integrated.enablePersistentSessions": false,
     "terminal.integrated.fontFamily": "CaskaydiaMono Nerd Font",
-    "terminal.integrated.fontSize": 24,
+    "terminal.integrated.fontSize": 14,
     "terminal.integrated.fontWeight": "normal",
     "terminal.integrated.smoothScrolling": true,
     // "update.enableWindowsBackgroundUpdates": false,
@@ -223,7 +223,7 @@
         { "before": [ "<Leader>", "f", "w" ], "commands": [ "workbench.action.gotoSymbol" ] },
         { "before": [ "<Leader>", "f", "p" ], "commands": [ "workbench.action.showCommands" ] },
         // comandos para o workbench do VS Code
-        // { "before": [ "<Leader>", "o", "f" ], "commands": [ "workbench.action.files.openFile" ] },
+        { "before": [ "<Leader>", "o", "f" ], "commands": [ "workbench.action.files.openFile" ] },
         // { "before": [ "<Leader>", "w", "b" ], "commands": [ "workbench.action.toggleSidebarVisibility" ] },
         // { "before": [ "<Leader>", "z", "m" ], "commands": [ "workbench.action.toggleZenMode" ] },
         // comandos para o SQL
@@ -235,17 +235,17 @@
     // "terminal.integrated.copyonselection": true,
     "window.commandCenter": false,
     "window.customTitleBarVisibility": "auto",
+    "window.menuBarVisibility": "toggle",
+    "window.zoomLevel": 0,
     "workbench.editor.decorations.colors": true,
     "workbench.editor.highlightModifiedTabs": true,
     "workbench.editor.scrollToSwitchTabs": true,
-    // "workbench.editor.tabCloseButton": "right",
+    "workbench.editor.tabCloseButton": "right",
     "workbench.editor.tabSizing": "shrink",
     "workbench.editor.wrapTabs": true,
     "workbench.enableExperiments": false,
-    "workbench.layoutControl.enabled": false,
     "workbench.iconTheme": "vscode-icons",
-    "window.menuBarVisibility": "toggle",
-    "window.zoomLevel": 0,
+    "workbench.layoutControl.enabled": false,
     "zenMode.hideLineNumbers": false,
     "zenMode.hideStatusBar": false,
 }
