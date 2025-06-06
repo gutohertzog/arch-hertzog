@@ -19,5 +19,15 @@
         "key": "ctrl+shift+tab",
         "command": "workbench.action.quickOpenLeastRecentlyUsedEditor",
         "when": "!inEditorsPicker"
+    },
+    {
+        "key": "f5",
+        "command": "mssql.runQuery",
+        "when": "editorTextFocus && editorLangId == 'sql'"
+    },
+    {
+        "key": "ctrl+shift+e",
+        "command": "-mssql.runQuery",
+        "when": "editorTextFocus && editorLangId == 'sql'"
     }
 ]
