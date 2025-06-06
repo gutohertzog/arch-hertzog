@@ -32,4 +32,3 @@ if __name__ == "__main__":
     # Especifique a pasta de entrada
     input_folder = "/home/guto/Pictures/wallpapers"
     convert_images_to_png(input_folder)
-

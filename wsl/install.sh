@@ -37,4 +37,3 @@ ln -s $HOME/arch-hertzog/dotfiles/config/vim $HOME/.config/vim
 ln -s $HOME/arch-hertzog/dotfiles/config/fastfetch $HOME/.config/fastfetch
 ln -s $HOME/arch-hertzog/gnome/dotfiles/.profile $HOME/.profile
 ln -s $HOME/arch-hertzog/gnome/dotfiles/.XCompose $HOME/.XCompose
-

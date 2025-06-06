@@ -16,4 +16,3 @@ makepkg --install
 cd $HOME/GitHub
 rm -rf microsoft-edge-stable-bin
 printf "$OK\n"
-

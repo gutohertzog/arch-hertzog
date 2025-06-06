@@ -7,4 +7,3 @@ kitty sudo pacman -Suvy
 
 # wait a second at the end
 sleep 1
-

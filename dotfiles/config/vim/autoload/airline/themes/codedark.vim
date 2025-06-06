@@ -117,4 +117,3 @@ let g:airline#themes#codedark#palette.inactive_modified = { 'airline_c': s:IAM }
 let g:airline#themes#codedark#palette.accents = {
       \ 'red': [ s:cdRed.gui, '', s:cdRed.cterm, '' ]
       \ }
-

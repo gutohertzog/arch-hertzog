@@ -12,4 +12,3 @@ calma como funcionam e como usar.
 - [Custom Top Bar & Conky style](https://www.reddit.com/r/unixporn/comments/1cs4c59/gnome_custom_top_bar_conky_style)
 - [How to make floating round cornered top bar?](https://www.reddit.com/r/gnome/comments/11pssj9/how_to_make_floating_round_cornered_top_bar)
 - [Top Bar customization](https://www.reddit.com/r/gnome/comments/1201ghg/top_bar_customization)
-
