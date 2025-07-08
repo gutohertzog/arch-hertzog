@@ -11,53 +11,40 @@ set -e
 
 source "$(dirname "$0")/funcoes.sh"
 
-OK="\e[0;32mOK\e[0m\n"
-versao="3.13.3"
+versao="3.13.5"
 pasta="3.13"
 
-printf "\n"
-printf " ##############################################\n"
-printf " #                   python                   #\n"
-printf " ##############################################\n"
-printf "\n"
-
-printf " baixando o Python-$versao...................."
+# baixa o Python
 wget https://www.python.org/ftp/python/$versao/Python-$versao.tgz
-printf $OK
 
-printf " extraindo e removendo pacote................"
+# extrai o pacote baixado e remove ele depois
 tar -zxf Python-$versao.tgz
 rm Python-$versao.tgz
-printf $OK
 
-printf " preparando local de instalação.............."
+# remove a versão antiga do Python, cria nova pasta e configura pasta destino
 cd Python-$versao
 rm -rf $HOME/Apps/Python-$pasta
 mkdir -p $HOME/Apps/Python-$pasta
 ./configure --prefix=$HOME/Apps/Python-$pasta
-printf $OK
 
-printf " compilando.................................."
+# compila o Python
 make
-printf $OK
 
-printf " instalando.................................."
+# instala a nova versão
 make install
-printf $OK
 
-printf " limpando...................................."
+# remove a pasta baixada
 rm -rf Python-$versao
-printf $OK
 
-printf " configurando ambiente virtual..............."
-# salva os pacotes antes de recriar
+# salva os pacotes do ambiente virtual antes de recriar
 if [[ -f "$HOME/.venv/bin/activate" ]]; then
     source $HOME/.venv/bin/activate
     pip freeze > $HOME/pacotes-pip.txt
     deactivate
 fi
 
+# remove a pasta antiga do venv e cria uma nova
 rm -rf $HOME/.venv
 $HOME/Apps/Python-$pasta/bin/python3 -m venv $HOME/.venv
-printf $OK
+
 printf " \nuse ~/pacotes-pip.txt para reinstalar os pacotes\n"

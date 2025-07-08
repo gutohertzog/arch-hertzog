@@ -244,6 +244,7 @@
     "workbench.editor.decorations.colors": true,
     "workbench.editor.highlightModifiedTabs": true,
     "workbench.editor.scrollToSwitchTabs": true,
+    "workbench.editor.tabActionLocation": "right",
     "workbench.editor.tabCloseButton": "right",
     "workbench.editor.tabSizing": "shrink",
     "workbench.editor.wrapTabs": true,
