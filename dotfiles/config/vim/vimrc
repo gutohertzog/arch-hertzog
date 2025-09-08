@@ -1,6 +1,6 @@
 " vim:fileencoding=utf-8:foldmethod=marker:foldlevel=1
 "
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"==============================================================================
 "
 "                    ██╗   ██╗██╗███╗   ███╗██████╗  ██████╗
 "                    ██║   ██║██║████╗ ████║██╔══██╗██╔════╝
@@ -9,28 +9,136 @@
 "                      ████╔╝ ██║██║ ╚═╝ ██║██║  ██║╚██████╗
 "                       ═══╝  ╚═╝╚═╝     ╚═╝╚═╝  ╚═╝ ╚═════╝
 "
-" Maintainer:
+" Author:
 "       Guto Hertzog - @gutohertzog
 "
 " Sections:
 "    -> Primeiro
+"    -> Interface
+"    -> Edição
+"    -> Pesquisa
+"    -> Backup, Swap e Undo
 "    -> Plug
-"    -> Plugins
-"    -> Funções
-"    -> Automações
-"    -> Configurações
-"    -> Atalhos
-"    -> Último
 "
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"==============================================================================
 " PRIMEIRO ---------------------------------------------------------------- {{{
 " configurações que PRECISAM ser carregadas antes de tudo
+set nocompatible            " desativa a compatibilidade com vi
+set encoding=utf-8          " define a codificação padrão
+set fileencoding=utf-8      " garante que arquivos sejam salvos em UTF-8
+set fileformats=unix,dos,mac
+" }}}
 
-" desativa a compatibilidade com vi
-set nocompatible
+" INTERFACE --------------------------------------------------------------- {{{
+syntax on               " habilite realce de sintaxe
+set number              " mostra número das linhas
+set relativenumber      " números relativos para navegação
+set cursorline          " destaca a linha atual
+set ruler               " mostra posição do cursor
+set showcmd             " exibe comandos incompletos
+set laststatus=2        " sempre mostra a barra de status
+set noshowmode          " mostra modo atual (normal, insert, etc)
+set wildmenu            " menu de autocompletar mais amigável
+set scrolloff=3         " mantém 3 linhas de amrgem ao rolar
+set sidescrolloff=0     " mantém 0 colunas de margem ao rolar
+set splitbelow          " divide a tela para baixo
+set splitright          " divide a tela para direita
+set splitkeep=screen    " ao dividir, mantém o texto na mesma linha da tela
+" }}}
 
-" sintaxe individual para os buffers
-syntax on
+" EDIÇÃO ------------------------------------------------------------------ {{{
+set tabstop=4                   " largura de tabulação
+set shiftwidth=4                " tamanho de indentação automática
+set expandtab                   " converte TABs em espaços
+set smarttab                    " TAB inteligente
+set autoindent                  " copia indentação da linha anterior
+set smartindent                 " indentação inteligente
+set backspace=indent,eol,start  " como o backspace funciona no final da linha
+" }}}
+
+" PESQUISA ---------------------------------------------------------------- {{{
+set wrapscan    " volta para o começo do arquivo quando chegar ao final
+set ignorecase  " ignora maiúsculas / minúsculas
+set smartcase   " respeita se usar maiúscula
+set incsearch   " busca incremental
+set hlsearch    " destaca todas as ocorrências
+" }}}
+
+" BACKUP, SWAP E UNDO ----------------------------------------------------- {{{
+" Dica: certifique-se de criar essas pastas antes de usar:
+"   Linux :
+"       - mkdir -p ~/.config/vim/backups
+"       - mkdir -p ~/.config/vim/undo
+"       - mkdir -p ~/.config/vim/swaps
+"   Windows:
+"       - mkdir %USERPROFILE%\vimfiles\backups
+"       - mkdir %USERPROFILE%\vimfiles\undo
+"       - mkdir %USERPROFILE%\vimfiles\swaps
+
+set backup      " habilita arquivos de backup (~)
+set undofile    " habilita histórico de undo persistente
+set swapfile    " habilita swapfiles (.swp)
+
+" detecta SO
+if has("win32") || has("win64")
+    let s:vim_data = expand('~/vimfiles')       " Windows
+else
+    let s:vim_data = expand('~/.config/vim')    " Linux / Unix / macOS
+endif
+
+" pastas
+let s:backupdir = s:vim_data . '/backups//'
+let s:undodir   = s:vim_data . '/undos//'
+let s:swapdir   = s:vim_data . '/swaps//'
+
+" aplica as configurações
+execute 'set backupdir=' . s:backupdir
+execute 'set undodir='   . s:undodir
+execute 'set directory=' . s:swapdir
+" }}}
+
+" PLUG -------------------------------------------------------------------- {{{
+" instala automaticamente o vim-plug, caso não exista
+if empty(glob('~/.config/vim/autoload/plug.vim'))
+    silent !curl -fLo ~/.config/vim/autoload/plug.vim --create-dirs \
+        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
+call plug#begin('~/.config/vim/plugged')
+
+" aparência
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+Plug 'machakann/vim-highlightedyank'
+Plug 'ryanoasis/vim-devicons'
+Plug 'vim-airline/vim-airline'
+Plug 'voldikss/vim-floaterm'
+
+" navegação
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+Plug 'preservim/nerdtree'
+Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+
+" git
+Plug 'airblade/vim-gitgutter'
+Plug 'tpope/vim-fugitive'
+
+" linguagens
+Plug 'dense-analysis/ale'
+
+" plugins carregados manualmente
+" Plug 'tomasiser/vim-code-dark'
+" Plug 'tpope/vim-commentary'
+
+" para testar
+" Plug 'ycm-core/YouCompleteMe'
+" Plug 'TaDaa/vimade'
+" Plug 'tpope/vim-surround'
+
+call plug#end()
+" }}}
+
 filetype on
 filetype plugin on
 filetype indent on
@@ -38,32 +146,6 @@ filetype indent on
 let mapleader=" "
 let maplocalleader=" "
 
-" }}}
-" PLUG -------------------------------------------------------------------- {{{
-
-call plug#begin('~/.local/share/vim/plugged')
-
-Plug 'preservim/nerdtree'
-Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
-Plug 'vim-airline/vim-airline'
-Plug 'ryanoasis/vim-devicons'
-Plug 'machakann/vim-highlightedyank'
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
-Plug 'tpope/vim-fugitive'
-Plug 'airblade/vim-gitgutter'
-Plug 'voldikss/vim-floaterm'
-Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
-Plug 'dense-analysis/ale'
-"Plug 'tpope/vim-commentary'
-" para testar
-"Plug 'ycm-core/YouCompleteMe'
-"Plug 'TaDaa/vimade'
-"Plug 'tpope/vim-surround'
-
-call plug#end()
-
-" }}}
 " PLUGINS ----------------------------------------------------------------- {{{
 
 " ale - Asynchronous Lint Engine {{{
@@ -293,8 +375,6 @@ colorscheme codedark
 set background=dark
 " }}}
 
-" como o backspace funciona no final da linha
-set backspace=indent,eol,start
 
 " atualiza arquivo se alterado fora
 set autoread
@@ -322,11 +402,7 @@ set tm=500
 " pop up menu
 set pumheight=10
 
-" divisão da tela
-set splitbelow splitright
-set splitkeep=screen
 
-set wildmenu
 set wildmode=list:longest
 
 set wildignore+=*.o,*.obj,*.dylib,*.bin,*.dll,*.exe
@@ -339,8 +415,6 @@ set wildignorecase  " ignore file and dir name cases in cmd-completion
 
 set history=1000
 
-set encoding=utf-8
-set fileformat=unix
 
 " diff {{{
 set diffopt=
@@ -351,10 +425,14 @@ set diffopt+=context:3  " context for diff
 set diffopt+=internal,indent-heuristic,algorithm:histogram
 " }}}
 
+" mouse {{{
+set mouse=
+set ttymouse=
+" }}}
+
 " interface {{{
 set termguicolors
 
-set number relativenumber
 
 set title
 
@@ -371,16 +449,12 @@ endif
 set spelllang=en
 set spellsuggest+=9
 
-set laststatus=2
 set signcolumn=yes
 
-set cursorline
 hi clear CursorLine
 hi CursorLine cterm=underline
 set nocursorcolumn
 
-set scrolloff=3
-set sidescrolloff=0
 
 set wrap
 
@@ -389,9 +463,7 @@ set showmatch
 set colorcolumn=80,100
 
 " barra inferior
-set showcmd
 
-set noshowmode
 
 set showbreak=↪\
 set listchars=tab:<->,eol:↲,nbsp:║,space:␣,trail:•,extends:⟩,precedes:⟨
@@ -401,26 +473,11 @@ set nolist
 set undolevels=1000
 
 " tabs {{{
-set shiftwidth=4
-set smarttab
 set shiftround
-set tabstop=4
 set softtabstop=4
-set expandtab
-set autoindent
 " }}}
 
-" busca {{{
-set wrapscan
-set incsearch hlsearch
-set ignorecase smartcase
-" }}}
 
-" backup {{{
-set nobackup
-set noswapfile
-set nowritebackup
-" }}}
 
 " fold {{{
 set nofoldenable
@@ -557,3 +614,88 @@ if exists("g:loaded_webdevicons")
   call webdevicons#refresh()
 endif
 " }}}
+
+" Congigurações SQL ------------------------------------------------------- {{{
+" indentação
+autocmd FileType sql setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
+
+" reconhece .sql
+autocmd BufNewFile,BufRead *.sql set filetype=sql
+
+" converte para upper
+" autocmd FileType sql iabbrev <buffer> select SELECT
+" autocmd FileType sql iabbrev <buffer> from FROM
+" autocmd FileType sql iabbrev <buffer> where WHERE
+" autocmd FileType sql iabbrev <buffer> insert INSERT
+" autocmd FileType sql iabbrev <buffer> into INTO
+" autocmd FileType sql iabbrev <buffer> values VALUES
+" autocmd FileType sql iabbrev <buffer> grant GRANT
+
+" ---------------------------------------------------------------------------
+" função para executar SQL
+function! s:ExecuteSQL(env, target, ...) range
+    " guarda referência ao arquivo atual (antes de mudar de buffer)
+    let current_file = expand('%:p')
+
+    " se for seleção, salva em arquivo temporário
+    if a:target ==# 'visual'
+        let sqlfile = tempname()
+        call writefile(getline(a:firstline, a:lastline), sqlfile)
+    else
+        let sqlfile = current_file
+    endif
+
+    " monta comando do sqlcmd
+    let cmd = 'sqlcmd -S ' . g:sql_servers[a:env] . ' -E -i ' . shellescape(sqlfile) . ' 2>&1'
+
+    " fecha janela antiga se existir
+    let buf_nr = bufnr('__SQL_RESULT__')
+    if buf_nr != -1
+        silent! execute buf_nr . 'bdelete!'
+    endif
+
+    " abre painel para os resultados
+    botright 15split __SQL_RESULT__
+    setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile modifiable
+    setlocal nonumber norelativenumber
+
+    " insere cabeçalho
+    call append(0, '--- executada em : ' . toupper(a:env) . ' ---')
+    call append(1, '')
+
+    " executa comando e coloca saída
+    execute 'silent! 3r !' . cmd
+
+    " trava buffer e posiciona no topo
+    setlocal nomodifiable
+    normal! gg
+
+    " se usou arquivo temporário, remove
+    if a:target ==# 'visual'
+        call delete(sqlfile)
+    endif
+endfunction
+
+" centraliza as informações dos servidores em um dicionário
+let g:sql_servers = {
+\   'dev': 'localhost,1111',
+\   'tst': 'localhost,2222',
+\   'hml': 'localhost,3333',
+\   'con': 'localhost,4444'
+\ }
+
+" ---------------------------------------------------------------------------
+" Atalhos (F5 + nome do servidor)
+" Arquivo inteiro
+nnoremap <F4>dev :call <SID>ExecuteSQL('dev', 'file')<CR>
+nnoremap <F4>tst :call <SID>ExecuteSQL('tst', 'file')<CR>
+nnoremap <F4>hml :call <SID>ExecuteSQL('hml', 'file')<CR>
+nnoremap <F4>con :call <SID>ExecuteSQL('con', 'file')<CR>
+
+" Seleção visual
+xnoremap <F4>dev :<C-u>call <SID>ExecuteSQL('dev', 'visual')<CR>
+xnoremap <F4>tst :<C-u>call <SID>ExecuteSQL('tst', 'visual')<CR>
+xnoremap <F4>hml :<C-u>call <SID>ExecuteSQL('hml', 'visual')<CR>
+xnoremap <F4>con :<C-u>call <SID>ExecuteSQL('con', 'visual')<CR>
+" }}}
+
