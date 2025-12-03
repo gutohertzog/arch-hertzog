@@ -1,5 +1,6 @@
 {
     "chat.commandCenter.enabled": false,
+    "chat.disableAIFeatures": true,
     "diffEditor.codeLens": true,
     "diffEditor.ignoreTrimWhitespace": false,
     "editor.acceptSuggestionOnEnter": "off",
@@ -239,18 +240,19 @@
     "vsicons.dontShowNewVersionMessage": true,
     "window.commandCenter": false,
     "window.customTitleBarVisibility": "auto",
+    "window.enableMenuBarMnemonics": false,
     "window.menuBarVisibility": "toggle",
     "window.zoomLevel": 0,
     "workbench.editor.decorations.colors": true,
     "workbench.editor.highlightModifiedTabs": true,
     "workbench.editor.scrollToSwitchTabs": true,
     "workbench.editor.tabActionLocation": "right",
-    "workbench.editor.tabCloseButton": "right",
     "workbench.editor.tabSizing": "shrink",
     "workbench.editor.wrapTabs": true,
     "workbench.enableExperiments": false,
     "workbench.iconTheme": "vscode-icons",
     "workbench.layoutControl.enabled": false,
+    "workbench.statusBar.visible": true,
     "zenMode.hideLineNumbers": false,
     "zenMode.hideStatusBar": false
 }

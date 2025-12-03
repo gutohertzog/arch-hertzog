@@ -18,6 +18,9 @@ pacotes=(
 
     # sistema
     "words"
+
+    # para mountar drivers do Windows
+    "cifs-utils"
 )
 
 printf "\n"

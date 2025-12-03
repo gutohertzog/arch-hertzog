@@ -13,10 +13,11 @@ pacotes=(
     "gvim" # tui editor
     "fzf" # busca pelo terminal
     "ripgrep" # busca por letra
+    "fd" # melhor find
+    "bat" # melhor cat
     "zoxide" # melhor cd
     "fastfetch" # informação sistema
-    "eza" # melhor ls
-    # "rsync" # gerenciador de backup
+    "eza" # melhor ls e ícones
     "wget" # baixador
     "git" # gerenciador de versionamento
     "p7zip" # manipulador de arquivos compactados
@@ -26,16 +27,26 @@ pacotes=(
     # aplicativos
     "keepassxc" # gerenciador de senhas
     "remmina" # conexão remota
+    "freerdp" # para conexão no Windows
 
     # fontes
+    # para codar
     "ttf-cascadia-code-nerd"
     "ttf-cascadia-mono-nerd"
+    # caracteres diversos para fontes
+    "noto-fonts-cjk"
+    "noto-fonts-emoji"
+    "noto-fonts"
 
     # dicionário
     "words"
 
     # gui para python
     "tk"
+
+    # reprodutor áudio e vídeo
+    "vlc"
+    "vlc-plugin-ffmpeg"
 )
 
 printf "\n"
