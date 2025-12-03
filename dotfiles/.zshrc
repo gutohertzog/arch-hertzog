@@ -131,8 +131,7 @@ alias arq="ls -lah | grep ^-rw"
 alias pfless="fzf --preview='less {}' --bind up:preview-page-up,down:preview-page-down"
 alias pfbat="fzf --preview 'bat --style=numbers --color=always --line-range :500 {}'"
 alias vim="vim -S ~/.config/vim/vimrc"
-alias tempo="/usr/bin/time -p"
-alias ls="eza --sort extension"
+alias ls="eza --sort type"
 alias ff="fastfetch"
 
 # controle dos leds da gpu
@@ -143,12 +142,10 @@ alias gpu_0="nvidia-settings --assign GPULogoBrightness=0 >> /dev/null"
 alias orfaos="pacman -Qtd"
 alias remove_orfaos="sudo pacman -Runs $(pacman -Qdt)"
 alias instalados="pacman -Qe"
-alias update="sudo pacman -Suvy && yay -Suvy"
-alias limpa_tudo="sudo pacman -Scc && yay -Scc"
 # alias cdf="cd './$(find -type d | fzf)'"
 
-# PlayStation
-alias gaming="sudo ./Apps/chiaki.appimage"
+# alias para o kitty
+# alias kitty="kitty --override background_image=\$(ls /home/guto/Pictures/wallpapers/*.png | sort --random-sort | head -1)"
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
@@ -161,12 +158,13 @@ bindkey '^j' history-search-forward
 eval "$(zoxide init --cmd cd zsh)"
 eval "$(fzf --zsh)"
 
-# cores para o fzf
-export FZF_DEFAULT_OPTS='
-  --color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8
-  --color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc
-  --color=marker:#f5e0dc,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8
-'
+# cores para o fzf catppuccin-fzf-mocha
+export FZF_DEFAULT_OPTS=" \
+--color=bg+:#313244,bg:#1E1E2E,spinner:#F5E0DC,hl:#F38BA8 \
+--color=fg:#CDD6F4,header:#F38BA8,info:#CBA6F7,pointer:#F5E0DC \
+--color=marker:#B4BEFE,fg+:#CDD6F4,prompt:#CBA6F7,hl+:#F38BA8 \
+--color=selected-bg:#45475A \
+--color=border:#6C7086,label:#CDD6F4"
   #--color=dark
   #--color=fg:-1,bg:-1,hl:#c678dd,fg+:#ffffff,bg+:#4b5263,hl+:#d858fe
   #--color=info:#98c379,prompt:#61afef,pointer:#be5046,marker:#e5c07b,spinner:#61afef,header:#61afef
