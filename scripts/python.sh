@@ -11,8 +11,8 @@ set -e
 
 source "$(dirname "$0")/funcoes.sh"
 
-versao="3.13.5"
-pasta="3.13"
+versao="3.14.1"
+pasta="3.14"
 
 # baixa o Python
 wget https://www.python.org/ftp/python/$versao/Python-$versao.tgz
