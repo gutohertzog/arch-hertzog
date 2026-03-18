@@ -113,6 +113,7 @@ Plug 'machakann/vim-highlightedyank'
 Plug 'ryanoasis/vim-devicons'
 Plug 'vim-airline/vim-airline'
 Plug 'voldikss/vim-floaterm'
+Plug 'liuchengxu/vim-which-key', { 'on': ['WhichKey', 'WhichKey!'] }
 
 " navegação
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -698,4 +699,6 @@ xnoremap <F4>tst :<C-u>call <SID>ExecuteSQL('tst', 'visual')<CR>
 xnoremap <F4>hml :<C-u>call <SID>ExecuteSQL('hml', 'visual')<CR>
 xnoremap <F4>con :<C-u>call <SID>ExecuteSQL('con', 'visual')<CR>
 " }}}
+
+nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
 

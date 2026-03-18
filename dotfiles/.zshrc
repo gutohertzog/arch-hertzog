@@ -1,9 +1,6 @@
 # inicia o ambiente virtual do python com o terminal
 source $HOME/.venv/bin/activate
 
-# executa fastfetch
-# fastfetch
-
 # by discomanfulanito,
 # for everyone — as code should be
 
@@ -126,29 +123,18 @@ alias zshconfig="vim ~/.zshrc"
 alias canos="$HOME/GitHub/pipes.sh/pipes.sh"
 alias src="source ~/.zshrc" # recarrega o .zshrc
 alias cpd="sudo openvpn --config ~/Documents/vpn-cpd-v1.1.ovpn"
-alias pst="ls -lah | grep ^drw"
-alias arq="ls -lah | grep ^-rw"
-alias pfless="fzf --preview='less {}' --bind up:preview-page-up,down:preview-page-down"
-alias pfbat="fzf --preview 'bat --style=numbers --color=always --line-range :500 {}'"
 alias vim="vim -S ~/.config/vim/vimrc"
-alias tempo="/usr/bin/time -p"
-alias ls="eza --sort extension"
+alias ls="eza --time-style=long-iso --sort=type"
 alias ff="fastfetch"
-
-# controle dos leds da gpu
-alias gpu_100="nvidia-settings --assign GPULogoBrightness=100 >> /dev/null"
-alias gpu_0="nvidia-settings --assign GPULogoBrightness=0 >> /dev/null"
 
 # alias do pacman
 alias orfaos="pacman -Qtd"
 alias remove_orfaos="sudo pacman -Runs $(pacman -Qdt)"
 alias instalados="pacman -Qe"
-alias update="sudo pacman -Suvy && yay -Suvy"
-alias limpa_tudo="sudo pacman -Scc && yay -Scc"
-# alias cdf="cd './$(find -type d | fzf)'"
+# alias cdf="cd ./$(fd -t d | fzf)"
 
-# PlayStation
-alias gaming="sudo ./Apps/chiaki.appimage"
+# alias para o kitty
+# alias kitty="kitty --override background_image=\$(ls /home/guto/Pictures/wallpapers/*.png | sort --random-sort | head -1)"
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
@@ -161,17 +147,45 @@ bindkey '^j' history-search-forward
 eval "$(zoxide init --cmd cd zsh)"
 eval "$(fzf --zsh)"
 
-# cores para o fzf
-export FZF_DEFAULT_OPTS='
-  --color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8
-  --color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc
-  --color=marker:#f5e0dc,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8
-'
-  #--color=dark
-  #--color=fg:-1,bg:-1,hl:#c678dd,fg+:#ffffff,bg+:#4b5263,hl+:#d858fe
-  #--color=info:#98c379,prompt:#61afef,pointer:#be5046,marker:#e5c07b,spinner:#61afef,header:#61afef
+# ---------- Base search (rápido com fd) ----------
+export FZF_DEFAULT_COMMAND='fd --hidden --follow --exclude .git'
+
+# ---------- Layout ----------
+export FZF_DEFAULT_OPTS=""
+
+FZF_DEFAULT_OPTS+=" --height=75%"
+FZF_DEFAULT_OPTS+=" --layout=reverse"
+FZF_DEFAULT_OPTS+=" --border"
+FZF_DEFAULT_OPTS+=" --inline-info"
+FZF_DEFAULT_OPTS+=" --cycle"
+
+# ---------- Preview ----------
+FZF_DEFAULT_OPTS+=" --preview '~/arch-hertzog/dotfiles/config/fzf/preview.sh {}'"
+FZF_DEFAULT_OPTS+=" --preview-window=right:60%:wrap"
+
+# ---------- Keybindings estilo Vim ----------
+FZF_DEFAULT_OPTS+=" --bind ctrl-j:down"
+FZF_DEFAULT_OPTS+=" --bind ctrl-k:up"
+FZF_DEFAULT_OPTS+=" --bind ctrl-d:half-page-down"
+FZF_DEFAULT_OPTS+=" --bind ctrl-u:half-page-up"
+FZF_DEFAULT_OPTS+=" --bind alt-j:preview-down"
+FZF_DEFAULT_OPTS+=" --bind alt-k:preview-up"
+FZF_DEFAULT_OPTS+=" --bind alt-d:preview-half-page-down"
+FZF_DEFAULT_OPTS+=" --bind alt-u:preview-half-page-up"
+FZF_DEFAULT_OPTS+=" --bind ctrl-space:toggle-preview"
 
 export EZA_ICONS_AUTO='always'
 
 # adiciona o código abaixo no .zshrc na última linha para desativar arrumar a cor das pastas
 export LS_COLORS='rs=0:no=00:mi=00:mh=00:ln=01;36:or=01;31:di=01;34:ow=04;01;34:st=34:tw=04;34:pi=01;33:so=01;33:do=01;33:bd=01;33:cd=01;33:su=01;34:sg=01;35:ca=01;35:ex=01;32:'
+
+# funções
+# cdl: Navegação interativa entre diretórios
+# Lista diretórios com fd, permite seleção via fzf
+# e exibe uma prévia em árvore com eza antes de entrar no diretório escolhido
+cdl() {
+    local dir
+    dir=$(fd -t d . | fzf --preview 'eza -T --color=always {} | head -50') || return
+    cd "$dir"
+}
+
