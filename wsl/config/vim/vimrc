@@ -1,0 +1,701 @@
+" vim:fileencoding=utf-8:foldmethod=marker:foldlevel=1
+"
+"==============================================================================
+"
+"                    ██╗   ██╗██╗███╗   ███╗██████╗  ██████╗
+"                    ██║   ██║██║████╗ ████║██╔══██╗██╔════╝
+"                     █║   ██║██║██╔████╔██║██████╔╝██║
+"                     ██╗ ██╔╝██║██║╚██╔╝██║██╔══██╗██║
+"                      ████╔╝ ██║██║ ╚═╝ ██║██║  ██║╚██████╗
+"                       ═══╝  ╚═╝╚═╝     ╚═╝╚═╝  ╚═╝ ╚═════╝
+"
+" Author:
+"       Guto Hertzog - @gutohertzog
+"
+" Sections:
+"    -> Primeiro
+"    -> Interface
+"    -> Edição
+"    -> Pesquisa
+"    -> Backup, Swap e Undo
+"    -> Plug
+"
+"==============================================================================
+" PRIMEIRO ---------------------------------------------------------------- {{{
+" configurações que PRECISAM ser carregadas antes de tudo
+set nocompatible            " desativa a compatibilidade com vi
+set encoding=utf-8          " define a codificação padrão
+set fileencoding=utf-8      " garante que arquivos sejam salvos em UTF-8
+set fileformats=unix,dos,mac
+" }}}
+
+" INTERFACE --------------------------------------------------------------- {{{
+syntax on               " habilite realce de sintaxe
+set number              " mostra número das linhas
+set relativenumber      " números relativos para navegação
+set cursorline          " destaca a linha atual
+set ruler               " mostra posição do cursor
+set showcmd             " exibe comandos incompletos
+set laststatus=2        " sempre mostra a barra de status
+set noshowmode          " mostra modo atual (normal, insert, etc)
+set wildmenu            " menu de autocompletar mais amigável
+set scrolloff=3         " mantém 3 linhas de amrgem ao rolar
+set sidescrolloff=0     " mantém 0 colunas de margem ao rolar
+set splitbelow          " divide a tela para baixo
+set splitright          " divide a tela para direita
+set splitkeep=screen    " ao dividir, mantém o texto na mesma linha da tela
+" }}}
+
+" EDIÇÃO ------------------------------------------------------------------ {{{
+set tabstop=4                   " largura de tabulação
+set shiftwidth=4                " tamanho de indentação automática
+set expandtab                   " converte TABs em espaços
+set smarttab                    " TAB inteligente
+set autoindent                  " copia indentação da linha anterior
+set smartindent                 " indentação inteligente
+set backspace=indent,eol,start  " como o backspace funciona no final da linha
+" }}}
+
+" PESQUISA ---------------------------------------------------------------- {{{
+set wrapscan    " volta para o começo do arquivo quando chegar ao final
+set ignorecase  " ignora maiúsculas / minúsculas
+set smartcase   " respeita se usar maiúscula
+set incsearch   " busca incremental
+set hlsearch    " destaca todas as ocorrências
+" }}}
+
+" BACKUP, SWAP E UNDO ----------------------------------------------------- {{{
+" Dica: certifique-se de criar essas pastas antes de usar:
+"   Linux :
+"       - mkdir -p ~/.config/vim/backups
+"       - mkdir -p ~/.config/vim/undo
+"       - mkdir -p ~/.config/vim/swaps
+"   Windows:
+"       - mkdir %USERPROFILE%\vimfiles\backups
+"       - mkdir %USERPROFILE%\vimfiles\undo
+"       - mkdir %USERPROFILE%\vimfiles\swaps
+
+set backup      " habilita arquivos de backup (~)
+set undofile    " habilita histórico de undo persistente
+set swapfile    " habilita swapfiles (.swp)
+
+" detecta SO
+if has("win32") || has("win64")
+    let s:vim_data = expand('~/vimfiles')       " Windows
+else
+    let s:vim_data = expand('~/.config/vim')    " Linux / Unix / macOS
+endif
+
+" pastas
+let s:backupdir = s:vim_data . '/backups//'
+let s:undodir   = s:vim_data . '/undos//'
+let s:swapdir   = s:vim_data . '/swaps//'
+
+" aplica as configurações
+execute 'set backupdir=' . s:backupdir
+execute 'set undodir='   . s:undodir
+execute 'set directory=' . s:swapdir
+" }}}
+
+" PLUG -------------------------------------------------------------------- {{{
+" instala automaticamente o vim-plug, caso não exista
+if empty(glob('~/.config/vim/autoload/plug.vim'))
+    silent !curl -fLo ~/.config/vim/autoload/plug.vim --create-dirs \
+        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
+call plug#begin('~/.config/vim/plugged')
+
+" aparência
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+Plug 'machakann/vim-highlightedyank'
+Plug 'ryanoasis/vim-devicons'
+Plug 'vim-airline/vim-airline'
+Plug 'voldikss/vim-floaterm'
+
+" navegação
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+Plug 'preservim/nerdtree'
+Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+
+" git
+Plug 'airblade/vim-gitgutter'
+Plug 'tpope/vim-fugitive'
+
+" linguagens
+Plug 'dense-analysis/ale'
+
+" plugins carregados manualmente
+" Plug 'tomasiser/vim-code-dark'
+" Plug 'tpope/vim-commentary'
+
+" para testar
+" Plug 'ycm-core/YouCompleteMe'
+" Plug 'TaDaa/vimade'
+" Plug 'tpope/vim-surround'
+
+call plug#end()
+" }}}
+
+filetype on
+filetype plugin on
+filetype indent on
+
+let mapleader=" "
+let maplocalleader=" "
+
+" PLUGINS ----------------------------------------------------------------- {{{
+
+" ale - Asynchronous Lint Engine {{{
+let g:ale_lsp_suggestions = 1
+let g:ale_completion_enabled = 1
+let g:ale_completion_autoimport = 1
+let g:ale_sign_column_always = 1
+let g:ale_fix_on_save = 1
+let g:ale_sign_error = '>>'
+let g:ale_sign_warning = '--'
+"let g:ale_echo_msg_error_str = 'E'
+"let g:ale_echo_msg_warning_str = 'W'
+"let g:ale_echo_msg_format = '[%linter%] %code: %s'
+let g:ale_echo_msg_error_str = 'E'
+let g:ale_echo_msg_warning_str = 'W'
+let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+let g:ale_set_highlights = 0
+
+" Set this. Airline will handle the rest.
+let g:airline#extensions#ale#enabled = 1
+
+let g:ale_linters = {'python': 'all'}
+"'remove_trailing_lines',
+let g:ale_fixers = {
+\   '*': ['trim_whitespace'],
+\}
+"
+set omnifunc=ale#completion#OmniFunc
+" }}}
+
+" airline {{{
+" https://github.com/vim-airline/vim-airline
+let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#formatter = 'default'
+let g:airline#extensions#tabline#show_buffers = 1
+" }}}
+
+" highlightedyank {{{
+" https://github.com/machakann/vim-highlightedyank
+let g:highlightedyank_highlight_duration = 250
+" }}}
+
+" nerdtree {{{
+" https://github.com/preservim/nerdtree
+let g:NERDTreeFileLines = 1
+" inicia nerdtree com o cursor nela
+"autocmd VimEnter * NERDTree
+let NERDTreeShowHidden = 1
+
+" mostra as pastas vazias desagrupadas
+let NERDTreeCascadeSingleChildDir=0
+
+noremap <Leader>e :NERDTreeToggle<CR>
+noremap <Leader>E :NERDTreeFocus<CR>
+noremap <Leader>ntf :NERDTreeFind<CR>
+noremap <Leader>ntr :NERDTreeRefreshRoot<CR>
+" }}}
+
+" fzf {{{
+" https://github.com/junegunn/fzf.vim
+let g:fzf_command_prefix = 'Fzf'
+let g:fzf_history_dir = '~/.config/local/share/fzf-vim-history'
+let $FZF_DEFAULT_OPTS = '--reverse'
+
+let g:fzf_vim = {}
+let g:fzf_vim.preview_window = ['right,50%,<60(up,40%)', 'ctrl-l']
+"let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
+"let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6, 'relative': v:true } }
+"let g:fzf_layout = { 'window': { 'width': 0.8, 'height': 0.6, 'border': 'rounded' } }
+
+" procura {{{
+" arquivos
+noremap <Leader>ff :FzfFiles<CR>
+noremap <Leader>fF :FzfFiles!<CR>
+noremap <Leader>fw :FzfRg<Space>
+noremap <Leader>fW :FzfRg!<Space>
+noremap <Leader>fb :FzfBuffers<CR>
+noremap <Leader>fB :FzfBuffers!<CR>
+" atalhos
+noremap <Leader>fk :FzfMaps<CR>
+noremap <Leader>fK :FzfMaps!<CR>
+" histórico arquivos
+noremap <Leader>fh :FzfHistory<CR>
+noremap <Leader>fH :FzfHistory!<CR>
+" histórico busca
+noremap <Leader>fs :FzfHistory/<CR>
+noremap <Leader>fS :FzfHistory/!<CR>
+" comandos
+noremap <Leader>fc :FzfHistory:<CR>
+noremap <Leader>fC :FzfHistory:!<CR>
+" completamentos
+imap <c-x><c-k> <plug>(fzf-complete-word)
+imap <c-x><c-f> <plug>(fzf-complete-path)
+imap <c-x><c-l> <plug>(fzf-complete-line)
+
+" }}}
+" }}}
+
+" floaterm {{{
+" https://github.com/voldikss/vim-floaterm
+nnoremap <C-;> :FloatermToggle<CR>
+tnoremap <C-;> <C-\><C-n>:FloatermToggle<CR>
+tnoremap <F5> python main.py<CR>
+tnoremap <F8> <C-\><C-n>:FloatermKill<CR>
+
+let g:floaterm_width = 0.6
+let g:floaterm_height = 0.8
+" }}}
+
+" vim-gitgutter {{{
+nnoremap <Leader>gt :GitGutterToggle<CR>
+nnoremap <Leader>gf :GitGutterFold<CR>
+nnoremap <Leader>gh :GitGutterLineHighlightsToggle<CR>
+nnoremap <Leader>gd :GitGutterDiffOrig<CR>
+nnoremap <Leader>gj :GitGutterNextHunk<CR>zz
+nnoremap <Leader>gk :GitGutterPrevHunk<CR>zz
+map <Space>hu <Nop>
+map <Space>hs <Nop>
+map <Space>hp <Nop>
+map ]c <Nop>
+map [c <Nop>
+" }}}
+
+" extensões instaladas manualmente {{{
+" reservado a extensões que são apenas poucos arquivos vim
+" codedark {{{
+" https://github.com/tomasiser/vim-code-dark
+let g:codedark_modern = 1
+let g:codedark_italics = 1
+let g:codedark_transparent = 1
+let g:airline_theme = 'codedark'
+" }}}
+
+" clock {{{
+let g:airline#extensions#clock#auto = 1
+let g:airline#extensions#clock#format = '%H:%M'
+let g:airline#extensions#clock#updatetime = 1000
+" }}}
+
+" }}}
+
+" }}}
+" FUNÇÕES ----------------------------------------------------------------- {{{
+" ToggleChars {{{
+" função para ativar e desativar os caracteres de marcação
+"let g:t_flag = 0
+"
+"function! ToggleChars()
+"  if g:t_flag
+"    echom "listchar desativado"
+"    set nolist
+"    let g:t_flag = 0
+"  else
+"    echom "listchar ativado"
+"    set list
+"    set listchars=tab:<->,eol:↲,nbsp:║,space:␣,trail:•,extends:⟩,precedes:⟨
+"    let g:t_flag = 1
+"  endif
+"endfunction
+"
+"nnoremap <F12> :call ToggleChars()<CR>
+" }}}
+
+" ToggleTransparency {{{
+" função para ativar e desativar a transparência
+let g:b_flag = 1
+
+function! ToggleTransparency()
+  if g:b_flag
+    echom "fundo transparente desativado"
+    hi Normal ctermbg=234
+    let g:b_flag = 0
+  else
+    echom "fundo transparente ativado"
+    hi Normal ctermbg=None
+    let g:b_flag = 1
+  endif
+endfunction
+
+nnoremap <F12> :call ToggleTransparency()<CR>
+" }}}
+
+" }}}
+" AUTOMAÇÕES -------------------------------------------------------------- {{{
+
+" Ativar relativenumber no modo normal
+augroup RelNumToggle
+  autocmd!
+  " Desativar relativenumber ao entrar no modo de inserção
+  autocmd InsertEnter * set norelativenumber
+  " Ativar relativenumber ao sair do modo de inserção
+  autocmd InsertLeave * set relativenumber
+augroup END
+" é necessário já que <C-c> não dispara os eventos Insert Enter/Leave
+inoremap <C-c> <Esc>:set relativenumber<CR>
+
+" }}}
+" CONFIGURAÇÕES ----------------------------------------------------------- {{{
+
+" cursor {{{
+"   Ps = 0  -> blinking block
+"   Ps = 1  -> blinking block (default)
+"   Ps = 2  -> steady block
+"   Ps = 3  -> blinking underline
+"   Ps = 4  -> steady underline
+"   Ps = 5  -> blinking bar (xterm)
+"   Ps = 6  -> steady bar (xterm)
+let &t_SI = "\e[6 q"
+let &t_EI = "\e[2 q"
+" }}}
+
+" ftpplugin {{{
+" troca o sql completation de ctrl+c para abaixo
+" let g:ftplugin_sql_omni_key = '<Leader>sql'
+" desativa o comando
+let g:ftplugin_sql_omni_key = '<Plug>DisableSqlOmni'
+" }}}
+
+" tema {{{
+set t_Co=256
+set t_ut=
+" cores do programa
+colorscheme codedark
+" fundo transparente
+"hi Normal ctermbg=NONE
+set background=dark
+" }}}
+
+
+" atualiza arquivo se alterado fora
+set autoread
+au FocusGained,BufEnter * silent! checktime
+
+" troca local do viminfo
+set viminfo+=n~/.cache/vim/viminfo
+
+" regex
+set magic
+
+set noautowrite
+set hidden
+
+set clipboard=unnamed,unnamedplus
+
+set completeopt=menu,menuone,noselect
+
+" sem som de erros
+set noerrorbells
+set novisualbell
+set t_vb=
+set tm=500
+
+" pop up menu
+set pumheight=10
+
+
+set wildmode=list:longest
+
+set wildignore+=*.o,*.obj,*.dylib,*.bin,*.dll,*.exe
+set wildignore+=*/.git/*,*/.svn/*,*/__pycache__/*,*/build/**
+set wildignore+=*.jpg,*.png,*.jpeg,*.bmp,*.gif,*.tiff,*.svg,*.ico
+set wildignore+=*.pyc,*.pkl
+set wildignore+=*.DS_Store
+set wildignore+=*.aux,*.bbl,*.blg,*.brf,*.fls,*.fdb_latexmk,*.synctex.gz,*.xdv
+set wildignorecase  " ignore file and dir name cases in cmd-completion
+
+set history=1000
+
+
+" diff {{{
+set diffopt=
+set diffopt+=vertical  " show diff in vertical position
+set diffopt+=filler  " show filler for deleted lines
+set diffopt+=closeoff  " turn off diff when one file window is closed
+set diffopt+=context:3  " context for diff
+set diffopt+=internal,indent-heuristic,algorithm:histogram
+" }}}
+
+" mouse {{{
+set mouse=
+set ttymouse=
+" }}}
+
+" interface {{{
+set termguicolors
+
+
+set title
+
+set undofile
+
+set synmaxcol=250
+set nostartofline
+
+if executable('rg')
+    set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
+    set grepformat=%f:%l:%c:%m
+endif
+
+set spelllang=en
+set spellsuggest+=9
+
+set signcolumn=yes
+
+hi clear CursorLine
+hi CursorLine cterm=underline
+set nocursorcolumn
+
+
+set wrap
+
+set showmatch
+
+set colorcolumn=80,100
+
+" barra inferior
+
+
+set showbreak=↪\
+set listchars=tab:<->,eol:↲,nbsp:║,space:␣,trail:•,extends:⟩,precedes:⟨
+set nolist
+" }}}
+
+set undolevels=1000
+
+" tabs {{{
+set shiftround
+set softtabstop=4
+" }}}
+
+
+
+" fold {{{
+set nofoldenable
+set foldcolumn=1
+set foldlevelstart=0
+set foldmethod=manual
+" }}}
+
+" }}}
+" ATALHOS  ---------------------------------------------------------------- {{{
+
+" atalhos para o vimrc
+nnoremap <Leader>vim :e $MYVIMRC<CR>
+nnoremap <Leader>so :source $MYVIMRC<CR>
+
+nnoremap <Leader>qq :wqa<CR>
+
+" desativa {{{
+nnoremap <Space> <Nop>
+vnoremap <Space> <Nop>
+no <Up> <Nop>
+no <Down> <Nop>
+no <Left> <Nop>
+no <Right> <Nop>
+" }}}
+
+" Y como C ou D
+nnoremap Y y$
+
+" salvamentos {{{
+inoremap <C-s> <Esc>:w<CR>a
+xnoremap <C-s> <Esc>:w<CR>
+nnoremap <C-s> :w<CR>
+snoremap <C-s> <Esc>:w<CR>
+
+" :W salva o arquivo com sudo
+command! W execute 'w !sudo tee % > /dev/null' <bar> edit!
+" }}}
+
+" navegação {{{
+" janelas
+nnoremap <C-H> <C-W><C-H>
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+
+nnoremap <Leader>ww <C-W>c
+nnoremap <Leader>ws :new<CR>
+nnoremap <Leader>wS :split<CR>
+nnoremap <Leader>wv :vnew<CR>
+nnoremap <Leader>wV :vsplit<CR>
+
+" tabs
+nnoremap <Leader>tt :tabnew<CR>
+nnoremap <Leader>tw :tabclose<CR>
+nnoremap <Leader>tn :tabnext<CR>
+nnoremap <Leader>tp :tabprevious<CR>
+
+" buffers
+nnoremap <Leader>bw :bdelete<CR>
+nnoremap <Leader>bo :w <bar> %bdelete <bar> e# <CR> <bar> '"
+nnoremap <tab> :bnext<CR>
+nnoremap <s-tab> :bprevious<CR>
+"nnoremap <tab> :blast<CR>
+
+" terminal
+tnoremap <Leader><Esc> <C-\><C-n>
+
+" arquivos
+noremap H ^
+noremap L $
+" }}}
+
+" tamanho janela {{{
+nnoremap <C-A-k> :resize +2<CR>
+nnoremap <C-A-j> :resize -2<CR>
+nnoremap <C-A-h> :vertical resize -2<CR>
+nnoremap <C-A-l> :vertical resize +2<CR>
+" }}}
+
+" toggles {{{
+nnoremap <Leader><Leader>w :set wrap!<CR>
+nnoremap <Leader><Leader>rn :set relativenumber!<CR>
+nnoremap <Leader><Leader>l :set list!<CR>
+" }}}
+
+" edição arquivo {{{
+" troca linha(s) com alt + j/k
+nnoremap <A-j> :m .+1<CR>==
+nnoremap <A-k> :m .-2<CR>==
+inoremap <A-j> <Esc>:m .+1<CR>==gi
+inoremap <A-k> <Esc>:m .-2<CR>==gi
+vnoremap <A-j> :m '>+1<CR>gv=gv
+vnoremap <A-k> :m '<-2<CR>gv=gv
+
+" caixa alta
+inoremap <c-k> <Esc>viwUea
+
+" indentação
+vnoremap < <gv
+vnoremap > >gv
+" }}}
+
+" buscas {{{
+nnoremap \\ :nohlsearch<CR>
+
+" busca texto selecionado
+vnoremap // y/\V<C-R>=escape(@",'/\')<CR><CR>
+" }}}
+
+" ordenação {{{
+" ordena linhas selecionadas
+vnoremap <C-s> :sort<CR>
+" }}}
+
+" substituição {{{
+" substitui todas ocorrências
+vnoremap <C-r> "hy:%s/<C-r>h//g<Left><Left>
+vnoremap <Leader><C-r> "hy:%s/<C-r>h/<C-r>h/g<Left><Left>
+" }}}
+
+" vim-commentary {{{
+autocmd FileType apache setlocal commentstring=#\ %s
+" }}}
+
+" }}}
+" ÚLTIMO ------------------------------------------------------------------ {{{
+" configuração que precisam vir por último
+
+" https://github.com/vim-airline/vim-airline/issues/393
+set t_RV=
+" remove [] entre os ícones na nerdtree
+if exists("g:loaded_webdevicons")
+  call webdevicons#refresh()
+endif
+" }}}
+
+" Congigurações SQL ------------------------------------------------------- {{{
+" indentação
+autocmd FileType sql setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
+
+" reconhece .sql
+autocmd BufNewFile,BufRead *.sql set filetype=sql
+
+" converte para upper
+" autocmd FileType sql iabbrev <buffer> select SELECT
+" autocmd FileType sql iabbrev <buffer> from FROM
+" autocmd FileType sql iabbrev <buffer> where WHERE
+" autocmd FileType sql iabbrev <buffer> insert INSERT
+" autocmd FileType sql iabbrev <buffer> into INTO
+" autocmd FileType sql iabbrev <buffer> values VALUES
+" autocmd FileType sql iabbrev <buffer> grant GRANT
+
+" ---------------------------------------------------------------------------
+" função para executar SQL
+function! s:ExecuteSQL(env, target, ...) range
+    " guarda referência ao arquivo atual (antes de mudar de buffer)
+    let current_file = expand('%:p')
+
+    " se for seleção, salva em arquivo temporário
+    if a:target ==# 'visual'
+        let sqlfile = tempname()
+        call writefile(getline(a:firstline, a:lastline), sqlfile)
+    else
+        let sqlfile = current_file
+    endif
+
+    " monta comando do sqlcmd
+    let cmd = 'sqlcmd -S ' . g:sql_servers[a:env] . ' -E -i ' . shellescape(sqlfile) . ' 2>&1'
+
+    " fecha janela antiga se existir
+    let buf_nr = bufnr('__SQL_RESULT__')
+    if buf_nr != -1
+        silent! execute buf_nr . 'bdelete!'
+    endif
+
+    " abre painel para os resultados
+    botright 15split __SQL_RESULT__
+    setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile modifiable
+    setlocal nonumber norelativenumber
+
+    " insere cabeçalho
+    call append(0, '--- executada em : ' . toupper(a:env) . ' ---')
+    call append(1, '')
+
+    " executa comando e coloca saída
+    execute 'silent! 3r !' . cmd
+
+    " trava buffer e posiciona no topo
+    setlocal nomodifiable
+    normal! gg
+
+    " se usou arquivo temporário, remove
+    if a:target ==# 'visual'
+        call delete(sqlfile)
+    endif
+endfunction
+
+" centraliza as informações dos servidores em um dicionário
+let g:sql_servers = {
+\   'dev': 'localhost,1111',
+\   'tst': 'localhost,2222',
+\   'hml': 'localhost,3333',
+\   'con': 'localhost,4444'
+\ }
+
+" ---------------------------------------------------------------------------
+" Atalhos (F5 + nome do servidor)
+" Arquivo inteiro
+nnoremap <F4>dev :call <SID>ExecuteSQL('dev', 'file')<CR>
+nnoremap <F4>tst :call <SID>ExecuteSQL('tst', 'file')<CR>
+nnoremap <F4>hml :call <SID>ExecuteSQL('hml', 'file')<CR>
+nnoremap <F4>con :call <SID>ExecuteSQL('con', 'file')<CR>
+
+" Seleção visual
+xnoremap <F4>dev :<C-u>call <SID>ExecuteSQL('dev', 'visual')<CR>
+xnoremap <F4>tst :<C-u>call <SID>ExecuteSQL('tst', 'visual')<CR>
+xnoremap <F4>hml :<C-u>call <SID>ExecuteSQL('hml', 'visual')<CR>
+xnoremap <F4>con :<C-u>call <SID>ExecuteSQL('con', 'visual')<CR>
+" }}}
+
