@@ -1,6 +1,10 @@
 {
-    "chat.commandCenter.enabled": false,
+    "chat.agent.enabled": false,
     "chat.disableAIFeatures": true,
+    "csv.defaultSeparator": ";",
+    "csv.separatorByExtension": {
+        ".csv": ";"
+    },
     "diffEditor.codeLens": true,
     "diffEditor.ignoreTrimWhitespace": false,
     "editor.acceptSuggestionOnEnter": "off",
@@ -154,7 +158,7 @@
     // "python.analysis.inlayHints.pytestParameters": false,
     // "python.analysis.inlayHints.variableTypes": false,
     // "python.analysis.typeCheckingMode": "basic",
-    "python.defaultInterpreterPath": "python",
+    "python.defaultInterpreterPath": "",
     "python.envFile": "${workspaceFolder}/.venv",
     "python.interpreter.infoVisibility": "always",
     "python.languageServer": "Default",

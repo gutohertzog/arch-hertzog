@@ -520,10 +520,10 @@ command! W execute 'w !sudo tee % > /dev/null' <bar> edit!
 
 " navegação {{{
 " janelas
-nnoremap <C-H> <C-W><C-H>
-nnoremap <C-J> <C-W><C-J>
-nnoremap <C-K> <C-W><C-K>
-nnoremap <C-L> <C-W><C-L>
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
 
 nnoremap <Leader>ww <C-W>c
 nnoremap <Leader>ws :new<CR>
