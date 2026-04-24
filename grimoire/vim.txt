@@ -1,0 +1,82 @@
+vim arquivo | abrir arquivo no vim | vim
+vim +N arquivo | abrir arquivo na linha N | vim
+vim +/texto arquivo | abrir arquivo na primeira ocorrência de texto | vim
+vim -R arquivo | abrir arquivo em modo somente leitura | vim
+vim -O arquivo1 arquivo2 | abrir arquivos em split vertical | vim
+vim -o arquivo1 arquivo2 | abrir arquivos em split horizontal | vim
+vim -p arquivo1 arquivo2 | abrir arquivos em abas | vim
+vim -c comando arquivo | executar comando ao abrir | vim
+vim -u NONE | iniciar vim sem configuração | vim
+vim -d arquivo1 arquivo2 | abrir diff entre arquivos | vim
+i | entrar em modo insert | vim
+a | inserir após cursor | vim
+I | inserir no início da linha | vim
+A | inserir no fim da linha | vim
+o | abrir nova linha abaixo | vim
+O | abrir nova linha acima | vim
+Esc | voltar para modo normal | vim
+:w | salvar arquivo | vim
+:q | sair do vim | vim
+:wq | salvar e sair | vim
+:x | salvar e sair se houve alteração | vim
+:q! | sair sem salvar | vim
+ZZ | salvar e sair | vim
+ZQ | sair sem salvar | vim
+h | mover cursor esquerda | vim
+j | mover cursor para baixo | vim
+k | mover cursor para cima | vim
+l | mover cursor direita | vim
+0 | início da linha | vim
+^ | primeiro caractere não vazio da linha | vim
+$ | fim da linha | vim
+w | próxima palavra | vim
+b | palavra anterior | vim
+e | fim da palavra | vim
+gg | início do arquivo | vim
+G | fim do arquivo | vim
+:N | ir para linha N | vim
+Ctrl+d | descer meia página | vim
+Ctrl+u | subir meia página | vim
+Ctrl+f | página para baixo | vim
+Ctrl+b | página para cima | vim
+x | apagar caractere | vim
+dd | apagar linha | vim
+D | apagar até fim da linha | vim
+dw | apagar palavra | vim
+d$ | apagar até fim da linha | vim
+yy | copiar linha | vim
+yw | copiar palavra | vim
+y$ | copiar até fim da linha | vim
+p | colar após cursor | vim
+P | colar antes do cursor | vim
+u | desfazer | vim
+Ctrl+r | refazer | vim
+v | entrar em visual mode | vim
+V | seleção por linha | vim
+Ctrl+v | seleção em bloco | vim
+y | copiar seleção | vim
+d | apagar seleção | vim
+/padrão | buscar padrão | vim
+n | próxima ocorrência da busca | vim
+N | ocorrência anterior da busca | vim
+:s/antigo/novo | substituir na linha atual | vim
+:%s/antigo/novo/g | substituir no arquivo inteiro | vim
+:%s/antigo/novo/gc | substituir com confirmação | vim
+:e arquivo | abrir outro arquivo | vim
+:w novo_arquivo | salvar como novo arquivo | vim
+:r arquivo | inserir conteúdo de arquivo | vim
+:ls | listar buffers | vim
+:b N | ir para buffer N | vim
+:bd | fechar buffer atual | vim
+:split | split horizontal | vim
+:vsplit | split vertical | vim
+Ctrl+w w | alternar janela | vim
+Ctrl+w h | mover para janela esquerda | vim
+Ctrl+w l | mover para janela direita | vim
+Ctrl+w j | mover para janela abaixo | vim
+Ctrl+w k | mover para janela acima | vim
+:set number | mostrar números de linha | vim
+:set relativenumber | números relativos | vim
+:set nonumber | esconder números de linha | vim
+:help comando | abrir ajuda de comando | vim
+:help movimento | ajuda sobre movimentos | vim

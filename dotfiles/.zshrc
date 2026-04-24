@@ -126,6 +126,7 @@ alias cpd="sudo openvpn --config ~/Documents/vpn-cpd-v1.1.ovpn"
 alias vim="vim -S ~/.config/vim/vimrc"
 alias ls="eza --time-style=long-iso --sort=type"
 alias ff="fastfetch"
+alias gpu="watch -n1 nvidia-smi"
 
 # alias do pacman
 alias orfaos="pacman -Qtd"
@@ -187,5 +188,21 @@ cdl() {
     local dir
     dir=$(fd -t d . | fzf --preview 'eza -T --color=always {} | head -50') || return
     cd "$dir"
+}
+
+# configurações para os atalhos via grimoire
+GRIMOIRE_DIR="$HOME/arch-hertzog/grimoire"
+
+# funções para buscar os atalhos por arquivos ou tudo
+# busca todos os atalhos cadastrados nos arquivos txt dentro de grimoire
+cheat() {
+    cat ~/arch-hertzog/grimoire/*.txt \
+        | column -t -s "|" \
+        | fzf \
+            --layout=reverse \
+            --border \
+            --preview '' \
+            --delimiter '|' \
+            --with-nth=1,2,3
 }
 

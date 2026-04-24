@@ -1,0 +1,53 @@
+git init | inicializar repositório | git
+git clone URL | clonar repositório | git
+git status | mostrar estado do repositório | git
+git add arquivo | adicionar arquivo ao staging | git
+git add . | adicionar todas alterações | git
+git restore arquivo | descartar alterações no arquivo | git
+git restore --staged arquivo | remover arquivo do staging | git
+git commit -m "mensagem" | criar commit | git
+git commit -am "mensagem" | commit de arquivos modificados | git
+git push | enviar commits ao remoto | git
+git push origin branch | enviar branch ao remoto | git
+git pull | baixar e integrar alterações | git
+git pull --rebase | atualizar com rebase | git
+git fetch | baixar alterações sem merge | git
+git log | mostrar histórico de commits | git
+git log --oneline | histórico resumido | git
+git log --graph --oneline --all | histórico gráfico | git
+git show | mostrar detalhes do último commit | git
+git diff | mostrar diferenças não commitadas | git
+git diff HEAD | diferenças desde último commit | git
+git diff branch1..branch2 | comparar branches | git
+git branch | listar branches | git
+git branch nome | criar nova branch | git
+git switch nome | mudar para branch | git
+git switch -c nome | criar e mudar de branch | git
+git checkout nome | mudar branch (comando antigo) | git
+git merge branch | fazer merge de branch | git
+git rebase branch | rebase sobre outra branch | git
+git rebase -i HEAD~N | rebase interativo | git
+git reset HEAD arquivo | remover arquivo do staging | git
+git reset --soft HEAD~1 | desfazer commit mantendo alterações | git
+git reset --hard HEAD~1 | desfazer commit descartando alterações | git
+git revert commit | reverter commit criando novo commit | git
+git stash | guardar alterações temporárias | git
+git stash list | listar stashes | git
+git stash apply | aplicar stash | git
+git stash pop | aplicar e remover stash | git
+git stash drop | remover stash | git
+git tag | listar tags | git
+git tag v1.0 | criar tag | git
+git push origin v1.0 | enviar tag ao remoto | git
+git remote -v | listar remotos | git
+git remote add origin URL | adicionar remoto | git
+git remote remove origin | remover remoto | git
+git blame arquivo | mostrar autor de cada linha | git
+git shortlog | resumo de commits por autor | git
+git clean -n | listar arquivos não rastreados | git
+git clean -f | remover arquivos não rastreados | git
+git rm arquivo | remover arquivo do repositório | git
+git mv antigo novo | renomear arquivo no git | git
+git config --list | listar configurações | git
+git config --global user.name "nome" | definir usuário | git
+git config --global user.email "email" | definir email | git

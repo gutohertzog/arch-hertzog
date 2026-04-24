@@ -1,0 +1,42 @@
+Ctrl+C | interromper processo em execução | shell
+Ctrl+Z | suspender processo atual | shell
+Ctrl+D | enviar EOF / sair do shell | shell
+Ctrl+L | limpar tela do terminal | shell
+jobs | listar processos suspensos | shell
+bg | continuar processo em background | shell
+fg | trazer processo para foreground | shell
+kill PID | terminar processo pelo PID | shell
+kill -9 PID | forçar encerramento de processo | shell
+ps | listar processos em execução | shell
+ps aux | listar todos processos do sistema | shell
+top | monitorar processos em tempo real | shell
+htop | monitor de processos interativo | shell
+!! | repetir último comando executado | shell
+!$ | último argumento do comando anterior | shell
+!^ | primeiro argumento do comando anterior | shell
+!n | executar comando número n do histórico | shell
+history | listar histórico de comandos | shell
+clear | limpar tela do terminal | shell
+reset | resetar terminal | shell
+which comando | localizar executável no PATH | shell
+type comando | identificar tipo de comando | shell
+alias nome='comando' | criar alias | shell
+unalias nome | remover alias | shell
+source arquivo | executar script no shell atual | shell
+exec comando | substituir processo do shell | shell
+comando > arquivo | redirecionar saída para arquivo | shell
+comando >> arquivo | adicionar saída ao arquivo | shell
+comando < arquivo | usar arquivo como entrada | shell
+comando 2> arquivo | redirecionar erro | shell
+comando & | executar comando em background | shell
+comando1 | comando2 | enviar saída via pipe | shell
+comando1 && comando2 | executar segundo se primeiro tiver sucesso | shell
+comando1 || comando2 | executar segundo se primeiro falhar | shell
+* | wildcard para múltiplos caracteres | shell
+? | wildcard para um caractere | shell
+~ | diretório home do usuário | shell
+. | diretório atual | shell
+.. | diretório pai | shell
+$VAR | expandir variável de ambiente | shell
+env | listar variáveis de ambiente | shell
+export VAR=valor | definir variável de ambiente | shell

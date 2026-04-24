@@ -1,0 +1,33 @@
+Ctrl+Shift+T | abrir nova aba | kitty
+Ctrl+Shift+Q | fechar aba atual | kitty
+Ctrl+Shift+Right | ir para próxima aba | kitty
+Ctrl+Shift+Left | ir para aba anterior | kitty
+Ctrl+Shift+L | listar abas abertas | kitty
+Ctrl+Shift+Enter | abrir nova janela (split) | kitty
+Ctrl+Shift+W | fechar janela atual | kitty
+Ctrl+Shift+] | ir para próximo split | kitty
+Ctrl+Shift+[ | ir para split anterior | kitty
+Ctrl+Shift+F | alternar tela cheia | kitty
+Ctrl+Shift+Z | alternar zoom da janela | kitty
+Ctrl+Shift+C | copiar seleção para clipboard | kitty
+Ctrl+Shift+V | colar do clipboard | kitty
+Ctrl+Shift+S | buscar texto no scrollback | kitty
+Ctrl+Shift+Up | rolar scrollback para cima | kitty
+Ctrl+Shift+Down | rolar scrollback para baixo | kitty
+Ctrl+Shift+PageUp | subir uma página no scrollback | kitty
+Ctrl+Shift+PageDown | descer uma página no scrollback | kitty
+Ctrl+Shift+Home | ir para início do scrollback | kitty
+Ctrl+Shift+End | ir para final do scrollback | kitty
+Ctrl+Shift+Plus | aumentar tamanho da fonte | kitty
+Ctrl+Shift+Minus | diminuir tamanho da fonte | kitty
+Ctrl+Shift+0 | resetar tamanho da fonte | kitty
+Ctrl+Shift+F5 | recarregar configuração do kitty | kitty
+kitty +kitten themes | escolher tema interativamente | kitty
+kitty +kitten icat imagem.png | mostrar imagem no terminal | kitty
+kitty +kitten diff arquivo1 arquivo2 | diff visual no terminal | kitty
+kitty @ launch --type=tab | abrir nova aba via comando | kitty
+kitty @ launch --type=window | abrir nova janela via comando | kitty
+kitty @ set-font-size N | definir tamanho da fonte | kitty
+kitty @ close-tab | fechar aba via comando remoto | kitty
+kitty @ close-window | fechar janela via comando remoto | kitty
+kitty @ focus-window | focar janela específica | kitty

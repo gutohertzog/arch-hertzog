@@ -1,0 +1,32 @@
+fzf | iniciar fuzzy finder interativo | fzf
+comando | fzf | filtrar saída de comando | fzf
+ls | fzf | escolher arquivo da lista | fzf
+fd | fzf | buscar arquivos interativamente | fzf
+fd -t f | fzf | buscar apenas arquivos | fzf
+fd -t d | fzf | buscar diretórios | fzf
+fd -e md | fzf | buscar arquivos markdown | fzf
+fd -t f | fzf | xargs vim | escolher arquivo e abrir no vim | fzf
+vim $(fzf) | abrir arquivo selecionado no vim | fzf
+cd $(fd -t d | fzf) | escolher diretório e entrar | fzf
+rg padrão | fzf | filtrar resultados do ripgrep | fzf
+rg padrão | fzf | cut -d: -f1 | xargs vim | abrir resultado no vim | fzf
+fd | fzf --preview "bat --color=always {}" | mostrar preview de arquivo | fzf
+fd -t d | fzf --preview "ls {}" | preview de diretório | fzf
+fzf -m | selecionar múltiplos itens | fzf
+fd -t f | fzf -m | xargs vim | abrir múltiplos arquivos | fzf
+fzf --layout=reverse | mostrar resultados de baixo para cima | fzf
+fzf --border | adicionar borda à interface | fzf
+fzf --height 40% | limitar altura do fzf | fzf
+FZF_DEFAULT_COMMAND="fd --type f" | definir comando padrão de arquivos | fzf
+FZF_DEFAULT_OPTS="--layout=reverse --border" | opções padrão do fzf | fzf
+Ctrl+J | mover seleção para baixo | fzf
+Ctrl+K | mover seleção para cima | fzf
+Tab | marcar item | fzf
+Shift+Tab | desmarcar item | fzf
+Ctrl+A | selecionar todos itens | fzf
+Ctrl+D | desmarcar todos itens | fzf
+Enter | confirmar seleção | fzf
+Esc | sair do fzf | fzf
+Ctrl+T | buscar arquivos no shell | fzf
+Alt+C | navegar diretórios no shell | fzf
+Ctrl+R | buscar histórico de comandos | fzf

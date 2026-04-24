@@ -1,0 +1,30 @@
+fd | buscar arquivos e diretórios recursivamente | fd
+fd padrão | buscar arquivos contendo padrão no nome | fd
+fd padrão diretório | buscar padrão dentro de diretório | fd
+fd -e txt | buscar arquivos com extensão txt | fd
+fd -e md | buscar arquivos markdown | fd
+fd -e py | buscar arquivos python | fd
+fd -t f | buscar apenas arquivos | fd
+fd -t d | buscar apenas diretórios | fd
+fd -t l | buscar links simbólicos | fd
+fd -H | incluir arquivos ocultos | fd
+fd -I | ignorar .gitignore | fd
+fd -a | mostrar caminhos absolutos | fd
+fd -d 1 | limitar profundidade de busca | fd
+fd -d N | limitar busca a N níveis | fd
+fd -s padrão | busca sensível a maiúsculas | fd
+fd -i padrão | busca case insensitive | fd
+fd -x comando | executar comando para cada resultado | fd
+fd -X comando | executar comando com todos resultados | fd
+fd padrão -x bat | abrir resultados com bat | fd
+fd padrão -x vim | abrir resultados com vim | fd
+fd padrão -x rm | remover arquivos encontrados | fd
+fd -e md -x bat | visualizar arquivos markdown | fd
+fd -e log -x rm | remover arquivos log | fd
+fd | fzf | selecionar arquivo interativamente | fd
+fd -t f | fzf | xargs vim | escolher arquivo e abrir no vim | fd
+fd -t d | fzf | escolher diretório | fd
+fd -e md | fzf | buscar markdown interativamente | fd
+fd -t f . ~/.config | buscar arquivos na pasta config | fd
+fd -e jpg -X ls -lh | listar imagens encontradas | fd
+fd -e py -x rg TODO | buscar TODO em arquivos python | fd

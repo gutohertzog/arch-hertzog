@@ -1,0 +1,37 @@
+Ctrl+A | mover cursor para início da linha | zsh
+Ctrl+E | mover cursor para fim da linha | zsh
+Ctrl+B | mover cursor um caractere para trás | zsh
+Ctrl+F | mover cursor um caractere para frente | zsh
+Alt+B | mover cursor uma palavra para trás | zsh
+Alt+F | mover cursor uma palavra para frente | zsh
+Ctrl+D | apagar caractere sob cursor / EOF | zsh
+Backspace | apagar caractere anterior | zsh
+Ctrl+T | trocar posição de dois caracteres | zsh
+Alt+T | trocar posição de duas palavras | zsh
+Ctrl+U | apagar do cursor até início da linha | zsh
+Ctrl+K | apagar do cursor até fim da linha | zsh
+Ctrl+W | apagar palavra anterior | zsh
+Alt+D | apagar próxima palavra | zsh
+Ctrl+Y | colar último texto apagado | zsh
+Alt+Y | rotacionar histórico do kill ring | zsh
+Ctrl+P | histórico comando anterior | zsh
+Ctrl+N | histórico próximo comando | zsh
+Ctrl+R | busca reversa no histórico | zsh
+Ctrl+S | busca para frente no histórico | zsh
+Ctrl+G | cancelar busca no histórico | zsh
+Ctrl+L | limpar tela do terminal | zsh
+Ctrl+C | interromper comando atual | zsh
+Ctrl+Z | suspender processo atual | zsh
+Ctrl+D | logout do shell | zsh
+!! | repetir último comando | zsh
+!$ | último argumento do comando anterior | zsh
+!^ | primeiro argumento do comando anterior | zsh
+!string | executar último comando que começa com string | zsh
+fc -l | listar histórico de comandos | zsh
+history | mostrar histórico completo | zsh
+which comando | mostrar caminho do executável | zsh
+type comando | mostrar tipo do comando | zsh
+alias | listar aliases definidos | zsh
+unalias nome | remover alias | zsh
+source arquivo | recarregar configuração | zsh
+exec zsh | reiniciar shell atual | zsh

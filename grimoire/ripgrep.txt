@@ -1,0 +1,36 @@
+rg padrão | buscar texto em arquivos recursivamente | ripgrep
+rg "texto exato" | buscar frase exata | ripgrep
+rg padrão arquivo | buscar padrão em arquivo específico | ripgrep
+rg padrão diretório | buscar padrão em diretório | ripgrep
+rg -i padrão | busca ignorando maiúsculas/minúsculas | ripgrep
+rg -s padrão | busca sensível a maiúsculas/minúsculas | ripgrep
+rg -w padrão | buscar palavra inteira | ripgrep
+rg -n padrão | mostrar número da linha | ripgrep
+rg -c padrão | contar ocorrências por arquivo | ripgrep
+rg -l padrão | listar arquivos que contêm padrão | ripgrep
+rg -L padrão | listar arquivos que não contêm padrão | ripgrep
+rg -o padrão | mostrar apenas correspondência | ripgrep
+rg -C N padrão | mostrar N linhas de contexto | ripgrep
+rg -A N padrão | mostrar N linhas após correspondência | ripgrep
+rg -B N padrão | mostrar N linhas antes da correspondência | ripgrep
+rg -e p1 -e p2 | buscar múltiplos padrões | ripgrep
+rg "[0-9]+" | buscar números usando regex | ripgrep
+rg "^texto" | buscar linhas que começam com texto | ripgrep
+rg "texto$" | buscar linhas que terminam com texto | ripgrep
+rg "erro|warning" | buscar múltiplos padrões regex | ripgrep
+rg padrão -t py | buscar apenas em arquivos python | ripgrep
+rg padrão -t md | buscar apenas em markdown | ripgrep
+rg padrão -T json | excluir tipo de arquivo | ripgrep
+rg padrão -g "*.py" | buscar apenas em extensão específica | ripgrep
+rg padrão -g "!node_modules" | ignorar diretório | ripgrep
+rg padrão -g "!*.log" | ignorar arquivos por padrão | ripgrep
+rg -uu padrão | incluir arquivos ignorados e ocultos | ripgrep
+rg --files | listar arquivos rastreados | ripgrep
+rg --files | fzf | escolher arquivo interativamente | ripgrep
+rg padrão | fzf | buscar e selecionar resultado | ripgrep
+rg padrão $(fd -e py) | buscar padrão apenas em arquivos python encontrados | ripgrep
+rg TODO | buscar marcações TODO no projeto | ripgrep
+rg FIXME | buscar marcações FIXME | ripgrep
+rg error logs/ | buscar erro em logs | ripgrep
+rg "def " | buscar definição de função python | ripgrep
+rg main src/ | buscar termo main no diretório src | ripgrep
