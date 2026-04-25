@@ -277,7 +277,7 @@ map [c <Nop>
 " https://github.com/tomasiser/vim-code-dark
 let g:codedark_modern = 1
 let g:codedark_italics = 1
-let g:codedark_transparent = 1
+let g:codedark_transparent = 0
 let g:airline_theme = 'codedark'
 " }}}
 
@@ -525,7 +525,7 @@ nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
 
-nnoremap <Leader>ww <C-W>c
+nnoremap <Leader>wd <C-W>c
 nnoremap <Leader>ws :new<CR>
 nnoremap <Leader>wS :split<CR>
 nnoremap <Leader>wv :vnew<CR>
@@ -533,12 +533,12 @@ nnoremap <Leader>wV :vsplit<CR>
 
 " tabs
 nnoremap <Leader>tt :tabnew<CR>
-nnoremap <Leader>tw :tabclose<CR>
+nnoremap <Leader>td :tabclose<CR>
 nnoremap <Leader>tn :tabnext<CR>
 nnoremap <Leader>tp :tabprevious<CR>
 
 " buffers
-nnoremap <Leader>bw :bdelete<CR>
+nnoremap <Leader>bd :bdelete<CR>
 nnoremap <Leader>bo :w <bar> %bdelete <bar> e# <CR> <bar> '"
 nnoremap <tab> :bnext<CR>
 nnoremap <s-tab> :bprevious<CR>

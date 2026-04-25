@@ -146,7 +146,8 @@ let s:cdBlue = {'gui': '#569CD6', 'cterm': s:cterm0D, 'cterm256': '75'}
 let s:cdDarkBlue = {'gui': '#223E55', 'cterm': s:cterm0D, 'cterm256': '73'}
 let s:cdLightBlue = {'gui': '#9CDCFE', 'cterm': s:cterm0C, 'cterm256': '117'}
 if g:codedark_conservative | let s:cdLightBlue = s:cdFront | endif
-let s:cdGreen = {'gui': '#6A9955', 'cterm': s:cterm0B, 'cterm256': '65'}
+" let s:cdGreen = {'gui': '#6A9955', 'cterm': s:cterm0B, 'cterm256': '65'}
+let s:cdGreen = {'gui': '#696969', 'cterm': s:cterm0B, 'cterm256': '65'}
 let s:cdBlueGreen = {'gui': '#4EC9B0', 'cterm': s:cterm0F, 'cterm256': '43'}
 let s:cdLightGreen = {'gui': '#B5CEA8', 'cterm': s:cterm09, 'cterm256': '151'}
 let s:cdRed = {'gui': '#F44747', 'cterm': s:cterm08, 'cterm256': '203'}
@@ -557,17 +558,18 @@ call <sid>hi('goMethodCall', s:cdYellow, {}, 'none', {})
 call <sid>hi('goSingleDecl', s:cdLightBlue, {}, 'none', {})
 
 " Python:
-call <sid>hi('pythonStatement', s:cdBlue, {}, 'none', {})
-call <sid>hi('pythonOperator', s:cdBlue, {}, 'none', {})
-call <sid>hi('pythonException', s:cdPink, {}, 'none', {})
-call <sid>hi('pythonExClass', s:cdBlueGreen, {}, 'none', {})
+call <sid>hi('pythonBoolean', s:cdBlue, {}, 'none', {})
 call <sid>hi('pythonBuiltinObj', s:cdLightBlue, {}, 'none', {})
 call <sid>hi('pythonBuiltinType', s:cdBlueGreen, {}, 'none', {})
-call <sid>hi('pythonBoolean', s:cdBlue, {}, 'none', {})
-call <sid>hi('pythonNone', s:cdBlue, {}, 'none', {})
-call <sid>hi('pythonTodo', s:cdBlue, {}, 'none', {})
-call <sid>hi('pythonClassVar', s:cdBlue, {}, 'none', {})
 call <sid>hi('pythonClassDef', s:cdBlueGreen, {}, 'none', {})
+call <sid>hi('pythonClassVar', s:cdBlue, {}, 'none', {})
+call <sid>hi('pythonDocString', s:cdGreen, {}, 'none', {})
+call <sid>hi('pythonExClass', s:cdBlueGreen, {}, 'none', {})
+call <sid>hi('pythonException', s:cdPink, {}, 'none', {})
+call <sid>hi('pythonNone', s:cdBlue, {}, 'none', {})
+call <sid>hi('pythonOperator', s:cdBlue, {}, 'none', {})
+call <sid>hi('pythonStatement', s:cdBlue, {}, 'none', {})
+call <sid>hi('pythonTodo', s:cdBlue, {}, 'none', {})
 
 " TeX:
 call <sid>hi('texStatement', s:cdBlue, {}, 'none', {})
