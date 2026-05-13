@@ -25,9 +25,11 @@ vim.keymap.set("n", "<Leader>wr", "<C-w>r", { desc = "rotaciona janelas" })
 
 -- manipula buffers
 vim.keymap.set("n", "<Leader>bd", "<cmd>bdelete<CR>", { desc = "apaga o buffer atual"})
-vim.keymap.set("n", "<Leader>bn", "<cmd>bnext<CR>", { desc = "vai para buffer seguinte"})
-vim.keymap.set("n", "<Leader>bp", "<cmd>bprevious<CR>", { desc = "vai para buffer anterior" })
-vim.keymap.set("n", "<Leader>bb", "<cmd>%bd|e#<CR>", { desc = "vai para o último buffer" })
+vim.keymap.set("n", "<Leader>bn", "<cmd>bnext<CR>", { desc = "vai para buffer seguinte da lista"})
+vim.keymap.set("n", "<Leader>bp", "<cmd>bprevious<CR>", { desc = "vai para buffer anterior da lista" })
+vim.keymap.set("n", "<Leader>bf", "<cmd>bfirst<CR>", { desc = "vai para primeiro buffer da lista" })
+vim.keymap.set("n", "<Leader>bl", "<cmd>blast<CR>", { desc = "vai para último buffer da lista" })
+vim.keymap.set("n", "<Leader>bb", "<cmd>bmodified<CR>", { desc = "vai para o buffer anterior" })
 vim.keymap.set("n", "<Leader>bo", "<cmd>%bdelete|edit#|bdelete#<CR>", { desc = "apaga outros buffers" })
 
 -- manipula tabs
@@ -43,4 +45,7 @@ end
 
 --
 vim.keymap.set("n", "<Leader><Leader>i", "<cmd>Inspect<CR>", { desc = "inspeciona o objeto" })
+
+-- terminal
+vim.keymap.set("t", "<C-;>", "<C-\\><C-n>", { desc = "Terminal -> Normal" })
 

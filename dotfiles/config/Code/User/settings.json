@@ -258,5 +258,6 @@
     "workbench.layoutControl.enabled": false,
     "workbench.statusBar.visible": true,
     "zenMode.hideLineNumbers": false,
-    "zenMode.hideStatusBar": false
+    "zenMode.hideStatusBar": false,
+    "editor.defaultFormatter": "ms-python.python"
 }

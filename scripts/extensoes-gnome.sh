@@ -53,6 +53,7 @@ printf "\n\n\tvitals\n"
 git clone https://aur.archlinux.org/gnome-shell-extension-vitals-git.git/
 cd gnome-shell-extension-vitals-git
 makepkg
-
+# lembre de instalar o pacote com sudo pacman -U gnome-shell-extension-vitals-git-v*
 # cd ..
 # rm -rf gnome-shell-extension-vitals-git
+#

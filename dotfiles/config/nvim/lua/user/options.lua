@@ -1,27 +1,35 @@
+local opt = vim.opt
+
+--let g:ftplugin_sql_omni_key = '<Plug>DisableSqlOmni'
+vim.g.ftplugin_sql_omni_key = "<Plug>DisableSqlOmni"
+
 -- interface
-vim.opt.syntax = "on"
-vim.opt.number = true
-vim.opt.relativenumber = true
-vim.opt.cursorline = true
-vim.opt.ruler = true
-vim.opt.showcmd = true
-vim.opt.laststatus = 2
-vim.opt.wildmenu = true
-vim.opt.scrolloff = 3
-vim.g.colorscheme = "desert"
+opt.colorcolumn = "80,100"
+opt.cursorline = true
+opt.laststatus = 2
+opt.number = true
+opt.relativenumber = true
+opt.ruler = true
+opt.scrolloff = 3
+opt.showcmd = true
+-- opt.showtabline = 2
+opt.signcolumn = "yes"
+opt.syntax = "on"
+opt.wildmenu = true
+vim.cmd("colorscheme desert")
 
 -- edição
-vim.opt.tabstop = 4
-vim.opt.shiftwidth = 4
-vim.opt.expandtab = true
-vim.opt.smarttab = true
-vim.opt.autoindent = true
--- vim.opt.clipboard = unnamed,unnamedplus
+opt.tabstop = 4
+opt.shiftwidth = 4
+opt.expandtab = true
+opt.smarttab = true
+opt.autoindent = true
+opt.clipboard = "unnamed,unnamedplus"
 
 -- pesquisa
-vim.opt.wrapscan = true
-vim.opt.ignorecase = true
-vim.opt.smartcase = true
-vim.opt.incsearch = true
-vim.opt.hlsearch = true
+opt.wrapscan = true
+opt.ignorecase = true
+opt.smartcase = true
+opt.incsearch = true
+opt.hlsearch = true
 
