@@ -72,7 +72,7 @@ set hlsearch    " destaca todas as ocorrências
 "       - mkdir -p ~/.config/vim/swaps
 "   Windows:
 "       - mkdir %USERPROFILE%\vimfiles\backups
-"       - mkdir %USERPROFILE%\vimfiles\undo
+"       - mkdir %USERPROFILE%\vimfiles\undos
 "       - mkdir %USERPROFILE%\vimfiles\swaps
 
 set backup      " habilita arquivos de backup (~)

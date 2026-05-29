@@ -1,0 +1,845 @@
+" =============================================================================
+" vim:fileencoding=utf-8:foldmethod=marker:foldlevel=1
+"
+" =============================================================================
+"
+"                    ██╗   ██╗██╗███╗   ███╗██████╗  ██████╗
+"                    ██║   ██║██║████╗ ████║██╔══██╗██╔════╝
+"                     █║   ██║██║██╔████╔██║██████╔╝██║
+"                     ██╗ ██╔╝██║██║╚██╔╝██║██╔══██╗██║
+"                      ████╔╝ ██║██║ ╚═╝ ██║██║  ██║╚██████╗
+"                       ═══╝  ╚═╝╚═╝     ╚═╝╚═╝  ╚═╝ ╚═════╝
+"
+" Author:
+"       Guto Hertzog - @gutohertzog
+"
+" Sections:
+"    -> CONFIGURAÇÕES
+"    -> AUTOMAÇÕES
+"    -> FUNÇÕES
+"    -> ATALHOS
+"    -> PLUGINS
+"
+" =============================================================================
+
+" =============================================================================
+" CONFIGURAÇÕES {{{
+" =============================================================================
+
+set nocompatible        " desativa compatibilidade com VI
+set history=1000        " quantidade de histórico armazenado
+
+" codificação ------------------------------------------------------------- {{{
+set encoding=utf-8
+set fileencoding=utf-8
+
+set fileformats=unix,dos,mac
+set fileformat=unix
+" }}}
+
+" tecla leader ------------------------------------------------------------ {{{
+let mapleader=" "
+let maplocalleader=" "
+" }}}
+
+" clipboard --------------------------------------------------------------- {{{
+set clipboard=unnamed,unnamedplus
+" }}}
+
+" interface --------------------------------------------------------------- {{{
+" ajustes importantes para o CMD
+" Screen Background 0/0/0
+" Screen Text 200/200/200
+syntax on               " habilite realce de sintaxe
+filetype plugin indent on
+colorscheme desert      " cores para tema escuro desert, evening, ron, slate
+set background=dark
+set t_Co=256            " força 256 cores
+set number              " mostra número das linhas
+set relativenumber      " números relativos para navegação
+set ruler               " mostra posição do cursor
+set showcmd             " exibe comandos incompletos
+set laststatus=2        " sempre mostra a barra de status
+set statusline=global
+set noshowmode          " mostra modo atual (normal, insert, etc)
+set signcolumn=auto
+set colorcolumn=80,100
+set scrolloff=3         " mantém 3 linhas de amrgem ao rolar
+set sidescrolloff=0     " mantém 0 colunas de margem ao rolar
+set showmatch
+set splitbelow          " divide a tela para baixo
+set splitright          " divide a tela para direita
+set splitkeep=screen    " ao dividir, mantém o texto na mesma linha da tela
+set conceallevel=0      " evita que caracteres fiquem invisíveis
+set showbreak=↪\
+set listchars=tab:<->,eol:↲,nbsp:║,space:␣,trail:•,extends:⟩,precedes:⟨
+set nolist
+
+set matchpairs+=<:>     " amplia o funcionamento do % para mais pares
+" remove o fundo do cursorline
+set nocursorcolumn      " deixa desativado o destaque da coluna do cursor
+set cursorline          " destaca a linha atual
+" remove o fundo e deixa apenas a linha
+highlight CursorLine cterm=underline ctermbg=NONE ctermfg=NONE
+" }}}
+
+" backup swap undo -------------------------------------------------------- {{{
+" Dica: certifique-se de criar essas pastas antes de usar:
+"   Linux :
+"       - mkdir -p ~/.config/vim/backups
+"       - mkdir -p ~/.config/vim/undo
+"       - mkdir -p ~/.config/vim/swaps
+"   Windows:
+"       - mkdir %USERPROFILE%\vimfiles\backups
+"       - mkdir %USERPROFILE%\vimfiles\undos
+"       - mkdir %USERPROFILE%\vimfiles\swaps
+
+set backup      " habilita arquivos de backup (~)
+set undofile    " habilita histórico de undo persistente
+set swapfile    " habilita swapfiles (.swp)
+set undolevels=1000
+
+" detecta SO
+if has("win32") || has("win64")
+    let s:vim_data = expand('~/vimfiles')       " Windows
+else
+    let s:vim_data = expand('~/.config/vim')    " Linux / Unix / macOS
+endif
+
+" pastas
+let s:backupdir = s:vim_data . '/backups//'
+let s:undodir   = s:vim_data . '/undos//'
+let s:swapdir   = s:vim_data . '/swaps//'
+
+" aplica as configurações
+execute 'set backupdir=' . s:backupdir
+execute 'set undodir='   . s:undodir
+execute 'set directory=' . s:swapdir
+
+if exists('+shada')
+    execute 'set shadafile=' . s:vim_data . '/viminfo/main.shada'
+else
+    execute 'set viminfofile=' . s:vim_data . '/viminfo/main.viminfo'
+endif
+" }}}
+
+
+" menu -------------------------------------------------------------------- {{{
+" menu = mostra popup de opções
+" menuone = mostra mesmo com apenas um
+" noselect = não seleciona o primeiro automaticamente
+set completeopt=menu,menuone,noselect
+set pumheight=10        " tamanho do popup
+set shortmess+=c        " reduz mensagens durante autocomplete
+set complete-=i         " evita scaneamento profundo em projetos grandes
+" }}}
+
+" wildmenu----------------------------------------------------------------- {{{
+" configura o autocomplete do comando do Vim
+set wildmenu            " menu de autocompletar mais amigável
+" list = mostra lista de matches
+" longest = completa automaticamente a maior parte comum
+set wildmode=list:longest
+" ignora arquivos
+set wildignore+=*.o,*.obj,*.dylib,*.bin,*.dll,*.exe
+set wildignore+=*/.git/*,*/.svn/*,*/__pycache__/*,*/build/**
+set wildignore+=*.jpg,*.png,*.jpeg,*.bmp,*.gif,*.tiff,*.svg,*.ico
+set wildignore+=*.pyc,*.pkl
+set wildignore+=*.DS_Store
+set wildignore+=*.aux,*.bbl,*.blg,*.brf,*.fls,*.fdb_latexmk,*.synctex.gz,*.xdv
+set wildignorecase      " ignora diferença maiúsculas/minúsculas
+" }}}
+
+" velocidade -------------------------------------------------------------- {{{
+"set lazyredraw
+set ttyfast
+set hidden
+set path+=**
+set updatetime=300
+" }}}
+
+" sem som de erros -------------------------------------------------------- {{{
+set noerrorbells
+set novisualbell
+set t_vb=
+set tm=500
+" }}}
+
+" edição ------------------------------------------------------------------ {{{
+set tabstop=4                   " largura de tabulação
+set shiftwidth=4                " tamanho de indentação automática
+set expandtab                   " converte TABs em espaços
+set smarttab                    " TAB inteligente
+set autoindent                  " copia indentação da linha anterior
+set smartindent                 " indentação inteligente
+set backspace=indent,eol,start  " como o backspace funciona no final da linha
+" }}}
+
+" pesquisa ---------------------------------------------------------------- {{{
+set wrapscan    " volta para o começo do arquivo quando chegar ao final
+set ignorecase  " ignora maiúsculas / minúsculas
+set smartcase   " respeita se usar maiúscula
+set incsearch   " busca incremental
+set hlsearch    " destaca todas as ocorrências
+set magic       " uso de regex
+" }}}
+
+" fold -------------------------------------------------------------------- {{{
+set foldenable
+set foldcolumn=1
+set foldlevelstart=99
+set foldmethod=syntax
+" }}}
+
+" cursor ------------------------------------------------------------------ {{{
+"   Ps = 0  -> blinking block
+"   Ps = 1  -> blinking block (default)
+"   Ps = 2  -> steady block
+"   Ps = 3  -> blinking underline
+"   Ps = 4  -> steady underline
+"   Ps = 5  -> blinking bar (xterm)
+"   Ps = 6  -> steady bar (xterm)
+let &t_SI = "\e[6 q"
+let &t_EI = "\e[2 q"
+" }}}
+
+" diff -------------------------------------------------------------------- {{{
+set diffopt=
+set diffopt+=vertical       " mostra o diff na poição vertical
+set diffopt+=filler         " mostra o preenchimento para linhas apagadas
+set diffopt+=closeoff       " desliga diff quando uma janela é fechada
+set diffopt+=context:3      " contexto de 3 linhas para o diff
+set diffopt+=internal       " algoritmo interno do Vim para diff
+" melhora diff em código indentado
+set diffopt+=indent-heuristic
+" algoritmo de comparação
+set diffopt+=algorithm:histogram
+" }}}
+
+" }}}
+
+" =============================================================================
+" AUTOMAÇÕES {{{
+" =============================================================================
+
+" toggle relativenumber normal -------------------------------------------- {{{
+" ativar relativenumber no modo normal
+augroup RelNumToggle
+  autocmd!
+  " Desativar relativenumber ao entrar no modo de inserção
+  autocmd InsertEnter * set norelativenumber
+  " Ativar relativenumber ao sair do modo de inserção
+  autocmd InsertLeave * set relativenumber
+augroup END
+" é necessário já que <C-c> não dispara os eventos Insert Enter/Leave
+inoremap <C-c> <Esc>:set relativenumber<CR>
+" }}}
+
+" {{{
+" }}}
+
+" atualiza arquivo -------------------------------------------------------- {{{
+" recarrega o arquivo se estiver sendo alterado em outro lugar
+set autoread
+augroup AuroRead
+    autocmd!
+    autocmd FocusGained,BufEnter * silent! checktime
+augroup END
+" }}}
+
+" formato de texto -------------------------------------------------------- {{{
+augroup FormatOptions
+    autocmd!
+    autocmd FileType * setlocal
+        \ formatoptions-=r
+        \ formatoptions-=o
+        \ formatoptions-=c
+augroup END
+" }}}
+
+" definições automáticas para tipos determinados -------------------------- {{{
+augroup WindowsFiles
+    autocmd!
+    autocmd BufNewFile,BufRead *.bat,*.cmd setlocal fileformat=dos
+augroup END
+" }}}
+
+" configurações por filetype ---------------------------------------------- {{{
+augroup FileTypeSettings
+    autocmd!
+    " Python: PEP8
+    autocmd FileType python setlocal tabstop=4 shiftwidth=4 expandtab
+    autocmd FileType python setlocal textwidth=79 colorcolumn=80,100
+
+    " SQL:
+    " desativa ctrl+c em arquivos sql
+    " autocmd FileType sql setlocal noremap <buffer> <C-C> <Nop>
+    " indentação menor
+    autocmd FileType sql setlocal tabstop=2 shiftwidth=2 expandtab
+
+    " PHP: padrão PSR-2
+    autocmd FileType php setlocal tabstop=4 shiftwidth=4 expandtab
+
+    " fecha o preview do omnicomplete automaticamente
+    autocmd CompleteDone * silent! pclose
+augroup END
+" }}}
+
+" rodar arquivo atual ----------------------------------------------------- {{{
+augroup RunCurrentFile
+    autocmd!
+    autocmd FileType python nnoremap <buffer> <F5> :w<CR>:bel term python %<CR>
+augroup END
+" }}}
+
+" ajusta o fold para melhor desempenho ------------------------------------ {{{
+augroup FastFoldLite
+    autocmd!
+    autocmd InsertEnter * setlocal foldmethod=manual
+    autocmd InsertLeave * setlocal foldmethod=syntax | silent! normal! zx
+augroup END
+" }}}
+
+" }}}
+
+" =============================================================================
+" FUNÇÕES {{{
+" =============================================================================
+
+" trim trailing whitespace ------------------------------------------------ {{{
+function! s:TrimTrailingWhitespace() abort
+    let l:save = winsaveview()
+    keeppatterns %s/\s\+$//e
+    call winrestview(l:save)
+endfunction
+
+augroup TrimWhitespace
+    autocmd!
+    autocmd BufWritePre * call s:TrimTrailingWhitespace()
+augroup END
+" }}}
+
+" }}}
+
+" =============================================================================
+" ATALHOS {{{
+" =============================================================================
+
+" vimrc
+nnoremap <Leader>vim :e $MYVIMRC<CR>
+nnoremap <Leader>so :source $MYVIMRC<CR>
+
+" salvamentos ------------------------------------------------------------- {{{
+nnoremap <C-s> :w<CR>
+inoremap <C-s> <C-o>:w<CR>
+vnoremap <C-s> :w<CR>
+
+" :W salva o arquivo com sudo (unix)
+command! W execute 'w !sudo tee % > /dev/null' <bar> edit!
+" }}}
+
+" tabs -------------------------------------------------------------------- {{{
+" novo
+nnoremap <Leader>te :tabnew<CR>
+" apaga
+nnoremap <Leader>td :tabclose<CR>
+" seguinte
+nnoremap <Leader>tn :tabnext<CR>
+" anterior
+nnoremap <Leader>tp :tabprevious<CR>
+
+" movimenta tabs
+nnoremap <Leader>th :tabmove -1<CR>
+nnoremap <Leader>tl :tabmove +1<CR>
+
+for i in range(1,9)
+    execute 'nnoremap <Leader>t' . i . ' ' . i . 'gt'
+endfor
+" }}}
+
+" janelas ----------------------------------------------------------------- {{{
+" navega
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
+
+" divide
+nnoremap <Leader>wd <C-W>c
+nnoremap <Leader>ws :new<CR>
+nnoremap <Leader>wv :vnew<CR>
+nnoremap <Leader>wS :split<CR>
+nnoremap <Leader>wV :vsplit<CR>
+
+" equializa tamanho
+nnoremap <Leader>w= <C-w>=
+" tamanho máximo da janela atual
+nnoremap <Leader>wm <C-w>_<C-w>|
+
+" troca de lugar
+nnoremap <Leader>wH <C-w>H
+nnoremap <Leader>wJ <C-w>J
+nnoremap <Leader>wK <C-w>K
+nnoremap <Leader>wL <C-w>L
+
+nnoremap <Leader>wr <C-w>r
+" }}}
+
+" muda tamanho janela {{{
+nnoremap <C-A-k> :resize +2<CR>
+nnoremap <C-A-j> :resize -2<CR>
+nnoremap <C-A-h> :vertical resize -2<CR>
+nnoremap <C-A-l> :vertical resize +2<CR>
+" }}}
+
+" buffers ----------------------------------------------------------------- {{{
+" novo
+nnoremap <Leader>be :enew<CR>
+" apaga
+nnoremap <Leader>bd :bdelete<CR>
+" seguinte
+nnoremap <Leader>bn :bnext<CR>
+" anterior
+nnoremap <Leader>bp :bprevious<CR>
+" último da lista
+nnoremap <Leader>bl :blast<CR>
+" último aberto
+nnoremap <Leader>bb :b#<CR>
+
+" apaga todos exceto o atual
+function! s:OnlyCurrentBuffer() abort
+    let current = bufnr('%')
+
+    for buf in range(1, bufnr('$'))
+        if buflisted(buf) && buf != current
+            execute 'bdelete ' . buf
+        endif
+    endfor
+endfunction
+nnoremap <Leader>bo :call <SID>OnlyCurrentBuffer()<CR>
+
+" limpa termo buscado
+nnoremap \\ :nohlsearch<CR>
+
+" ordena conteúdo selecionado
+vnoremap <C-s> :sort<CR>
+" }}}
+
+" terminal ---------------------------------------------------------------- {{{
+nnoremap <C-;> :bel term<CR>
+tnoremap <C-;> <C-\><C-n>
+" mata o terminal
+tnoremap <F8> <C-\><C-n>:bd!<CR>
+" }}}
+
+" toggles ----------------------------------------------------------------- {{{
+nnoremap <Leader><Leader>w :set wrap!<CR>
+nnoremap <Leader><Leader>rn :set relativenumber!<CR>
+nnoremap <Leader><Leader>l :set list!<CR>
+" }}}
+
+" edição arquivo ---------------------------------------------------------- {{{
+" troca linha(s) com alt + j/k
+nnoremap <A-j> :m .+1<CR>==
+nnoremap <A-k> :m .-2<CR>==
+inoremap <A-j> <Esc>:m .+1<CR>==gi
+inoremap <A-k> <Esc>:m .-2<CR>==gi
+vnoremap <A-j> :m '>+1<CR>gv=gv
+vnoremap <A-k> :m '<-2<CR>gv=gv
+
+" Y como C ou D
+nnoremap Y y$
+
+" caixa alta
+inoremap <c-k> <Esc>viwUea
+
+" indentação
+vnoremap < <gv
+vnoremap > >gv
+" }}}
+
+" }}}
+
+" =============================================================================
+" PLUGINS {{{
+" =============================================================================
+
+" desabilita o mapping padrão do autocomplete SQL
+let g:ftplugin_sql_omni_key = '<Plug>DisableSqlOmni'
+
+" ale --------------------------------------------------------------------- {{{
+" https://github.com/dense-analysis/ale
+
+" linters: analisam o código e reportam problemas no signcolumn
+" let g:ale_linters = {
+" \   'python': ['flake8'],
+" \   'sql':    ['sqlfluff'],
+" \   'php':    ['phpcs'],
+" \}
+
+" fixers: reformatam/corrigem o arquivo
+" let g:ale_fixers = {
+" \   'python': ['black', 'isort'],
+" \   'sql':    ['sqlfluff'],
+" \   'php':    ['phpcbf'],
+" \}
+
+" quando executar
+" let g:ale_lint_on_text_changed = 'never'   " não lint enquanto digita
+" let g:ale_lint_on_insert_leave = 1         " lint ao sair do insert mode
+" let g:ale_lint_on_save = 1                 " lint ao salvar
+" let g:ale_fix_on_save = 0                  " fix NÃO automático (segurança)
+
+" python embarcado: aponta para o executável correto
+" let g:ale_python_executable = g:portable_root . '/../python/python.exe'
+" let g:ale_python_executable = resolve(fnamemodify(g:portable_root, ':h') . '/python/python.exe')
+
+" aparência
+" let g:ale_sign_error   = 'E'
+" let g:ale_sign_warning = 'W'
+" let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+
+" atalhos
+" nnoremap <Leader>an :ALENextWrap<CR>
+" nnoremap <Leader>ap :ALEPreviousWrap<CR>
+" nnoremap <Leader>af :ALEFix<CR>
+" nnoremap <Leader>ai :ALEInfo<CR>
+" nnoremap <Leader>at :ALEToggle<CR>
+" }}}
+
+" airline ----------------------------------------------------------------- {{{
+" https://github.com/vim-airline/vim-airline
+let g:airline_theme = 'dark'
+let g:airline_powerline_fonts = 1
+let g:airline_left_sep = ''
+let g:airline_right_sep = ''
+let g:airline_left_alt_sep = '|'
+let g:airline_right_alt_sep = '|'
+
+let g:airline_section_c = '%f'
+let g:airline_section_z = '%l:%c %p%%'
+
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#show_buffers = 1
+let g:airline#extensions#tabline#buffer_nr_show = 1
+let g:airline#extensions#tabline#formatter = 'unique_tail'
+let g:airline#extensions#tabline#left_sep = ''
+let g:airline#extensions#tabline#right_sep = ''
+let g:airline#extensions#tabline#left_alt_sep = '|'
+let g:airline#extensions#tabline#right_alt_sep = '|'
+" clock
+let g:airline#extensions#clock#auto = 1
+let g:airline#extensions#clock#format = '%H:%M'
+let g:airline#extensions#clock#updatetime = 1000
+" }}}
+
+" NERDTree ---------------------------------------------------------------- {{{
+" abrir/fechar
+nnoremap <Leader>e :NERDTreeToggle<CR>
+" atalho para focar na árvore
+nnoremap <Leader>nf :NERDTreeFocus<CR>
+" largura da janela
+let g:NERDTreeWinSize = 30
+" ocultar arquivos temporários e de backup
+let g:NERDTreeIgnore = ['\.swp$', '\.bak$', '\.orig$']
+" mostrar arquivos ocultos (0 = não, 1 = sim)
+let g:NERDTreeShowHidden = 1
+" mostrar linha do cursor na árvore
+let g:NERDTreeHighlightCursorline = 1
+" fechar automaticamente
+let g:NERDTreeQuitOnOpen = 0
+" mostra as pastas vazias desagrupadas
+let NERDTreeCascadeSingleChildDir=0
+" }}}
+
+" vim-highlightedyank ----------------------------------------------------- {{{
+" https://github.com/machakann/vim-highlightedyank
+let g:highlightedyank_highlight_duration = 300
+" }}}
+
+" vim-commentary ---------------------------------------------------------- {{{
+" https://github.com/tpope/vim-commentary
+" commentary atalhos (comentários toggle) {{{
+"   Uso básico:
+"     gcc           - Comenta/descomenta a linha atual.
+"     gc{movimento} - Aplica o comentário a um movimento (ex: gc$ até o fim da linha).
+"     gc            - Em modo Visual, comenta/descomenta a seleção.
+"     gcgc          - Descomenta um bloco de linhas comentadas adjacentes.
+"     :{range}Commentary - Comenta um intervalo de linhas (ex: :7,17Commentary).
+" }}}
+autocmd FileType apache setlocal commentstring=#\ %s
+nnoremap <C-/> :Commentary<CR>
+xnoremap <C-/> :Commentary<CR>
+" }}}
+
+" indentLine -------------------------------------------------------------- {{{
+" https://github.com/Yggdroot/indentLine
+let g:indentLine_char_list = ['|', '¦', '┆', '┊']
+
+" Desativa a configuração manual de cores pelo plugin
+let g:indentLine_setColors = 0
+
+" indentLine: opções para g:indentLine_defaultGroup
+"
+"   Cores da Interface:
+"       Comment      - cor padrão de comentários (recomendado para discrição)
+"       NonText      - cor de caracteres 'não texto' (ex: fim de linha $)
+"       SpecialKey   - cor de caracteres especiais (ex: tabs ^I)
+"       LineNr       - cor dos números das linhas
+"       CursorLine   - cor do realce da linha atual (muda conforme foco)
+"       Normal       - cor do texto normal
+"       Whitespace   - grupo específico para espaços (disponível em versões recentes)
+"
+"   Semânticas (uso menos comum):
+"       Statement    - cor de palavras-chave
+"       Type         - cor de tipos
+"       String       - cor de strings
+"       Number       - cor de números
+"       Error        - cor de erros (muito chamativo, não recomendado)
+"       Todo         - cor de Tarefas (chamativo)
+"
+"   Para testar uma opção sem recarregar o vimrc:
+"       :let g:indentLine_defaultGroup = 'NonText'
+"       :IndentLinesReset
+let g:indentLine_defaultGroup = 'Comment'
+
+" lista e desliga
+nnoremap <Leader>i :IndentLinesToggle<CR>
+" }}}
+
+" vim-surround ------------------------------------------------------------ {{{
+" https://github.com/tpope/vim-surround
+" surround (pares, aspas, tags) {{{
+"   Modo Normal:
+"     ds{caractere} - Apaga os delimitadores (ex: ds" para remover aspas duplas).
+"     cs{origem}{destino} - Troca um delimitador por outro (ex: cs"' muda " para ').
+"     ysiw{delim}   - Adiciona delimitador ao redor da palavra atual.
+"     yss{delim}    - Adiciona delimitador ao redor da linha toda.
+"     yS{delim}     - Adiciona delimitador e o coloca em uma nova linha.
+"
+"   Modo Visual (com V, v ou Ctrl-V):
+"     S{delim}      - Envolve a seleção atual com o delimitador.
+"
+"   Tags HTML/XML:
+"     yst<tag>      - Adiciona tags ao redor da palavra (ex: yst<em>).
+"     cst<tag>      - Troca a tag atual.
+"
+"   Delimitadores comuns:
+"     ) ou b - Parênteses ( )
+"     ] ou r - Colchetes [ ]
+"     } ou B - Chaves { }
+"     >       - Tag HTML/XML < >
+"     "       - Aspas duplas
+"     '       - Aspas simples
+" }}}
+" }}}
+
+" fzf --------------------------------------------------------------------- {{{
+" https://github.com/junegunn/fzf.vim
+let g:fzf_vim = {}
+" melhora a busca
+if executable('rg')
+    set grepprg=rg\ --vimgrep\ --smart-case
+    set grepformat=%f:%l:%c:%m
+endif
+" desativa o preview completamente
+let g:fzf_vim.preview_window = []
+let g:fzf_command_prefix = 'Fzf'
+let g:fzf_layout = { 'down': '~60%' } " up | down | left | right
+let $FZF_DEFAULT_OPTS = '
+    \ --border
+    \ --cycle
+    \ --layout=reverse
+    \ --preview-window=right:60%:wrap
+    \
+    \ --bind ctrl-k:up
+    \ --bind ctrl-j:down
+    \ --bind ctrl-y:preview-up
+    \ --bind ctrl-e:preview-down
+    \ --bind ctrl-p:preview-half-page-up
+    \ --bind ctrl-n:preview-half-page-down
+    \ --bind ctrl-space:toggle-preview
+    \ '
+
+
+if executable('fd')
+    let $FZF_DEFAULT_COMMAND = 'fd --type f --hidden --follow --exclude .git'
+endif
+if has('win32')
+    let $RG_DEFAULT_OPTS += '--no-color --no-heading'
+endif
+
+" desativa preview especificamente para BLines (buffer atual)
+" command! -nargs=* -bang FzfBLinesNoPreview
+"     \ call fzf#vim#buffer_lines(<q-args>, {'options': '--no-preview'}, <bang>0)
+
+" atalhos {{{
+" busca arquivo
+nnoremap <Leader>ff :FzfFiles<CR>
+nnoremap <Leader>fF :FzfFiles!<CR>
+" busca palavra
+nnoremap <Leader>fw :FzfRg<Space>
+nnoremap <Leader>fW :FzfRg!<Space>
+" busca palavra sob cursor
+nnoremap <Leader>f/ :FzfRg <C-R><C-W><CR>
+" busca buffers abertos
+nnoremap <Leader>fb :FzfBuffers<CR>
+nnoremap <Leader>fB :FzfBuffers!<CR>
+" bsuca mapeamentos
+nnoremap <Leader>fm :FzfMaps<CR>
+nnoremap <Leader>fM :FzfMaps!<CR>
+" busca históricos de arquivos já abertos
+nnoremap <Leader>fh :FzfHistory<CR>
+nnoremap <Leader>fH :FzfHistory!<CR>
+" busca no histórico de buscas
+nnoremap <Leader>fs :FzfHistory/<CR>
+nnoremap <Leader>fS :FzfHistory/!<CR>
+" busca no histórico de comandos
+nnoremap <Leader>fc :FzfHistory:<CR>
+nnoremap <Leader>fC :FzfHistory!:<CR>
+" busca por linha no buffer atual
+nnoremap <Leader>fl :FzfBLinesNoPreview<CR>
+nnoremap <Leader>fL :FzfBLinesNoPreview!<CR>
+" }}}
+
+" abre o buscado
+let g:fzf_action = {
+  \ 'ctrl-t': 'tab split',
+  \ 'ctrl-x': 'split',
+  \ 'ctrl-v': 'vsplit' }
+
+" herda as cores do Vim
+let g:fzf_colors = {
+  \ 'fg':      ['fg', 'Normal'],
+  \ 'bg':      ['bg', 'Normal'],
+  \ 'hl':      ['fg', 'Comment'],
+  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+  \ 'bg+':     ['bg', 'CursorLine'],
+  \ 'hl+':     ['fg', 'Statement'],
+  \ 'info':    ['fg', 'PreProc'],
+  \ 'prompt':  ['fg', 'Conditional'],
+  \ 'pointer': ['fg', 'Exception'],
+  \ 'marker':  ['fg', 'Keyword'],
+  \ 'spinner': ['fg', 'Label'],
+  \ 'header':  ['fg', 'Comment'] }
+" }}}
+
+" SimplyFold -------------------------------------------------------------- {{{
+" https://github.com/tmhedberg/SimpylFold
+let g:SimpylFold_docstring_preview=1
+let g:SimpylFold_fold_docstring=1
+let g:SimpylFold_fold_import=1
+let g:SimpylFold_fold_blank=0
+" }}}
+
+" vim-dadbod -------------------------------------------------------------- {{{
+" https://github.com/tpope/vim-dadbod
+"let g:dbs = {
+\ 'dev':
+\   'sqlserver://143.54.4.3:1111?encrypt=true&trustServerCertificate=true',
+\ 'hml':
+\   'sqlserver://143.54.4.3:3333?encrypt=true&trustServerCertificate=true',
+\}
+" }}}
+
+" whichkey ---------------------------------------------------------------- {{{
+" https://github.com/liuchengxu/vim-which-key
+nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
+" which-key: dicionário de atalhos (liderados por <Space>)
+let g:which_key_map = {}
+
+" categoria: vimrc
+let g:which_key_map['vim'] = [':e $MYVIMRC'            , 'editar vimrc']
+let g:which_key_map['so']  = [':source $MYVIMRC'       , 'recarregar vimrc']
+
+" categoria: janelas (windows)
+let g:which_key_map['w'] = {
+      \ 'name' : '+janelas',
+      \ 'd' : ['<C-W>c'     , 'fechar janela'],
+      \ 's' : [':new'       , 'nova janela (horizontal vazia)'],
+      \ 'S' : [':split'     , 'dividir janela (horizontal)'],
+      \ 'v' : [':vnew'      , 'nova janela (vertical vazia)'],
+      \ 'V' : [':vsplit'    , 'dividir janela (vertical)'],
+      \ 'h' : ['<C-w>h'     , 'ir para janela esquerda'],
+      \ 'j' : ['<C-w>j'     , 'ir para janela abaixo'],
+      \ 'k' : ['<C-w>k'     , 'ir para janela acima'],
+      \ 'l' : ['<C-w>l'     , 'ir para janela direita'],
+      \ }
+
+" categoria: tabs
+let g:which_key_map['t'] = {
+      \ 'name' : '+tabs',
+      \ 't' : [':tabnew'     , 'nova tab'],
+      \ 'd' : [':tabclose'   , 'fechar tab'],
+      \ 'n' : [':tabnext'    , 'tab seguinte'],
+      \ 'p' : [':tabprevious', 'tab anterior'],
+      \ }
+
+" categoria: buffers
+let g:which_key_map['b'] = {
+      \ 'name' : '+buffers',
+      \ 'd' : [':bdelete'    , 'fechar buffer'],
+      \ 'o' : [':w <bar> %bdelete <bar> e# <CR>', 'fechar todos exceto atual'],
+      \ 'n' : [':bnext'      , 'buffer seguinte'],
+      \ 'p' : [':bprevious'  , 'buffer anterior'],
+      \ 'l' : [':blast'      , 'último buffer'],
+      \ }
+
+" categoria: fzf
+let g:which_key_map['f'] = {
+      \ 'name' : '+fzf',
+      \ 'f' : ['FzfFiles'  , 'buscar arquivos'],
+      \ 'F' : ['FzfFiles!' , 'buscar arquivos (fullscreen)'],
+      \ 'w' : ['FzfRg'     , 'buscar palavra (rg)'],
+      \ 'W' : ['FzfRg'     , 'buscar palavra (rg) (fullscreen)'],
+      \ '/' : ['FzfRg <C-R><C-W>' , 'buscar palavra sob cursor'],
+      \ 'b' : ['FzfBuffers', 'listar buffers'],
+      \ 'B' : ['FzfBuffers!', 'buffers (fullscreen)'],
+      \ 'm' : ['FzfMaps'   , 'listar mapeamentos'],
+      \ 'M' : ['FzfMaps!'  , 'mapeamentos (fullscreen)'],
+      \ 'h' : ['FzfHistory', 'histórico de arquivos'],
+      \ 'H' : ['FzfHistory!', 'histórico (fullscreen)'],
+      \ 's' : ['FzfHistory/', 'histórico de buscas'],
+      \ 'S' : ['FzfHistory/!', 'busca histórica (fullscreen)'],
+      \ 'c' : ['FzfHistory:', 'histórico de comandos'],
+      \ 'C' : ['FzfHistory:!', 'comandos (fullscreen)'],
+      \ 'l' : ['FzfBLinesNoPreview', 'linhas no buffer atual'],
+      \ 'L' : ['FzfBLinesNoPreview!', 'linhas (fullscreen)'],
+      \ }
+
+" categoria: NERDTree
+let g:which_key_map['e'] = [':NERDTreeToggle', 'abrir/fechar NERDTree']
+let g:which_key_map['nf'] = [':NERDTreeFocus', 'focar NERDTree']
+
+" registra o dicionário para o leader <Space>
+call which_key#register('<Space>', "g:which_key_map")
+" }}}
+
+" vim-fugitive ------------------------------------------------------------ {{{
+" https://github.com/tpope/vim-fugitive
+
+" }}}
+
+" vim-gitgutter ----------------------------------------------------------- {{{
+" https://github.com/airblade/vim-gitgutter
+nnoremap <Leader>gt :GitGutterToggle<CR>
+nnoremap <Leader>gf :GitGutterFold<CR>
+nnoremap <Leader>gh :GitGutterLineHighlightsToggle<CR>
+nnoremap <Leader>gd :GitGutterDiffOrig<CR>
+nnoremap <Leader>gj :GitGutterNextHunk<CR>zz
+nnoremap <Leader>gk :GitGutterPrevHunk<CR>zz
+" desativa mapeamento padrão do gitgutter
+map <Space>hu <Nop>
+map <Space>hs <Nop>
+map <Space>hp <Nop>
+map ]c <Nop>
+map [c <Nop>
+" }}}
+
+" novo_plugin ------------------------------------------------------------- {{{
+" link/github
+
+" }}}
+
+" }}}
+
