@@ -736,9 +736,7 @@ let g:SimpylFold_fold_blank=0
 " https://github.com/tpope/vim-dadbod
 "let g:dbs = {
 \ 'dev':
-\   'sqlserver://143.54.4.3:1111?encrypt=true&trustServerCertificate=true',
-\ 'hml':
-\   'sqlserver://143.54.4.3:3333?encrypt=true&trustServerCertificate=true',
+\   'localhost',
 \}
 " }}}
 
