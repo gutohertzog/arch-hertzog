@@ -1,6 +1,5 @@
 " =============================================================================
 " vim:fileencoding=utf-8:foldmethod=marker:foldlevel=1
-"
 " =============================================================================
 "
 "                    ██╗   ██╗██╗███╗   ███╗██████╗  ██████╗
@@ -14,6 +13,7 @@
 "       Guto Hertzog - @gutohertzog
 "
 " Sections:
+"    -> VARIÁVEIS
 "    -> CONFIGURAÇÕES
 "    -> AUTOMAÇÕES
 "    -> FUNÇÕES
@@ -21,6 +21,43 @@
 "    -> PLUGINS
 "
 " =============================================================================
+
+" =============================================================================
+" VARIÁVEIS {{{
+" =============================================================================
+
+" portátil & vintage ------------------------------------------------------ {{{
+" essas variáveis vão determinar o que vai ser ativado em cada ambiente e as
+" suas específicas configurações
+
+" flags manuais
+"   - 0 = arquivos portáteis
+"   — 1 = arquivos locais
+let s:is_portable = 0
+"   - 0 = terminal moderno
+"   — 1 = terminal antigo
+let s:is_vintage = 0
+" }}}
+
+" ambiente ---------------------------------------------------------------- {{{
+" flags para determinar o ambiente de execução
+let s:is_unix    = has('unix')
+let s:is_mac     = has('mac') || has('macunix')
+let s:is_windows = has('win32') || has('win64')
+let s:is_wsl     = has('unix') && filereadable('/proc/version') &&
+                 \ (system('grep -i microsoft /proc/version') != '')
+" }}}
+
+" local vimrc ------------------------------------------------------------- {{{
+" local de execução do vimrc
+let s:vimrc_root = fnamemodify(resolve(expand('<sfile>:p')), ':h')
+
+" diretório onde ficarão os diretórios para swap, undo, backup e info
+call mkdir(s:vimrc_root . '/data',   'p')
+let s:data_dir = s:vimrc_root . '/data'
+" }}}
+
+" }}}
 
 " =============================================================================
 " CONFIGURAÇÕES {{{
@@ -47,82 +84,77 @@ set clipboard=unnamed,unnamedplus
 " }}}
 
 " interface --------------------------------------------------------------- {{{
-" ajustes importantes para o CMD
-" Screen Background 0/0/0
-" Screen Text 200/200/200
 syntax on               " habilite realce de sintaxe
 filetype plugin indent on
 colorscheme desert      " cores para tema escuro desert, evening, ron, slate
 set background=dark
-set t_Co=256            " força 256 cores
 set number              " mostra número das linhas
 set relativenumber      " números relativos para navegação
 set ruler               " mostra posição do cursor
 set showcmd             " exibe comandos incompletos
 set laststatus=2        " sempre mostra a barra de status
-set statusline=global
-set noshowmode          " mostra modo atual (normal, insert, etc)
-set signcolumn=auto
 set colorcolumn=80,100
 set scrolloff=3         " mantém 3 linhas de amrgem ao rolar
 set sidescrolloff=0     " mantém 0 colunas de margem ao rolar
-set showmatch
+set showmatch           " brevemente indica o par
 set splitbelow          " divide a tela para baixo
 set splitright          " divide a tela para direita
 set splitkeep=screen    " ao dividir, mantém o texto na mesma linha da tela
 set conceallevel=0      " evita que caracteres fiquem invisíveis
-set showbreak=↪\
-set listchars=tab:<->,eol:↲,nbsp:║,space:␣,trail:•,extends:⟩,precedes:⟨
-set nolist
-
-set matchpairs+=<:>     " amplia o funcionamento do % para mais pares
-" remove o fundo do cursorline
+set nolist              " desativa os caracteres de marcação
 set nocursorcolumn      " deixa desativado o destaque da coluna do cursor
-set cursorline          " destaca a linha atual
-" remove o fundo e deixa apenas a linha
-highlight CursorLine cterm=underline ctermbg=NONE ctermfg=NONE
+set matchpairs+=<:>     " amplia o funcionamento do % para mais pares
+
+
+if s:is_vintage
+    " ajustes importantes para o CMD
+    " Screen Background 0/0/0
+    " Screen Text 200/200/200
+    set t_Co=16         " define 16 cores
+    set nocursorline    " desativa o destaque de linha
+    " caracteres de marcação simples
+    set showbreak=>\
+    set listchars=tab:>-,eol:$,nbsp:_,space:.,trail:-,extends:>,precedes:<
+else
+    set t_Co=256        " define 256 cores
+    set cursorline      " destaca a linha atual
+    " remove o fundo e deixa apenas a linha
+    highlight CursorLine cterm=underline ctermbg=NONE ctermfg=NONE
+    " caracteres de marcação elaborados
+    set showbreak=↪\
+    set listchars=tab:<->,eol:↲,nbsp:║,space:␣,trail:•,extends:⟩,precedes:⟨
+endif
+
 " }}}
 
 " backup swap undo -------------------------------------------------------- {{{
-" Dica: certifique-se de criar essas pastas antes de usar:
-"   Linux :
-"       - mkdir -p ~/.config/vim/backups
-"       - mkdir -p ~/.config/vim/undo
-"       - mkdir -p ~/.config/vim/swaps
-"   Windows:
-"       - mkdir %USERPROFILE%\vimfiles\backups
-"       - mkdir %USERPROFILE%\vimfiles\undos
-"       - mkdir %USERPROFILE%\vimfiles\swaps
-
-set backup      " habilita arquivos de backup (~)
-set undofile    " habilita histórico de undo persistente
-set swapfile    " habilita swapfiles (.swp)
-set undolevels=1000
-
-" detecta SO
-if has("win32") || has("win64")
-    let s:vim_data = expand('~/vimfiles')       " Windows
-else
-    let s:vim_data = expand('~/.config/vim')    " Linux / Unix / macOS
-endif
+" cria os diretórios se não existirem
+call mkdir(s:data_dir . '/swaps',   'p')
+call mkdir(s:data_dir . '/backups', 'p')
+call mkdir(s:data_dir . '/undos',   'p')
+call mkdir(s:data_dir . '/viminfo', 'p')
 
 " pastas
-let s:backupdir = s:vim_data . '/backups//'
-let s:undodir   = s:vim_data . '/undos//'
-let s:swapdir   = s:vim_data . '/swaps//'
+let s:backupdir = s:data_dir . '/backups//'
+let s:undodir   = s:data_dir . '/undos//'
+let s:swapdir   = s:data_dir . '/swaps//'
+if exists('+shada')
+    execute 'set shadafile=' . s:data_dir . '/viminfo/main.shada'
+else
+    execute 'set viminfofile=' . s:data_dir . '/viminfo/main.viminfo'
+endif
 
 " aplica as configurações
+set backup      " habilita arquivos de backup (~)
 execute 'set backupdir=' . s:backupdir
-execute 'set undodir='   . s:undodir
+
+set undofile    " habilita histórico de undo persistente
+set undolevels=1000
+execute 'set undodir=' . s:undodir
+
+set swapfile    " habilita swapfiles (.swp)
 execute 'set directory=' . s:swapdir
-
-if exists('+shada')
-    execute 'set shadafile=' . s:vim_data . '/viminfo/main.shada'
-else
-    execute 'set viminfofile=' . s:vim_data . '/viminfo/main.viminfo'
-endif
 " }}}
-
 
 " menu -------------------------------------------------------------------- {{{
 " menu = mostra popup de opções
@@ -222,32 +254,30 @@ set diffopt+=algorithm:histogram
 " AUTOMAÇÕES {{{
 " =============================================================================
 
-" toggle relativenumber normal -------------------------------------------- {{{
-" ativar relativenumber no modo normal
+" RelNumToggle ------------------------------------------------------------ {{{
+" ativa relativenumber no modo normal e desativa no modo insert
 augroup RelNumToggle
   autocmd!
-  " Desativar relativenumber ao entrar no modo de inserção
   autocmd InsertEnter * set norelativenumber
-  " Ativar relativenumber ao sair do modo de inserção
   autocmd InsertLeave * set relativenumber
 augroup END
 " é necessário já que <C-c> não dispara os eventos Insert Enter/Leave
 inoremap <C-c> <Esc>:set relativenumber<CR>
 " }}}
 
-" {{{
-" }}}
+" {{{ AQUI }}}
 
-" atualiza arquivo -------------------------------------------------------- {{{
+" AutoRead ---------------------------------------------------------------- {{{
 " recarrega o arquivo se estiver sendo alterado em outro lugar
 set autoread
-augroup AuroRead
+augroup AutoRead
     autocmd!
     autocmd FocusGained,BufEnter * silent! checktime
 augroup END
 " }}}
 
-" formato de texto -------------------------------------------------------- {{{
+" FormatOptions ----------------------------------------------------------- {{{
+" evita inserir e formatar comentários automaticamente
 augroup FormatOptions
     autocmd!
     autocmd FileType * setlocal
@@ -257,14 +287,16 @@ augroup FormatOptions
 augroup END
 " }}}
 
-" definições automáticas para tipos determinados -------------------------- {{{
+" WindowsFiles ------------------------------------------------------------ {{{
+" define tipo dos para os arquivos do Windows
 augroup WindowsFiles
     autocmd!
     autocmd BufNewFile,BufRead *.bat,*.cmd setlocal fileformat=dos
 augroup END
 " }}}
 
-" configurações por filetype ---------------------------------------------- {{{
+" FileTypeSettings -------------------------------------------------------- {{{
+" ajustes individuais para cada tipo de arquivo
 augroup FileTypeSettings
     autocmd!
     " Python: PEP8
@@ -285,14 +317,16 @@ augroup FileTypeSettings
 augroup END
 " }}}
 
-" rodar arquivo atual ----------------------------------------------------- {{{
-augroup RunCurrentFile
+" RunCurrentPythonFile ---------------------------------------------------- {{{
+" roda o arquivo python atual
+augroup RunCurrentPythonFile
     autocmd!
     autocmd FileType python nnoremap <buffer> <F5> :w<CR>:bel term python %<CR>
 augroup END
 " }}}
 
-" ajusta o fold para melhor desempenho ------------------------------------ {{{
+" FastFoldLite ------------------------------------------------------------ {{{
+" ajusta o fold para melhor desempenho
 augroup FastFoldLite
     autocmd!
     autocmd InsertEnter * setlocal foldmethod=manual
@@ -306,7 +340,8 @@ augroup END
 " FUNÇÕES {{{
 " =============================================================================
 
-" trim trailing whitespace ------------------------------------------------ {{{
+" Trim Trailing Whitespace ------------------------------------------------ {{{
+" remove os espaços em branco ao final da linha
 function! s:TrimTrailingWhitespace() abort
     let l:save = winsaveview()
     keeppatterns %s/\s\+$//e
@@ -509,6 +544,8 @@ let g:ftplugin_sql_omni_key = '<Plug>DisableSqlOmni'
 
 " airline ----------------------------------------------------------------- {{{
 " https://github.com/vim-airline/vim-airline
+set noshowmode          " desativa o informativo do modo atual
+
 let g:airline_theme = 'dark'
 let g:airline_powerline_fonts = 1
 let g:airline_left_sep = ''
@@ -736,7 +773,9 @@ let g:SimpylFold_fold_blank=0
 " https://github.com/tpope/vim-dadbod
 "let g:dbs = {
 \ 'dev':
-\   'localhost',
+\   'sqlserver://143.54.4.3:1111?encrypt=true&trustServerCertificate=true',
+\ 'hml':
+\   'sqlserver://143.54.4.3:3333?encrypt=true&trustServerCertificate=true',
 \}
 " }}}
 
@@ -820,6 +859,7 @@ call which_key#register('<Space>', "g:which_key_map")
 
 " vim-gitgutter ----------------------------------------------------------- {{{
 " https://github.com/airblade/vim-gitgutter
+set signcolumn=auto     " mostra a coluna de sinais
 nnoremap <Leader>gt :GitGutterToggle<CR>
 nnoremap <Leader>gf :GitGutterFold<CR>
 nnoremap <Leader>gh :GitGutterLineHighlightsToggle<CR>
