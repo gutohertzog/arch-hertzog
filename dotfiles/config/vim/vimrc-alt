@@ -95,7 +95,6 @@ set clipboard=unnamed,unnamedplus
 " interface --------------------------------------------------------------- {{{
 syntax on               " habilite realce de sintaxe
 filetype plugin indent on
-colorscheme desert      " cores para tema escuro desert, evening, ron, slate
 set background=dark
 set number              " mostra número das linhas
 set relativenumber      " números relativos para navegação
@@ -328,15 +327,6 @@ augroup RunCurrentPythonFile
 augroup END
 " }}}
 
-" FastFoldLite ------------------------------------------------------------ {{{
-" ajusta o fold para melhor desempenho
-augroup FastFoldLite
-    autocmd!
-    autocmd InsertEnter * setlocal foldmethod=manual
-    autocmd InsertLeave * setlocal foldmethod=syntax | silent! normal! zx
-augroup END
-" }}}
-
 " }}}
 
 " =============================================================================
@@ -460,7 +450,7 @@ nnoremap <Leader>bo :call <SID>OnlyCurrentBuffer()<CR>
 nnoremap \\ :nohlsearch<CR>
 
 " ordena conteúdo selecionado
-vnoremap <C-s> :sort<CR>
+" vnoremap <C-s> :sort<CR>
 " }}}
 
 " terminal ---------------------------------------------------------------- {{{
@@ -509,6 +499,7 @@ let g:ftplugin_sql_omni_key = '<Plug>DisableSqlOmni'
 if s:is_portable
     let g:plugins_dir = s:vimrc_root . '/vimfiles/pack/plugins/start'
 else
+    " arrumar para ver como fica sem portabilidade
     let g:plugins_dir = ''
 endif
 " }}}
@@ -539,9 +530,9 @@ if g:has_ale
     let g:ale_fix_on_save = 0                " fix NÃO automático (segurança)
 
     " python embarcado: aponta para o executável correto
-    let g:ale_python_executable = g:portable_root . '/../python/python.exe'
-    let g:ale_python_executable = resolve(
-        \ fnamemodify(g:portable_root, ':h') . '/python/python.exe')
+    let g:ale_python_executable = s:vimrc_root . '/../python/python.exe'
+    " let g:ale_python_executable = resolve(
+        \ fnamemodify(s:vimrc_root, ':h') . '/python/python.exe')
 
     " aparência
     let g:ale_sign_error   = 'E'
@@ -596,7 +587,7 @@ endif
 " NERDTree ---------------------------------------------------------------- {{{
 let g:has_nerdtree = isdirectory(g:plugins_dir . '/nerdtree')
 
-if has_nerdtree
+if g:has_nerdtree
     " abrir/fechar
     nnoremap <Leader>e :NERDTreeToggle<CR>
     " atalho para focar na árvore
@@ -612,7 +603,7 @@ if has_nerdtree
     " fechar automaticamente
     let g:NERDTreeQuitOnOpen = 0
     " mostra as pastas vazias desagrupadas
-    let NERDTreeCascadeSingleChildDir=0
+    let g:NERDTreeCascadeSingleChildDir=0
 endif
 " }}}
 
@@ -715,7 +706,7 @@ if g:has_surround
     "     "       - Aspas duplas
     "     '       - Aspas simples
     " }}}
-end
+endif
 " }}}
 
 " fzf --------------------------------------------------------------------- {{{
@@ -755,7 +746,7 @@ if g:has_fzf
             \ fd --type f --hidden --follow --exclude .git'
     endif
     if has('win32') || has('win64')
-        let $RG_DEFAULT_OPTS = '--no-color --no-heading'
+        let $RG_DEFAULT_OPTS = $RG_DEFAULT_OPTS . ' --no-color --no-heading'
     endif
 
     " desativa preview especificamente para BLines (buffer atual)
@@ -832,7 +823,7 @@ endif
 " https://github.com/tpope/vim-dadbod
 " https://github.com/kristijanhusak/vim-dadbod-ui
 let g:has_dadbod = isdirectory(g:plugins_dir . '/vim-dadbod')
-let g:has_dadbod_ui = isdirectory(g:plugins_dir . '/vim-dadbod_ui')
+let g:has_dadbod_ui = isdirectory(g:plugins_dir . '/vim-dadbod-ui')
 
 if g:has_dadbod && g:has_dadbod_ui
     call mkdir(s:data_dir . '/dadbod', 'p')
@@ -1024,6 +1015,46 @@ if g:has_gitgutter
     map <Space>hp <Nop>
     map ]c <Nop>
     map [c <Nop>
+endif
+" }}}
+
+" FastFold ---------------------------------------------------------------- {{{
+" https://github.com/Konfekt/FastFold
+let g:has_fastfold = isdirectory(g:plugins_dir . '/FastFold')
+
+if g:has_fastfold
+    let g:fastfold_savehook = 1
+    nnoremap <leader>z :FastFoldUpdate<CR>
+endif
+" }}}
+
+" vim-code-dark ----------------------------------------------------------- {{{
+" https://github.com/tomasiser/vim-code-dark
+let g:has_code_dark = isdirectory(g:plugins_dir . '/vim-code-dark')
+
+if g:has_code_dark
+    let g:codedark_transparent = 0
+    let g:codedark_conservative = 0
+
+    if s:is_vintage
+        let g:codedark_modern = 0
+        let g:codedark_italics = 0
+    else
+        set t_ut=
+        set termguicolors
+        let g:codedark_modern = 1
+        let g:codedark_italics = 1
+        highlight Comment gui=italic cterm=italic
+
+        " necessário para sobreescrever os ajustes do tema
+        augroup MyCodeDarkTweaks
+            autocmd!
+            autocmd ColorScheme codedark highlight Comment guifg=#696969
+        augroup END
+    endif
+
+    let g:airline_theme = 'codedark'
+    colorscheme codedark
 endif
 " }}}
 
