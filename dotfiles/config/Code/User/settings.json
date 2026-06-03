@@ -18,7 +18,7 @@
     "editor.colorDecoratorsLimit": 1000,
     "editor.cursorBlinking": "smooth",
     "editor.cursorSmoothCaretAnimation": "on",
-    "editor.cursorStyle": "line",
+    "editor.cursorStyle": "block",
     "editor.cursorSurroundingLines": 2,
     "editor.dragAndDrop": true,
     "editor.dropIntoEditor.enabled": true,

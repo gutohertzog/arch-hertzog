@@ -1,6 +1,6 @@
+" =============================================================================
 " vim:fileencoding=utf-8:foldmethod=marker:foldlevel=1
-"
-"==============================================================================
+" =============================================================================
 "
 "                    ██╗   ██╗██╗███╗   ███╗██████╗  ██████╗
 "                    ██║   ██║██║████╗ ████║██╔══██╗██╔════╝
@@ -13,559 +13,504 @@
 "       Guto Hertzog - @gutohertzog
 "
 " Sections:
-"    -> Primeiro
-"    -> Interface
-"    -> Edição
-"    -> Pesquisa
-"    -> Backup, Swap e Undo
-"    -> Plug
+"    -> VARIÁVEIS
+"    -> CONFIGURAÇÕES
+"    -> AUTOMAÇÕES
+"    -> FUNÇÕES
+"    -> ATALHOS
+"    -> PLUGINS
 "
-"==============================================================================
-" PRIMEIRO ---------------------------------------------------------------- {{{
-" configurações que PRECISAM ser carregadas antes de tudo
-set nocompatible            " desativa a compatibilidade com vi
-set encoding=utf-8          " define a codificação padrão
-set fileencoding=utf-8      " garante que arquivos sejam salvos em UTF-8
-set fileformats=unix,dos,mac
+" =============================================================================
+
+" desativa compatibilidade com VI para todo o resto funcionar
+set nocompatible
+
+" =============================================================================
+" VARIÁVEIS {{{
+" =============================================================================
+
+" portátil & vintage ------------------------------------------------------ {{{
+" essas variáveis vão determinar o que vai ser ativado em cada ambiente e as
+" suas específicas configurações
+
+" flags manuais
+"   - 0 = arquivos portáteis
+"   — 1 = arquivos locais
+let g:is_portable = 0
+"   - 0 = terminal moderno
+"   — 1 = terminal antigo
+let g:is_vintage = 0
 " }}}
 
-" INTERFACE --------------------------------------------------------------- {{{
-syntax on               " habilite realce de sintaxe
+" ambiente ---------------------------------------------------------------- {{{
+" flags para determinar o ambiente de execução
+let g:is_unix    = has('unix') " verdadeiro em Linux e macOS
+let g:is_mac     = has('mac') || has('macunix') " específico para macOS
+let g:is_windows = has('win32') || has('win64') " qualquer Windows
+" WSL: Linux rodando dentro do Windows
+let g:is_wsl = has('unix')
+    \ && filereadable('/proc/version')
+    \ && join(readfile('/proc/version')) =~? 'microsoft'
+" }}}
+
+" local vimrc ------------------------------------------------------------- {{{
+" local de execução do vimrc
+let g:vimrc_root = fnamemodify(resolve(expand('<sfile>:p')), ':h')
+
+" local onde ficarão os diretórios para swap, undo, backup e info
+call mkdir(g:vimrc_root . '/data',   'p')
+let g:data_dir = g:vimrc_root . '/data'
+" }}}
+
+" arquivos temporários ---------------------------------------------------- {{{
+call mkdir(g:data_dir . '/temporarios', 'p')
+" redireciona temp do Windows para pasta portátil
+let $TEMP = g:data_dir . '/temporarios'
+let $TMP  = g:data_dir . '/temporarios' " $TMP é a variante curta
+" }}}
+
+" runtime path ------------------------------------------------------------ {{{
+" define o local de execução para o local do vimrc, ignorando vimfiles
+" prioriza pacotes da pasta portátil
+execute 'set packpath^=' . g:vimrc_root
+" prioriza scripts da pasta portátil
+execute 'set runtimepath^=' . g:vimrc_root
+" adiciona o diretório after ao final
+execute 'set runtimepath+=' . g:vimrc_root . '/after'
+" }}}
+
+" plug -------------------------------------------------------------------- {{{
+" ativa o gerenciador de plugins (0 = desativado, 1 = ativado)
+" https://github.com/junegunn/vim-plug
+" TODO: adicionar um validador para ignorar o pack quando plug estiver ativado
+let g:is_plug_active = 1
+" }}}
+
+" }}}
+
+" =============================================================================
+" CONFIGURAÇÕES {{{
+" =============================================================================
+
+set history=1000 " quantidade de histórico armazenado
+
+" codificação ------------------------------------------------------------- {{{
+set encoding=utf-8           " encoding interno do Vim
+scriptencoding utf-8         " declara que este arquivo vimrc está em UTF-8
+setglobal fileencoding=utf-8 " padrão para novos arquivos
+
+setglobal fileformat=unix    " padrão para novos arquivos
+set fileformats=unix,dos,mac " ordem de detecção ao abrir novos arquivos
+" }}}
+
+" tecla leader ------------------------------------------------------------ {{{
+let mapleader=" "      " espaço como tecla líder global
+let maplocalleader=" " " espaço como tecla líder local (por buffer)
+" }}}
+
+" clipboard --------------------------------------------------------------- {{{
+set clipboard=unnamed,unnamedplus " integracom clipboard do sistema (* e +)
+" }}}
+
+" interface --------------------------------------------------------------- {{{
+syntax on               " habilita realce de sintaxe
+" ativa detecção de tipo, plugins e indentação por filetype
+filetype plugin indent on
+set background=dark     " orienta o tema a usar paleta para fundo escuro
 set number              " mostra número das linhas
 set relativenumber      " números relativos para navegação
-set cursorline          " destaca a linha atual
 set ruler               " mostra posição do cursor
 set showcmd             " exibe comandos incompletos
 set laststatus=2        " sempre mostra a barra de status
-set noshowmode          " mostra modo atual (normal, insert, etc)
-set wildmenu            " menu de autocompletar mais amigável
-set scrolloff=3         " mantém 3 linhas de amrgem ao rolar
+set colorcolumn=80,100  " colunas orientação visual
+set scrolloff=3         " mantém 3 linhas de margem ao rolar
 set sidescrolloff=0     " mantém 0 colunas de margem ao rolar
+set showmatch           " brevemente indica o par
 set splitbelow          " divide a tela para baixo
 set splitright          " divide a tela para direita
 set splitkeep=screen    " ao dividir, mantém o texto na mesma linha da tela
-" }}}
+set conceallevel=0      " evita que caracteres fiquem invisíveis
+set nolist              " desativa os caracteres de marcação
+set nocursorcolumn      " deixa desativado o destaque da coluna do cursor
+set matchpairs+=<:>     " amplia o funcionamento do % para mais pares
+set showmode            " informativo do modo atual
+set title               " adiciona no título do terminal o arquivo e caminho
+set wrap                " quebra de linha visual
+set tm=500              " tempo (ms) para completar sequência de teclas
 
-" EDIÇÃO ------------------------------------------------------------------ {{{
-set tabstop=4                   " largura de tabulação
-set shiftwidth=4                " tamanho de indentação automática
-set expandtab                   " converte TABs em espaços
-set smarttab                    " TAB inteligente
-set autoindent                  " copia indentação da linha anterior
-set smartindent                 " indentação inteligente
-set backspace=indent,eol,start  " como o backspace funciona no final da linha
-" }}}
-
-" PESQUISA ---------------------------------------------------------------- {{{
-set wrapscan    " volta para o começo do arquivo quando chegar ao final
-set ignorecase  " ignora maiúsculas / minúsculas
-set smartcase   " respeita se usar maiúscula
-set incsearch   " busca incremental
-set hlsearch    " destaca todas as ocorrências
-" }}}
-
-" BACKUP, SWAP E UNDO ----------------------------------------------------- {{{
-" Dica: certifique-se de criar essas pastas antes de usar:
-"   Linux :
-"       - mkdir -p ~/.config/vim/backups
-"       - mkdir -p ~/.config/vim/undo
-"       - mkdir -p ~/.config/vim/swaps
-"   Windows:
-"       - mkdir %USERPROFILE%\vimfiles\backups
-"       - mkdir %USERPROFILE%\vimfiles\undos
-"       - mkdir %USERPROFILE%\vimfiles\swaps
-
-set backup      " habilita arquivos de backup (~)
-set undofile    " habilita histórico de undo persistente
-set swapfile    " habilita swapfiles (.swp)
-
-" detecta SO
-if has("win32") || has("win64")
-    let s:vim_data = expand('~/vimfiles')       " Windows
+if g:is_vintage
+    " ajustes importantes para o CMD
+    " Screen Background 0/0/0
+    " Screen Text 200/200/200
+    set t_Co=16         " define 16 cores
+    set nocursorline    " desativa o destaque de linha
+    " caracteres de marcação simples
+    set showbreak=>\
+    set listchars=tab:>-,eol:$,nbsp:_,space:.,trail:-,extends:>,precedes:<
 else
-    let s:vim_data = expand('~/.config/vim')    " Linux / Unix / macOS
+    set t_Co=256        " define 256 cores
+    set cursorline      " destaca a linha atual
+    " remove o fundo e deixa apenas a linha
+    highlight CursorLine cterm=underline ctermbg=NONE ctermfg=NONE
+    " caracteres de marcação elaborados
+    set showbreak=↪\
+    set listchars=tab:<->,eol:↲,nbsp:║,space:␣,trail:•,extends:⟩,precedes:⟨
 endif
+" }}}
+
+" backup swap undo -------------------------------------------------------- {{{
+" cria os diretórios se não existirem
+call mkdir(g:data_dir . '/swaps',   'p')
+call mkdir(g:data_dir . '/backups', 'p')
+call mkdir(g:data_dir . '/undos',   'p')
+call mkdir(g:data_dir . '/viminfo', 'p')
 
 " pastas
-let s:backupdir = s:vim_data . '/backups//'
-let s:undodir   = s:vim_data . '/undos//'
-let s:swapdir   = s:vim_data . '/swaps//'
+let s:backupdir = g:data_dir . '/backups//'
+let s:undodir   = g:data_dir . '/undos//'
+let s:swapdir   = g:data_dir . '/swaps//'
+if exists('+shada')
+    execute 'set shadafile=' . g:data_dir . '/viminfo/main.shada'
+else
+    execute 'set viminfofile=' . g:data_dir . '/viminfo/main.viminfo'
+endif
+
+set backup          " habilita arquivos de backup (~)
+set swapfile        " habilita swapfiles (.swp)
+set undofile        " habilita histórico de undo persistente
+set undolevels=1000 " aumenta a quantidade de undo
 
 " aplica as configurações
 execute 'set backupdir=' . s:backupdir
-execute 'set undodir='   . s:undodir
+execute 'set undodir=' . s:undodir
 execute 'set directory=' . s:swapdir
 " }}}
 
-" PLUG -------------------------------------------------------------------- {{{
-" instala automaticamente o vim-plug, caso não exista
-if empty(glob('~/.config/vim/autoload/plug.vim'))
-    silent !curl -fLo ~/.config/vim/autoload/plug.vim --create-dirs \
-        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-    autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
-endif
-
-call plug#begin('~/.config/vim/plugged')
-
-" aparência
-Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
-Plug 'machakann/vim-highlightedyank'
-Plug 'ryanoasis/vim-devicons'
-Plug 'vim-airline/vim-airline'
-Plug 'voldikss/vim-floaterm'
-Plug 'liuchengxu/vim-which-key', { 'on': ['WhichKey', 'WhichKey!'] }
-
-" navegação
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
-Plug 'preservim/nerdtree'
-Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
-
-" git
-Plug 'airblade/vim-gitgutter'
-Plug 'tpope/vim-fugitive'
-
-" linguagens
-Plug 'dense-analysis/ale'
-
-" plugins carregados manualmente
-" Plug 'tomasiser/vim-code-dark'
-" Plug 'tpope/vim-commentary'
-
-" para testar
-" Plug 'ycm-core/YouCompleteMe'
-" Plug 'TaDaa/vimade'
-" Plug 'tpope/vim-surround'
-
-call plug#end()
+" menu -------------------------------------------------------------------- {{{
+set completeopt=menu        " mostra popup de opções
+set completeopt+=menuone    " mostra mesmo com apenas um
+set completeopt+=noselect   " não seleciona o primeiro automaticamente
+set pumheight=10            " tamanho do popup
+set shortmess+=c            " reduz mensagens durante autocomplete
+set complete-=i             " evita scaneamento profundo em projetos grandes
 " }}}
 
-filetype on
-filetype plugin on
-filetype indent on
-
-let mapleader=" "
-let maplocalleader=" "
-
-" PLUGINS ----------------------------------------------------------------- {{{
-
-" ale - Asynchronous Lint Engine {{{
-let g:ale_lsp_suggestions = 1
-let g:ale_completion_enabled = 1
-let g:ale_completion_autoimport = 1
-let g:ale_sign_column_always = 1
-let g:ale_fix_on_save = 1
-let g:ale_sign_error = '>>'
-let g:ale_sign_warning = '--'
-"let g:ale_echo_msg_error_str = 'E'
-"let g:ale_echo_msg_warning_str = 'W'
-"let g:ale_echo_msg_format = '[%linter%] %code: %s'
-let g:ale_echo_msg_error_str = 'E'
-let g:ale_echo_msg_warning_str = 'W'
-let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
-let g:ale_set_highlights = 0
-
-" Set this. Airline will handle the rest.
-let g:airline#extensions#ale#enabled = 1
-
-let g:ale_linters = {'python': 'all'}
-"'remove_trailing_lines',
-let g:ale_fixers = {
-\   '*': ['trim_whitespace'],
-\}
-"
-set omnifunc=ale#completion#OmniFunc
-" }}}
-
-" airline {{{
-" https://github.com/vim-airline/vim-airline
-let g:airline_powerline_fonts = 1
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#formatter = 'default'
-let g:airline#extensions#tabline#show_buffers = 1
-" }}}
-
-" highlightedyank {{{
-" https://github.com/machakann/vim-highlightedyank
-let g:highlightedyank_highlight_duration = 250
-" }}}
-
-" nerdtree {{{
-" https://github.com/preservim/nerdtree
-let g:NERDTreeFileLines = 1
-" inicia nerdtree com o cursor nela
-"autocmd VimEnter * NERDTree
-let NERDTreeShowHidden = 1
-
-" mostra as pastas vazias desagrupadas
-let NERDTreeCascadeSingleChildDir=0
-
-noremap <Leader>e :NERDTreeToggle<CR>
-noremap <Leader>E :NERDTreeFocus<CR>
-noremap <Leader>ntf :NERDTreeFind<CR>
-noremap <Leader>ntr :NERDTreeRefreshRoot<CR>
-" }}}
-
-" fzf {{{
-" https://github.com/junegunn/fzf.vim
-let g:fzf_command_prefix = 'Fzf'
-let g:fzf_history_dir = '~/.config/local/share/fzf-vim-history'
-let $FZF_DEFAULT_OPTS = '--reverse'
-
-let g:fzf_vim = {}
-let g:fzf_vim.preview_window = ['right,50%,<60(up,40%)', 'ctrl-l']
-"let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
-"let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6, 'relative': v:true } }
-"let g:fzf_layout = { 'window': { 'width': 0.8, 'height': 0.6, 'border': 'rounded' } }
-
-" procura {{{
-" arquivos
-noremap <Leader>ff :FzfFiles<CR>
-noremap <Leader>fF :FzfFiles!<CR>
-noremap <Leader>fw :FzfRg<Space>
-noremap <Leader>fW :FzfRg!<Space>
-noremap <Leader>fb :FzfBuffers<CR>
-noremap <Leader>fB :FzfBuffers!<CR>
-" atalhos
-noremap <Leader>fk :FzfMaps<CR>
-noremap <Leader>fK :FzfMaps!<CR>
-" histórico arquivos
-noremap <Leader>fh :FzfHistory<CR>
-noremap <Leader>fH :FzfHistory!<CR>
-" histórico busca
-noremap <Leader>fs :FzfHistory/<CR>
-noremap <Leader>fS :FzfHistory/!<CR>
-" comandos
-noremap <Leader>fc :FzfHistory:<CR>
-noremap <Leader>fC :FzfHistory:!<CR>
-" completamentos
-imap <c-x><c-k> <plug>(fzf-complete-word)
-imap <c-x><c-f> <plug>(fzf-complete-path)
-imap <c-x><c-l> <plug>(fzf-complete-line)
-
-" }}}
-" }}}
-
-" floaterm {{{
-" https://github.com/voldikss/vim-floaterm
-nnoremap <C-;> :FloatermToggle<CR>
-tnoremap <C-;> <C-\><C-n>:FloatermToggle<CR>
-tnoremap <F5> python main.py<CR>
-tnoremap <F8> <C-\><C-n>:FloatermKill<CR>
-
-let g:floaterm_width = 0.6
-let g:floaterm_height = 0.8
-" }}}
-
-" vim-gitgutter {{{
-nnoremap <Leader>gt :GitGutterToggle<CR>
-nnoremap <Leader>gf :GitGutterFold<CR>
-nnoremap <Leader>gh :GitGutterLineHighlightsToggle<CR>
-nnoremap <Leader>gd :GitGutterDiffOrig<CR>
-nnoremap <Leader>gj :GitGutterNextHunk<CR>zz
-nnoremap <Leader>gk :GitGutterPrevHunk<CR>zz
-map <Space>hu <Nop>
-map <Space>hs <Nop>
-map <Space>hp <Nop>
-map ]c <Nop>
-map [c <Nop>
-" }}}
-
-" extensões instaladas manualmente {{{
-" reservado a extensões que são apenas poucos arquivos vim
-" codedark {{{
-" https://github.com/tomasiser/vim-code-dark
-let g:codedark_modern = 1
-let g:codedark_italics = 1
-let g:codedark_transparent = 0
-let g:airline_theme = 'codedark'
-" }}}
-
-" clock {{{
-let g:airline#extensions#clock#auto = 1
-let g:airline#extensions#clock#format = '%H:%M'
-let g:airline#extensions#clock#updatetime = 1000
-" }}}
-
-" }}}
-
-" }}}
-" FUNÇÕES ----------------------------------------------------------------- {{{
-" ToggleChars {{{
-" função para ativar e desativar os caracteres de marcação
-"let g:t_flag = 0
-"
-"function! ToggleChars()
-"  if g:t_flag
-"    echom "listchar desativado"
-"    set nolist
-"    let g:t_flag = 0
-"  else
-"    echom "listchar ativado"
-"    set list
-"    set listchars=tab:<->,eol:↲,nbsp:║,space:␣,trail:•,extends:⟩,precedes:⟨
-"    let g:t_flag = 1
-"  endif
-"endfunction
-"
-"nnoremap <F12> :call ToggleChars()<CR>
-" }}}
-
-" ToggleTransparency {{{
-" função para ativar e desativar a transparência
-let g:b_flag = 1
-
-function! ToggleTransparency()
-  if g:b_flag
-    echom "fundo transparente desativado"
-    hi Normal ctermbg=234
-    let g:b_flag = 0
-  else
-    echom "fundo transparente ativado"
-    hi Normal ctermbg=None
-    let g:b_flag = 1
-  endif
-endfunction
-
-nnoremap <F12> :call ToggleTransparency()<CR>
-" }}}
-
-" }}}
-" AUTOMAÇÕES -------------------------------------------------------------- {{{
-
-" Ativar relativenumber no modo normal
-augroup RelNumToggle
-  autocmd!
-  " Desativar relativenumber ao entrar no modo de inserção
-  autocmd InsertEnter * set norelativenumber
-  " Ativar relativenumber ao sair do modo de inserção
-  autocmd InsertLeave * set relativenumber
-augroup END
-" é necessário já que <C-c> não dispara os eventos Insert Enter/Leave
-inoremap <C-c> <Esc>:set relativenumber<CR>
-
-" }}}
-" CONFIGURAÇÕES ----------------------------------------------------------- {{{
-
-" cursor {{{
-"   Ps = 0  -> blinking block
-"   Ps = 1  -> blinking block (default)
-"   Ps = 2  -> steady block
-"   Ps = 3  -> blinking underline
-"   Ps = 4  -> steady underline
-"   Ps = 5  -> blinking bar (xterm)
-"   Ps = 6  -> steady bar (xterm)
-let &t_SI = "\e[6 q"
-let &t_EI = "\e[2 q"
-" }}}
-
-" ftpplugin {{{
-" troca o sql completation de ctrl+c para abaixo
-" let g:ftplugin_sql_omni_key = '<Leader>sql'
-" desativa o comando
-let g:ftplugin_sql_omni_key = '<Plug>DisableSqlOmni'
-" }}}
-
-" tema {{{
-set t_Co=256
-set t_ut=
-" cores do programa
-colorscheme codedark
-" fundo transparente
-"hi Normal ctermbg=NONE
-set background=dark
-" }}}
-
-
-" atualiza arquivo se alterado fora
-set autoread
-au FocusGained,BufEnter * silent! checktime
-
-" troca local do viminfo
-set viminfo+=n~/.cache/vim/viminfo
-
-" regex
-set magic
-
-set noautowrite
-set hidden
-
-set clipboard=unnamed,unnamedplus
-
-set completeopt=menu,menuone,noselect
-
-" sem som de erros
-set noerrorbells
-set novisualbell
-set t_vb=
-set tm=500
-
-" pop up menu
-set pumheight=10
-
-
+" wildmenu----------------------------------------------------------------- {{{
+" configura o autocomplete do comando do Vim
+set wildmenu            " menu de autocompletar mais amigável
+" list = mostra lista de matches
+" longest = completa automaticamente a maior parte comum
 set wildmode=list:longest
-
+" ignora arquivos
 set wildignore+=*.o,*.obj,*.dylib,*.bin,*.dll,*.exe
 set wildignore+=*/.git/*,*/.svn/*,*/__pycache__/*,*/build/**
 set wildignore+=*.jpg,*.png,*.jpeg,*.bmp,*.gif,*.tiff,*.svg,*.ico
 set wildignore+=*.pyc,*.pkl
 set wildignore+=*.DS_Store
 set wildignore+=*.aux,*.bbl,*.blg,*.brf,*.fls,*.fdb_latexmk,*.synctex.gz,*.xdv
-set wildignorecase  " ignore file and dir name cases in cmd-completion
-
-set history=1000
-
-
-" diff {{{
-set diffopt=
-set diffopt+=vertical  " show diff in vertical position
-set diffopt+=filler  " show filler for deleted lines
-set diffopt+=closeoff  " turn off diff when one file window is closed
-set diffopt+=context:3  " context for diff
-set diffopt+=internal,indent-heuristic,algorithm:histogram
+set wildignorecase      " ignora diferença maiúsculas/minúsculas
 " }}}
 
-" mouse {{{
-set mouse=
-set ttymouse=
-" }}}
-
-" interface {{{
-set termguicolors
-
-
-set title
-
-set undofile
-
-set synmaxcol=250
-set nostartofline
-
-if executable('rg')
-    set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
-    set grepformat=%f:%l:%c:%m
+" velocidade -------------------------------------------------------------- {{{
+if g:is_vintage
+    set lazyredraw " não redesenha durante macros e scripts
 endif
-
-set spelllang=en
-set spellsuggest+=9
-
-set signcolumn=yes
-
-hi clear CursorLine
-hi CursorLine cterm=underline
-set nocursorcolumn
-
-
-set wrap
-
-set showmatch
-
-set colorcolumn=80,100
-
-" barra inferior
-
-
-set showbreak=↪\
-set listchars=tab:<->,eol:↲,nbsp:║,space:␣,trail:•,extends:⟩,precedes:⟨
-set nolist
+set ttyfast         " indica terminal rápido para relagem mais suave
+set hidden          " permite trocar de buffer sem salvar primeiro
+set path+=**        " permite :find buscar recursivamente em subpastas
+set updatetime=300  " ms antes do evento CursorHold (afeta gitgutter e ale)
 " }}}
 
-set undolevels=1000
-
-" tabs {{{
-set shiftround
-set softtabstop=4
+" som de erros ------------------------------------------------------------ {{{
+set noerrorbells " desativa o beep em erros
+set novisualbell " desativa o flash visual em erros
+set t_vb=        " esvazia a sequência de flash do terminal
 " }}}
 
+" edição ------------------------------------------------------------------ {{{
+set noautowrite                 " desativa salvamento automático
+set tabstop=4                   " largura de tabulação
+set softtabstop=4               " deixa a tabulação guiada a cada 4 espaços
+set shiftwidth=4                " tamanho de indentação automática
+set shiftround                  " arredonda indentação (múltiplo de shiftwidth)
+set expandtab                   " converte TABs em espaços
+set smarttab                    " TAB inteligente
+set autoindent                  " copia indentação da linha anterior
+set smartindent                 " indentação inteligente
+set backspace=indent,eol,start  " como o backspace funciona no final da linha
+set mouse=a                     " habilita o mouse em todos os modos
+set nostartofline               " impede o cursor de pular em espaço em branco
+" }}}
 
+" idioma {{{
+set spelllang=en    " idioma do corretor ortográfico
+set spellsuggest+=9 " limita sugestões ortográficas a 9
+" }}}
 
-" fold {{{
-set nofoldenable
-set foldcolumn=1
-set foldlevelstart=0
-set foldmethod=manual
+" pesquisa ---------------------------------------------------------------- {{{
+set wrapscan    " volta para o começo do arquivo quando chegar ao final
+set ignorecase  " ignora maiúsculas / minúsculas
+set smartcase   " respeita se usar maiúscula
+set incsearch   " busca incremental
+set hlsearch    " destaca todas as ocorrências
+set magic       " uso de regex
+" }}}
+
+" fold -------------------------------------------------------------------- {{{
+set foldenable        " habilita folding
+set foldcolumn=1      " exibe 1 coluna indicadora de folds
+set foldlevelstart=99 " abre N os folds ao iniciar (99 = todos abertos)
+set foldmethod=syntax " define folds com base no realce de sintaxe
+" }}}
+
+" cursor ------------------------------------------------------------------ {{{
+"   Ps = 0  -> bloco piscando
+"   Ps = 1  -> bloco piscando (default)
+"   Ps = 2  -> bloco fixo
+"   Ps = 3  -> underline piscando
+"   Ps = 4  -> underline fixo
+"   Ps = 5  -> barra piscando (xterm)
+"   Ps = 6  -> barra fixa (xterm)
+let &t_SI = "\e[6 q" " insert
+let &t_SR = "\e[4 q" " replace
+let &t_EI = "\e[2 q" " normal
+" }}}
+
+" diff -------------------------------------------------------------------- {{{
+set diffopt=                     " reseta qualquer configuração
+set diffopt+=vertical            " mostra o diff na poição vertical
+set diffopt+=filler              " mostra o preenchimento para linhas apagadas
+set diffopt+=closeoff            " desliga diff quando uma janela é fechada
+set diffopt+=context:3           " contexto de 3 linhas para o diff
+set diffopt+=internal            " algoritmo interno do Vim para diff
+set diffopt+=indent-heuristic    " melhora diff em código indentado
+set diffopt+=algorithm:histogram " algoritmo de comparação
 " }}}
 
 " }}}
-" ATALHOS  ---------------------------------------------------------------- {{{
 
-" atalhos para o vimrc
+" =============================================================================
+" AUTOMAÇÕES {{{
+" =============================================================================
+
+" RelNumToggle ------------------------------------------------------------ {{{
+" ativa relativenumber no modo normal e desativa no modo insert
+augroup RelNumToggle
+    autocmd!
+    autocmd InsertEnter * set norelativenumber
+    autocmd InsertLeave * set relativenumber
+augroup END
+" é necessário já que <C-c> não dispara os eventos Insert Enter/Leave
+inoremap <C-c> <Esc>:set relativenumber<CR>
+" }}}
+
+" AutoRead ---------------------------------------------------------------- {{{
+" recarrega o arquivo se estiver sendo alterado em outro lugar
+set autoread " recarrega automaticamente arquivos alterados fora do Vim
+augroup AutoRead
+    autocmd!
+    " dispara verificação ao retornar o foco ou entrar no buffer
+    autocmd FocusGained,BufEnter * silent! checktime
+augroup END
+" }}}
+
+" FormatOptions ----------------------------------------------------------- {{{
+" evita inserir e formatar comentários automaticamente
+" c = não formatar automaticamente comentários
+" o = não inserir líder de comentário ao usar o/O em modo normal
+" r = não inserir líder de comentário ao pressionar Enter dentro de comentário
+augroup FormatOptions
+    autocmd!
+    autocmd FileType * setlocal
+        \ formatoptions-=c
+        \ formatoptions-=o
+        \ formatoptions-=r
+augroup END
+" }}}
+
+" FileTypeSettings -------------------------------------------------------- {{{
+" ajustes individuais para cada tipo de arquivo
+augroup FileTypeSettings
+    autocmd!
+    " Python: PEP8
+    autocmd FileType python setlocal tabstop=4 shiftwidth=4 expandtab
+    autocmd FileType python setlocal textwidth=79 colorcolumn=80,100
+
+    " SQL:
+    " desativa ctrl+c em arquivos sql
+    " autocmd FileType sql setlocal noremap <buffer> <C-C> <Nop>
+    " indentação menor
+    autocmd FileType sql setlocal tabstop=2 shiftwidth=2 expandtab
+    " garante filetype sql mesmo sem detecção automática
+    autocmd BufNewFile,BufRead *.sql set filetype=sql
+
+    " PHP: padrão PSR-2
+    autocmd FileType php setlocal tabstop=4 shiftwidth=4 expandtab
+
+    " define tipo dos para os arquivos do Windows
+    autocmd BufNewFile,BufRead *.bat,*.cmd setlocal fileformat=dos
+
+    " fecha a janela de preview após completar
+    autocmd CompleteDone * silent! pclose
+augroup END
+" }}}
+
+" RunCurrentPythonFile ---------------------------------------------------- {{{
+" roda o arquivo python atual
+augroup RunCurrentPythonFile
+    autocmd!
+    autocmd FileType python nnoremap <buffer> <F5> :w<CR>:bel term python %<CR>
+augroup END
+" }}}
+
+" }}}
+
+" =============================================================================
+" FUNÇÕES {{{
+" =============================================================================
+
+" Trim Trailing Whitespace ------------------------------------------------ {{{
+" remove os espaços em branco ao final da linha quando salva
+function! s:TrimTrailingWhitespace() abort
+    " salva posição do cursor e estado de rolagem
+    let l:save = winsaveview()
+    " remove trailing whitespace sem poluir o histórico de busca
+    keeppatterns %s/\s\+$//e
+    " restaura posição após a substituição
+    call winrestview(l:save)
+endfunction
+
+augroup TrimWhitespace
+    autocmd!
+    autocmd BufWritePre * call s:TrimTrailingWhitespace()
+augroup END
+" }}}
+
+" }}}
+
+" =============================================================================
+" ATALHOS {{{
+" =============================================================================
+
+" vimrc
+" abre o vimrc para edição
 nnoremap <Leader>vim :e $MYVIMRC<CR>
+" recarrega o vimrc
 nnoremap <Leader>so :source $MYVIMRC<CR>
 
-nnoremap <Leader>qq :wqa<CR>
-
-" desativa {{{
-nnoremap <Space> <Nop>
-vnoremap <Space> <Nop>
-no <Up> <Nop>
-no <Down> <Nop>
-no <Left> <Nop>
-no <Right> <Nop>
-" }}}
-
-" Y como C ou D
-nnoremap Y y$
-
-" salvamentos {{{
-inoremap <C-s> <Esc>:w<CR>a
-xnoremap <C-s> <Esc>:w<CR>
+" salvamentos ------------------------------------------------------------- {{{
 nnoremap <C-s> :w<CR>
-snoremap <C-s> <Esc>:w<CR>
+" C-o executa um comando e volta ao insert mode
+inoremap <C-s> <C-o>:w<CR>
+vnoremap <C-s> :w<CR>
 
-" :W salva o arquivo com sudo
-command! W execute 'w !sudo tee % > /dev/null' <bar> edit!
+" :W salva o arquivo com sudo (apenas unix)
+if !g:is_windows
+    command! W execute 'w !sudo tee % > /dev/null' <bar> edit!
+endif
 " }}}
 
-" navegação {{{
-" janelas
+" tabs -------------------------------------------------------------------- {{{
+" novo
+nnoremap <Leader>te :tabnew<CR>
+" apaga
+nnoremap <Leader>td :tabclose<CR>
+" seguinte
+nnoremap <Leader>tn :tabnext<CR>
+" anterior
+nnoremap <Leader>tp :tabprevious<CR>
+
+" movimenta tabs
+nnoremap <Leader>th :tabmove -1<CR>
+nnoremap <Leader>tl :tabmove +1<CR>
+
+" gera <Leader>t[1:9] para ir direto a cada tab
+for i in range(1,9)
+    execute 'nnoremap <Leader>t' . i . ' ' . i . 'gt'
+endfor
+" }}}
+
+" janelas ----------------------------------------------------------------- {{{
+" navega
 nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
 
+" fecha
 nnoremap <Leader>wd <C-W>c
+
+" divide
 nnoremap <Leader>ws :new<CR>
-nnoremap <Leader>wS :split<CR>
 nnoremap <Leader>wv :vnew<CR>
+nnoremap <Leader>wS :split<CR>
 nnoremap <Leader>wV :vsplit<CR>
 
-" tabs
-nnoremap <Leader>tt :tabnew<CR>
-nnoremap <Leader>td :tabclose<CR>
-nnoremap <Leader>tn :tabnext<CR>
-nnoremap <Leader>tp :tabprevious<CR>
+" equaliza tamanho
+nnoremap <Leader>w= <C-w>=
+" tamanho máximo da janela atual
+nnoremap <Leader>wm <C-w>_<C-w>|
 
-" buffers
-nnoremap <Leader>bd :bdelete<CR>
-nnoremap <Leader>bo :w <bar> %bdelete <bar> e# <CR> <bar> '"
-nnoremap <tab> :bnext<CR>
-nnoremap <s-tab> :bprevious<CR>
-"nnoremap <tab> :blast<CR>
+" troca de lugar
+nnoremap <Leader>wH <C-w>H
+nnoremap <Leader>wJ <C-w>J
+nnoremap <Leader>wK <C-w>K
+nnoremap <Leader>wL <C-w>L
 
-" terminal
-tnoremap <Leader><Esc> <C-\><C-n>
-
-" arquivos
-noremap H ^
-noremap L $
+" rotaciona janelas no sentido horário
+nnoremap <Leader>wr <C-w>r
 " }}}
 
-" tamanho janela {{{
+" muda tamanho janela {{{
 nnoremap <C-A-k> :resize +2<CR>
 nnoremap <C-A-j> :resize -2<CR>
 nnoremap <C-A-h> :vertical resize -2<CR>
 nnoremap <C-A-l> :vertical resize +2<CR>
 " }}}
 
-" toggles {{{
-nnoremap <Leader><Leader>w :set wrap!<CR>
-nnoremap <Leader><Leader>rn :set relativenumber!<CR>
-nnoremap <Leader><Leader>l :set list!<CR>
+" buffers ----------------------------------------------------------------- {{{
+" novo
+nnoremap <Leader>be :enew<CR>
+" apaga
+nnoremap <Leader>bd :bdelete<CR>
+" seguinte
+nnoremap <Leader>bn :bnext<CR>
+" anterior
+nnoremap <Leader>bp :bprevious<CR>
+" último da lista
+nnoremap <Leader>bl :blast<CR>
+" último aberto
+nnoremap <Leader>bb :b#<CR>
+
+" apaga todos exceto o atual
+function! s:OnlyCurrentBuffer() abort
+    let current = bufnr('%')
+
+    for buf in range(1, bufnr('$'))
+        if buflisted(buf) && buf != current
+            execute 'bdelete ' . buf
+        endif
+    endfor
+endfunction
+nnoremap <Leader>bo :call <SID>OnlyCurrentBuffer()<CR>
+
+" limpa termo buscado
+nnoremap \\ :nohlsearch<CR>
+
+" substituição {{{
+" substitui completamente todas ocorrências
+vnoremap <C-r> "hy:%s/<C-r>h//g<Left><Left>
+" substitui com original como base
+vnoremap <Leader><C-r> "hy:%s/<C-r>h/<C-r>h/g<Left><Left>
 " }}}
 
-" edição arquivo {{{
+" toggles ----------------------------------------------------------------- {{{
+nnoremap <Leader><Leader>w :set wrap!<CR>
+nnoremap <Leader><Leader>l :set list!<CR>
+nnoremap <Leader><Leader>rn :set relativenumber!<CR>
+" }}}
+
+" edição arquivo ---------------------------------------------------------- {{{
 " troca linha(s) com alt + j/k
 nnoremap <A-j> :m .+1<CR>==
 nnoremap <A-k> :m .-2<CR>==
@@ -574,7 +519,10 @@ inoremap <A-k> <Esc>:m .-2<CR>==gi
 vnoremap <A-j> :m '>+1<CR>gv=gv
 vnoremap <A-k> :m '<-2<CR>gv=gv
 
-" caixa alta
+" Y como C ou D
+nnoremap Y y$
+
+" coloca a palavra atual em caixa alta e retorna ao insert
 inoremap <c-k> <Esc>viwUea
 
 " indentação
@@ -582,123 +530,738 @@ vnoremap < <gv
 vnoremap > >gv
 " }}}
 
-" buscas {{{
-nnoremap \\ :nohlsearch<CR>
-
-" busca texto selecionado
-vnoremap // y/\V<C-R>=escape(@",'/\')<CR><CR>
 " }}}
 
-" ordenação {{{
-" ordena linhas selecionadas
-vnoremap <C-s> :sort<CR>
-" }}}
+" =============================================================================
+" PLUGINS {{{
+" =============================================================================
 
-" substituição {{{
-" substitui todas ocorrências
-vnoremap <C-r> "hy:%s/<C-r>h//g<Left><Left>
-vnoremap <Leader><C-r> "hy:%s/<C-r>h/<C-r>h/g<Left><Left>
-" }}}
+" desabilita o mapping padrão do autocomplete SQL
+let g:ftplugin_sql_omni_key = '<Plug>DisableSqlOmni'
 
-" vim-commentary {{{
-autocmd FileType apache setlocal commentstring=#\ %s
-" }}}
+" variáveis --------------------------------------------------------------- {{{
+" usado para verificar se um plugin está instalado (pasta dentro do pack)
 
-" }}}
-" ÚLTIMO ------------------------------------------------------------------ {{{
-" configuração que precisam vir por último
-
-" https://github.com/vim-airline/vim-airline/issues/393
-set t_RV=
-" remove [] entre os ícones na nerdtree
-if exists("g:loaded_webdevicons")
-  call webdevicons#refresh()
+if g:is_plug_active
+    let g:plugins_dir = g:vimrc_root . '/plugged'
+else
+    let g:plugins_dir = g:vimrc_root . '/pack/plugins/start'
 endif
 " }}}
 
-" Congigurações SQL ------------------------------------------------------- {{{
-" indentação
-autocmd FileType sql setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
+" plug -------------------------------------------------------------------- {{{
+if g:is_plug_active
+    let g:plug_file = g:vimrc_root . '/autoload/plug.vim'
 
-" reconhece .sql
-autocmd BufNewFile,BufRead *.sql set filetype=sql
-
-" converte para upper
-" autocmd FileType sql iabbrev <buffer> select SELECT
-" autocmd FileType sql iabbrev <buffer> from FROM
-" autocmd FileType sql iabbrev <buffer> where WHERE
-" autocmd FileType sql iabbrev <buffer> insert INSERT
-" autocmd FileType sql iabbrev <buffer> into INTO
-" autocmd FileType sql iabbrev <buffer> values VALUES
-" autocmd FileType sql iabbrev <buffer> grant GRANT
-
-" ---------------------------------------------------------------------------
-" função para executar SQL
-function! s:ExecuteSQL(env, target, ...) range
-    " guarda referência ao arquivo atual (antes de mudar de buffer)
-    let current_file = expand('%:p')
-
-    " se for seleção, salva em arquivo temporário
-    if a:target ==# 'visual'
-        let sqlfile = tempname()
-        call writefile(getline(a:firstline, a:lastline), sqlfile)
-    else
-        let sqlfile = current_file
+    " instala automaticamente o vim-plug, caso não exista
+    if empty(glob(g:plug_file))
+        execute 'silent !curl -fLo ' . g:plug_file . ' --create-dirs'
+            \ ' https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+        autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
     endif
 
-    " monta comando do sqlcmd
-    let cmd = 'sqlcmd -S ' . g:sql_servers[a:env] . ' -E -i ' . shellescape(sqlfile) . ' 2>&1'
+    call plug#begin(g:plugins_dir)
 
-    " fecha janela antiga se existir
-    let buf_nr = bufnr('__SQL_RESULT__')
-    if buf_nr != -1
-        silent! execute buf_nr . 'bdelete!'
+    " aparência
+    Plug 'Konfekt/FastFold'
+    Plug 'Yggdroot/indentLine'
+    Plug 'tmhedberg/SimpylFold'
+    Plug 'voldikss/vim-floaterm'
+    Plug 'tomasiser/vim-code-dark'
+    Plug 'vim-airline/vim-airline'
+    Plug 'liuchengxu/vim-which-key'
+    Plug 'machakann/vim-highlightedyank'
+
+    " edição
+    Plug 'tpope/vim-surround'
+    Plug 'tpope/vim-commentary'
+
+    " navegação
+    Plug 'junegunn/fzf'
+    Plug 'junegunn/fzf.vim'
+    Plug 'preservim/nerdtree'
+    Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+
+    " git
+    Plug 'tpope/vim-fugitive'
+    Plug 'airblade/vim-gitgutter'
+
+    " banco de dados
+    Plug 'tpope/vim-dadbod'
+    Plug 'kristijanhusak/vim-dadbod-ui'
+
+    " deve carregar por último
+    if !g:is_vintage
+        Plug 'ryanoasis/vim-devicons'
     endif
 
-    " abre painel para os resultados
-    botright 15split __SQL_RESULT__
-    setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile modifiable
-    setlocal nonumber norelativenumber
+    " para testar
+    " Plug 'TaDaa/vimade'
+    " Plug 'dense-analysis/ale'
+    " Plug 'ycm-core/YouCompleteMe'
 
-    " insere cabeçalho
-    call append(0, '--- executada em : ' . toupper(a:env) . ' ---')
-    call append(1, '')
-
-    " executa comando e coloca saída
-    execute 'silent! 3r !' . cmd
-
-    " trava buffer e posiciona no topo
-    setlocal nomodifiable
-    normal! gg
-
-    " se usou arquivo temporário, remove
-    if a:target ==# 'visual'
-        call delete(sqlfile)
-    endif
-endfunction
-
-" centraliza as informações dos servidores em um dicionário
-let g:sql_servers = {
-\   'dev': 'localhost,1111',
-\   'tst': 'localhost,2222',
-\   'hml': 'localhost,3333',
-\   'con': 'localhost,4444'
-\ }
-
-" ---------------------------------------------------------------------------
-" Atalhos (F5 + nome do servidor)
-" Arquivo inteiro
-nnoremap <F4>dev :call <SID>ExecuteSQL('dev', 'file')<CR>
-nnoremap <F4>tst :call <SID>ExecuteSQL('tst', 'file')<CR>
-nnoremap <F4>hml :call <SID>ExecuteSQL('hml', 'file')<CR>
-nnoremap <F4>con :call <SID>ExecuteSQL('con', 'file')<CR>
-
-" Seleção visual
-xnoremap <F4>dev :<C-u>call <SID>ExecuteSQL('dev', 'visual')<CR>
-xnoremap <F4>tst :<C-u>call <SID>ExecuteSQL('tst', 'visual')<CR>
-xnoremap <F4>hml :<C-u>call <SID>ExecuteSQL('hml', 'visual')<CR>
-xnoremap <F4>con :<C-u>call <SID>ExecuteSQL('con', 'visual')<CR>
+    call plug#end()
+endif
 " }}}
 
-nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
+" Asynchronous Lint Engine ------------------------------------------------ {{{
+" https://github.com/dense-analysis/ale
+let g:has_ale = isdirectory(g:plugins_dir . '/ale')
 
+if g:has_ale
+    " linters: analisam o código e reportam problemas no signcolumn
+    let g:ale_linters = {
+        \ 'python': ['flake8'],
+        \ 'sql':    ['sqlfluff'],
+        \ 'php':    ['phpcs'],
+    \}
+
+    " fixers: reformatam/corrigem o arquivo
+    let g:ale_fixers = {
+        \ 'python': ['black', 'isort'],
+        \ 'sql':    ['sqlfluff'],
+        \ 'php':    ['phpcbf'],
+    \}
+
+    " quando executar
+    let g:ale_lint_on_text_changed = 'never' " não lint enquanto digita
+    let g:ale_lint_on_insert_leave = 1       " lint ao sair do insert mode
+    let g:ale_lint_on_save = 1               " lint ao salvar
+    let g:ale_fix_on_save = 0                " fix NÃO automático (segurança)
+
+    " python embarcado: aponta para o executável correto
+    if g:is_windows
+        let g:ale_python_executable = g:vimrc_root . '/../python/python.exe'
+    endif
+    " let g:ale_python_executable = resolve(
+        " \ fnamemodify(g:vimrc_root, ':h') . '/python/python.exe')
+
+    " aparência
+    let g:ale_set_highlights = 0
+    let g:ale_sign_column_always = 1
+    let g:ale_sign_error = '>>'
+    let g:ale_sign_warning = '--'
+    let g:ale_echo_msg_error_str = 'E'
+    let g:ale_echo_msg_warning_str = 'W'
+    " let g:ale_echo_msg_format = '[%linter%] %code: %s'
+    let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+
+    " autocomplete
+    let g:ale_lsp_suggestions = 1
+    let g:ale_completion_enabled = 1
+    let g:ale_completion_autoimport = 1
+    set omnifunc=ale#completion#OmniFunc
+
+    " atalhos
+    nnoremap <Leader>an :ALENextWrap<CR>
+    nnoremap <Leader>ap :ALEPreviousWrap<CR>
+    nnoremap <Leader>af :ALEFix<CR>
+    nnoremap <Leader>ai :ALEInfo<CR>
+    nnoremap <Leader>at :ALEToggle<CR>
+endif
+" }}}
+
+" airline ----------------------------------------------------------------- {{{
+" https://github.com/vim-airline/vim-airline
+let g:has_airline = isdirectory(g:plugins_dir . '/vim-airline')
+
+if g:has_airline
+    set noshowmode " oculta --INSERT-- pois o airline já exibe o modo
+    let g:airline_theme = 'dark'
+
+    " seção central exibe o caminho relativo do arquivo
+    let g:airline_section_c = '%f'
+    " seção direita exibe linha:coluna e percentual
+    let g:airline_section_z = '%l:%c %p%%'
+
+    " ativa tabline no topo
+    let g:airline#extensions#tabline#enabled = 1
+    " exibe buffers na tabline
+    let g:airline#extensions#tabline#show_buffers = 1
+    " exibe número do buffer
+    let g:airline#extensions#tabline#buffer_nr_show = 1
+    " exibe apenas a parte única do nome
+    let g:airline#extensions#tabline#formatter = 'unique_tail'
+    " clock
+    let g:airline#extensions#clock#auto = 1 " ativa o relógio na statusline
+    let g:airline#extensions#clock#format = '%H:%M' " formato 24h
+    let g:airline#extensions#clock#updatetime = 1000 " atualiza a cada segundo
+
+    if g:is_vintage
+        let g:airline_powerline_fonts = 0 " desativa glifos powerline
+        let g:airline_left_sep = '' " sem separador esquerdo
+        let g:airline_right_sep = '' " sem separador direito
+        let g:airline_left_alt_sep = '|'
+        let g:airline_right_alt_sep = '|'
+        let g:airline#extensions#tabline#left_sep = ''
+        let g:airline#extensions#tabline#right_sep = ''
+        let g:airline#extensions#tabline#left_alt_sep = '|'
+        let g:airline#extensions#tabline#right_alt_sep = '|'
+    else
+        let g:airline_powerline_fonts = 1
+    endif
+
+    if g:has_ale
+        " integração ale e airline
+        let g:airline#extensions#ale#enabled = 1
+    endif
+endif
+" }}}
+
+" NERDTree ---------------------------------------------------------------- {{{
+" https://github.com/preservim/nerdtree
+let g:has_nerdtree = isdirectory(g:plugins_dir . '/nerdtree')
+
+if g:has_nerdtree
+    " largura da janela
+    let g:NERDTreeWinSize = 30
+    " ocultar arquivos temporários e de backup
+    let g:NERDTreeIgnore = ['\.swp$', '\.bak$', '\.orig$']
+    " mostrar arquivos ocultos (0 = não, 1 = sim)
+    let g:NERDTreeShowHidden = 1
+    " mostrar linha do cursor na árvore
+    let g:NERDTreeHighlightCursorline = 1
+    " mantém o NERDTree aberto ao abrir um arquivo
+    let g:NERDTreeQuitOnOpen = 0
+    " mostra as pastas vazias desagrupadas
+    let g:NERDTreeCascadeSingleChildDir=0
+    " mostra total de linhas dos arquivos
+    let g:NERDTreeFileLines = 1
+
+    nnoremap <Leader>e :NERDTreeToggle<CR>
+    nnoremap <Leader>E :NERDTreeFocus<CR>
+    nnoremap <Leader>ntf :NERDTreeFind<CR>
+    nnoremap <Leader>ntr :NERDTreeRefreshRoot<CR>
+endif
+" }}}
+
+" vim-highlightedyank ----------------------------------------------------- {{{
+" https://github.com/machakann/vim-highlightedyank
+let g:has_hly = isdirectory(g:plugins_dir . '/vim-highlightedyank')
+
+if g:has_hly
+    let g:highlightedyank_highlight_duration = 250
+endif
+" }}}
+
+" vim-commentary ---------------------------------------------------------- {{{
+" https://github.com/tpope/vim-commentary
+let g:has_commentary = isdirectory(g:plugins_dir . '/vim-commentary')
+
+if g:has_commentary
+    " commentary atalhos (comentários toggle) {{{
+    "   Uso básico:
+    "     gcc           - Comenta/descomenta a linha atual.
+    "     gc{movimento} - Aplica o comentário a um movimento
+    "                       (ex: gc$ até o fim da linha).
+    "     gc            - Em modo Visual, comenta/descomenta a seleção.
+    "     gcgc          - Descomenta um bloco de linhas comentadas adjacentes.
+    "     :{range}Commentary - Comenta um intervalo de linhas
+    "                       (ex: :7,17Commentary).
+    " }}}
+    autocmd FileType apache setlocal commentstring=#\ %s
+    nnoremap <C-/> :Commentary<CR>
+    xnoremap <C-/> :Commentary<CR>
+endif
+" }}}
+
+" indentLine -------------------------------------------------------------- {{{
+" https://github.com/Yggdroot/indentLine
+let g:has_indentline = isdirectory(g:plugins_dir . '/indentLine')
+
+if g:has_indentline
+    let g:indentLine_char_list = ['|', '¦', '┆', '┊']
+
+    " Desativa a configuração manual de cores pelo plugin
+    let g:indentLine_setColors = 0
+
+    " indentLine: opções para g:indentLine_defaultGroup
+    "
+    "   Cores da Interface:
+    "       Comment      - cor padrão de comentários
+    "       NonText      - cor de caracteres 'não texto'
+    "       SpecialKey   - cor de caracteres especiais
+    "       LineNr       - cor dos números das linhas
+    "       CursorLine   - cor do realce da linha atual
+    "       Normal       - cor do texto normal
+    "       Whitespace   - grupo específico para espaços
+    "
+    "   Semânticas (uso menos comum):
+    "       Statement    - cor de palavras-chave
+    "       Type         - cor de tipos
+    "       String       - cor de strings
+    "       Number       - cor de números
+    "       Error        - cor de erros
+    "       Todo         - cor de Tarefas
+    "
+    "   Para testar uma opção sem recarregar o vimrc:
+    "       :let g:indentLine_defaultGroup = 'NonText'
+    "       :IndentLinesReset
+    let g:indentLine_defaultGroup = 'Comment'
+
+    " lista e desliga
+    nnoremap <Leader>i :IndentLinesToggle<CR>
+endif
+" }}}
+
+" vim-surround ------------------------------------------------------------ {{{
+" https://github.com/tpope/vim-surround
+let g:has_surround = isdirectory(g:plugins_dir . '/vim-surround')
+
+if g:has_surround
+    " surround (pares, aspas, tags) {{{
+    "   Modo Normal:
+    "     ds{caractere} - Apaga os delimitadores
+    "       (ex: ds" para remover aspas duplas).
+    "     cs{origem}{destino} - Troca um delimitador por outro
+    "       (ex: cs"' muda " para ').
+    "     ysiw{delim}   - Adiciona delimitador ao redor da palavra atual.
+    "     yss{delim}    - Adiciona delimitador ao redor da linha toda.
+    "     yS{delim}     - Adiciona delimitador e o coloca em uma nova linha.
+    "
+    "   Modo Visual (com V, v ou Ctrl-V):
+    "     S{delim}      - Envolve a seleção atual com o delimitador.
+    "
+    "   Tags HTML/XML:
+    "     yst<tag>      - Adiciona tags ao redor da palavra (ex: yst<em>).
+    "     cst<tag>      - Troca a tag atual.
+    "
+    "   Delimitadores comung:
+    "     ) ou b - Parênteses ( )
+    "     ] ou r - Colchetes [ ]
+    "     } ou B - Chaves { }
+    "     >       - Tag HTML/XML < >
+    "     "       - Aspas duplas
+    "     '       - Aspas simples
+    " }}}
+endif
+" }}}
+
+" fzf --------------------------------------------------------------------- {{{
+" https://github.com/junegunn/fzf
+" https://github.com/junegunn/fzf.vim
+let g:has_fzf = isdirectory(g:plugins_dir . '/fzf.vim')
+
+if g:has_fzf
+    let g:fzf_vim = {}
+    let g:fzf_history_dir = g:data_dir . '/fzf-vim-history'
+
+    " melhora a busca
+    if executable('rg')
+        set grepprg=rg\ --vimgrep\ --smart-case
+        set grepformat=%f:%l:%c:%m
+    endif
+    if g:is_vintage
+        let g:fzf_layout = { 'down': '~60%' } " up | down | left | right
+        let g:fzf_vim.preview_window = [] " desativa o preview completamente
+    else
+        let g:fzf_layout = { 'window': {
+            \'width': 0.9,
+            \'height': 0.6,
+            \'border': 'rounded' } }
+        let g:fzf_vim.preview_window = ['right,50%,<60(up,40%)']
+    endif
+
+    let g:fzf_command_prefix = 'Fzf'
+    let $FZF_DEFAULT_OPTS = '
+        \ --border
+        \ --cycle
+        \ --layout=reverse
+        \ --preview-window=right:60%:wrap
+        \
+        \ --bind ctrl-k:up
+        \ --bind ctrl-j:down
+        \ --bind ctrl-y:preview-up
+        \ --bind ctrl-e:preview-down
+        \ --bind ctrl-p:preview-half-page-up
+        \ --bind ctrl-n:preview-half-page-down
+        \ --bind ctrl-space:toggle-preview
+        \ '
+
+    if executable('fd')
+        let $FZF_DEFAULT_COMMAND = '
+            \ fd --type f --hidden --follow --exclude .git'
+    endif
+    if has('win32') || has('win64')
+        let $RG_DEFAULT_OPTS = $RG_DEFAULT_OPTS . ' --no-color --no-heading'
+    endif
+
+    " desativa preview para buffer lines pois não agrega valor nesse contexto
+    command! -nargs=* -bang FzfBLinesNoPreview
+        \ call fzf#vim#buffer_lines(
+            \ <q-args>, {'options': '--no-preview'}, <bang>0)
+
+    " atalhos {{{
+    " busca arquivo
+    nnoremap <Leader>ff :FzfFiles<CR>
+    nnoremap <Leader>fF :FzfFiles!<CR>
+    " busca palavra
+    nnoremap <Leader>fw :FzfRg<Space>
+    nnoremap <Leader>fW :FzfRg!<Space>
+    " busca palavra sob cursor
+    nnoremap <Leader>f/ :FzfRg <C-R><C-W><CR>
+    " busca buffers abertos
+    nnoremap <Leader>fb :FzfBuffers<CR>
+    nnoremap <Leader>fB :FzfBuffers!<CR>
+    " bsuca mapeamentos
+    nnoremap <Leader>fm :FzfMaps<CR>
+    nnoremap <Leader>fM :FzfMaps!<CR>
+    " busca históricos de arquivos já abertos
+    nnoremap <Leader>fh :FzfHistory<CR>
+    nnoremap <Leader>fH :FzfHistory!<CR>
+    " busca no histórico de buscas
+    nnoremap <Leader>fs :FzfHistory/<CR>
+    nnoremap <Leader>fS :FzfHistory/!<CR>
+    " busca no histórico de comandos
+    nnoremap <Leader>fc :FzfHistory:<CR>
+    nnoremap <Leader>fC :FzfHistory!:<CR>
+    " busca por linha no buffer atual
+    nnoremap <Leader>fl :FzfBLinesNoPreview<CR>
+    nnoremap <Leader>fL :FzfBLinesNoPreview!<CR>
+    " abre o buscado
+    " abre em nova tab, em split horizontal ou split vertical
+    let g:fzf_action = {
+        \ 'ctrl-t': 'tab split',
+        \ 'ctrl-x': 'split',
+        \ 'ctrl-v': 'vsplit' }
+    " }}}
+
+    " cores {{{
+    " herda as cores do Vim
+    let g:fzf_colors = {
+        \ 'fg':      ['fg', 'Normal'],
+        \ 'bg':      ['bg', 'Normal'],
+        \ 'hl':      ['fg', 'Comment'],
+        \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+        \ 'bg+':     ['bg', 'CursorLine'],
+        \ 'hl+':     ['fg', 'Statement'],
+        \ 'info':    ['fg', 'PreProc'],
+        \ 'prompt':  ['fg', 'Conditional'],
+        \ 'pointer': ['fg', 'Exception'],
+        \ 'marker':  ['fg', 'Keyword'],
+        \ 'spinner': ['fg', 'Label'],
+        \ 'header':  ['fg', 'Comment'] }
+    " }}}
+endif
+" }}}
+
+" SimplyFold -------------------------------------------------------------- {{{
+" https://github.com/tmhedberg/SimpylFold
+let g:has_simplyfold = isdirectory(g:plugins_dir . '/SimplyFold')
+
+if g:has_simplyfold
+    " exibe a docstring no texto do fold fechado
+    let g:SimpylFold_docstring_preview=1
+    let g:SimpylFold_fold_docstring=1 " fold para as docstrings
+    let g:SimpylFold_fold_import=1 " fold para os blocos de import
+    let g:SimpylFold_fold_blank=0 " fold para as linhas em branco
+endif
+" }}}
+
+" vim-dadbod & vim-dadbod-ui ---------------------------------------------- {{{
+" https://github.com/tpope/vim-dadbod
+" https://github.com/kristijanhusak/vim-dadbod-ui
+let g:has_dadbod = isdirectory(g:plugins_dir . '/vim-dadbod')
+let g:has_dadbod_ui = isdirectory(g:plugins_dir . '/vim-dadbod-ui')
+
+if g:has_dadbod && g:has_dadbod_ui
+    call mkdir(g:data_dir . '/dadbod', 'p')
+    let g:db_ui_save_location   = g:data_dir . '/dadbod'
+
+    " separa o arquivo com as conexões
+    if filereadable(g:vimrc_root . '/local/dbs.vim')
+        execute 'source ' . g:vimrc_root . '/local/dbs.vim'
+    endif
+    " modelos para dbs.vim
+    " let g:dbs = [
+    "\  {
+    "\    'name': 'mssql_user',
+    "\    'url':  'sqlserver://usuario:senha@servidor_mssql:1433/meu_banco'
+    "\  },
+    "\  {
+    "\    'name': 'mssql_ad',
+    "\    'url':  'sqlserver://servidor_mssql:1433/meu_banco'
+    "\  },
+    " \]
+
+    nnoremap <Leader>dq :%DB<CR>
+    " nnoremap <Leader>dl :DB<CR>
+    " modo visual: executa seleção
+    " vnoremap <Leader>dq :DB<CR>
+
+    " interface (UI)
+    if g:is_vintage
+        let g:db_ui_use_nerd_fonts  = 0
+    else
+        let g:db_ui_use_nerd_fonts  = 1
+    endif
+    let g:db_ui_win_position = 'left'
+    let g:db_ui_winwidth = 35
+    let g:db_ui_auto_execute_table_helpers = 1
+    let g:db_execute_on_save = 0
+    let g:db_ui_execute_on_save = 0
+
+    let g:db_ui_icons = {
+        \ 'expanded': '▾',
+        \ 'collapsed': '▸',
+        \ 'saved_query': '*',
+        \ 'new_query': '+',
+        \ 'tables': '~',
+        \ 'buffers': '»',
+        \ 'connection_ok': '✓',
+        \ 'connection_error': '✕',
+    \ }
+
+    " atalhos
+    nnoremap <Leader>db :DBUIToggle<CR>
+    nnoremap <Leader>df :DBUIFindBuffer<CR>
+
+    let g:db_ui_table_helpers = {
+        \   'sqlserver': {
+            \     'Foreign Keys': '
+            \SELECT c.CONSTRAINT_NAME
+            \ ,kcu.COLUMN_NAME as column_name
+            \ ,c2.TABLE_NAME as foreign_table_name
+            \ ,kcu2.COLUMN_NAME as foreign_column_name
+            \ from   INFORMATION_SCHEMA.TABLE_CONSTRAINTS c
+            \ inner join INFORMATION_SCHEMA.KEY_COLUMN_USAGE kcu
+            \ on c.CONSTRAINT_SCHEMA = kcu.CONSTRAINT_SCHEMA
+            \ and c.CONSTRAINT_NAME = kcu.CONSTRAINT_NAME
+            \ inner join INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS rc
+            \ on c.CONSTRAINT_SCHEMA = rc.CONSTRAINT_SCHEMA
+            \ and c.CONSTRAINT_NAME = rc.CONSTRAINT_NAME
+            \ inner join INFORMATION_SCHEMA.TABLE_CONSTRAINTS c2
+            \ on rc.UNIQUE_CONSTRAINT_SCHEMA = c2.CONSTRAINT_SCHEMA
+            \ and rc.UNIQUE_CONSTRAINT_NAME = c2.CONSTRAINT_NAME
+            \ inner join INFORMATION_SCHEMA.KEY_COLUMN_USAGE kcu2
+            \ on c2.CONSTRAINT_SCHEMA = kcu2.CONSTRAINT_SCHEMA
+            \ and c2.CONSTRAINT_NAME = kcu2.CONSTRAINT_NAME
+            \ and kcu.ORDINAL_POSITION = kcu2.ORDINAL_POSITION
+            \ where  c.CONSTRAINT_TYPE = ''FOREIGN KEY''
+            \ and c.TABLE_NAME = ''BUG-ARRUMAR'' and c.TABLE_SCHEMA = ''dbo''
+            \'
+        \ }
+    \ }
+
+    " ainda ajustando os mapeamentos
+    let g:db_ui_disable_mappings = 0
+    let g:db_ui_disable_mappings_dbui = 0
+    let g:db_ui_disable_mappings_dbout = 0
+    let g:db_ui_disable_mappings_sql = 1
+endif
+" }}}
+
+" vim-fugitive ------------------------------------------------------------ {{{
+" https://github.com/tpope/vim-fugitive
+let g:has_fugitive = isdirectory(g:plugins_dir . '/vim-fugitive')
+
+if g:has_fugitive
+endif
+
+" }}}
+
+" vim-gitgutter ----------------------------------------------------------- {{{
+" https://github.com/airblade/vim-gitgutter
+let g:has_gitgutter = isdirectory(g:plugins_dir . '/vim-gitgutter')
+
+if g:has_gitgutter
+    set signcolumn=auto " mostra a coluna de sinais
+    nnoremap <Leader>gt :GitGutterToggle<CR>
+    nnoremap <Leader>gf :GitGutterFold<CR>
+    nnoremap <Leader>gh :GitGutterLineHighlightsToggle<CR>
+    nnoremap <Leader>gd :GitGutterDiffOrig<CR>
+    nnoremap <Leader>gj :GitGutterNextHunk<CR>zz
+    nnoremap <Leader>gk :GitGutterPrevHunk<CR>zz
+    " desativa mapeamento padrão
+    nnoremap <Space>hu <Nop>
+    nnoremap <Space>hs <Nop>
+    nnoremap <Space>hp <Nop>
+    nnoremap ]c <Nop>
+    nnoremap [c <Nop>
+endif
+" }}}
+
+" FastFold ---------------------------------------------------------------- {{{
+" https://github.com/Konfekt/FastFold
+let g:has_fastfold = isdirectory(g:plugins_dir . '/FastFold')
+
+if g:has_fastfold
+    let g:fastfold_savehook = 1 " atualiza os folds ao salvar o arquivo
+    " atualiza os folds manualmente
+    nnoremap <leader>ffz :FastFoldUpdate<CR>
+endif
+" }}}
+
+" vim-code-dark ----------------------------------------------------------- {{{
+" https://github.com/tomasiser/vim-code-dark
+let g:has_code_dark = isdirectory(g:plugins_dir . '/vim-code-dark')
+
+if g:has_code_dark
+    let g:codedark_transparent = 0 "sem transparência de fundo
+    let g:codedark_conservative = 0 " usa a paleta de cores completa do tema
+
+    if g:is_vintage
+        let g:codedark_modern = 0
+        let g:codedark_italics = 0
+    else
+        set t_ut= " desativa BCE para renderização correta em term modernos
+        set termguicolors " ativa cores RGB de 24 bits
+        let g:codedark_modern = 1 " usa a paleta moderna do tema
+        let g:codedark_italics = 1 " habilita itálico no tema
+        highlight Comment gui=italic cterm=italic
+
+        " necessário para sobreescrever os ajustes do tema
+        augroup MyCodeDarkTweaks
+            autocmd!
+            " sobrescreve a cor dos comentários após o tema carregar
+            " #696969 = cinza médio
+            autocmd ColorScheme codedark highlight Comment guifg=#696969
+        augroup END
+    endif
+
+    " sobrescreve o tema 'dark' definido no airline
+    let g:airline_theme = 'codedark'
+    colorscheme codedark
+endif
+" }}}
+
+" vim-nerdtree-syntax-highlight ------------------------------------------- {{{
+" https://github.com/tiagofumo/vim-nerdtree-syntax-highlight
+let g:has_nt_s_hl = isdirectory(
+    \g:plugins_dir . '/vim-nerdtree-syntax-highlight')
+
+if g:has_nt_s_hl
+endif
+" }}}
+
+" floaterm ---------------------------------------------------------------- {{{
+" https://github.com/voldikss/vim-floaterm
+let g:has_floaterm = isdirectory(g:plugins_dir . '/vim-floaterm')
+
+if g:has_floaterm
+    " abre/fecha o terminal flutuante
+    nnoremap <C-;> :FloatermToggle<CR>
+    tnoremap <C-;> <C-\><C-n>:FloatermToggle<CR>
+    " encerra o terminal
+    tnoremap <F8> <C-\><C-n>:FloatermKill<CR>
+
+    " largura de 60% e altura de 80% da tela
+    let g:floaterm_width = 0.6
+    let g:floaterm_height = 0.8
+else
+    " fallback: floaterm não instalado, usa o terminal nativo do Vim
+    " abre o terminal na parte inferior
+    nnoremap <C-;> :bel term<CR>
+    " sai do modo terminal para o modo normal
+    tnoremap <C-;> <C-\><C-n>
+    " força o fechamento do buffer do terminal
+    tnoremap <F8> <C-\><C-n>:bd!<CR>
+endif
+" }}}
+
+" whichkey ---------------------------------------------------------------- {{{
+" https://github.com/liuchengxu/vim-which-key
+let g:has_whichkey = isdirectory(g:plugins_dir . '/vim-which-key')
+
+if g:has_whichkey
+    nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
+    " which-key: dicionário de atalhos (liderados por <Space>)
+    let g:which_key_map = {}
+
+    " categoria: vimrc
+    let g:which_key_map['vim'] = [':e $MYVIMRC'      , 'editar vimrc']
+    let g:which_key_map['so']  = [':source $MYVIMRC' , 'recarregar vimrc']
+
+    " categoria: janelas (windows)
+    let g:which_key_map['w'] = {
+        \ 'name' : '+janelas',
+        \ 'd' : ['<C-W>c'  , 'fechar janela'],
+        \ 's' : [':new'    , 'nova janela (horizontal vazia)'],
+        \ 'S' : [':split'  , 'dividir janela (horizontal)'],
+        \ 'v' : [':vnew'   , 'nova janela (vertical vazia)'],
+        \ 'V' : [':vsplit' , 'dividir janela (vertical)'],
+        \ 'h' : ['<C-w>h'  , 'ir para janela esquerda'],
+        \ 'j' : ['<C-w>j'  , 'ir para janela abaixo'],
+        \ 'k' : ['<C-w>k'  , 'ir para janela acima'],
+        \ 'l' : ['<C-w>l'  , 'ir para janela direita'],
+    \ }
+
+    " categoria: tabs
+    let g:which_key_map['t'] = {
+        \ 'name' : '+tabs',
+        \ 't' : [':tabnew'      , 'nova tab'],
+        \ 'd' : [':tabclose'    , 'fechar tab'],
+        \ 'n' : [':tabnext'     , 'tab seguinte'],
+        \ 'p' : [':tabprevious' , 'tab anterior'],
+    \ }
+
+    " categoria: buffers
+    let g:which_key_map['b'] = {
+        \ 'name' : '+buffers',
+        \ 'd' : [':bdelete'    , 'fechar buffer'],
+        \ 'o' : [':w <bar> %bdelete <bar> e# <CR>',
+            \'fechar todos exceto atual'],
+        \ 'n' : [':bnext'      , 'buffer seguinte'],
+        \ 'p' : [':bprevious'  , 'buffer anterior'],
+        \ 'l' : [':blast'      , 'último buffer'],
+        \ 'b' : [':b#'         , 'vai e volta entre dois últimos'],
+    \ }
+
+    " categoria: fzf
+    let g:which_key_map['f'] = {
+        \ 'name' : '+fzf',
+        \ 'f' : ['FzfFiles'            , 'buscar arquivos'],
+        \ 'F' : ['FzfFiles!'           , 'buscar arquivos (fullscreen)'],
+        \ 'w' : ['FzfRg'               , 'buscar palavra (rg)'],
+        \ 'W' : ['FzfRg'               , 'buscar palavra (rg) (fullscreen)'],
+        \ '/' : ['FzfRg <C-R><C-W>'    , 'buscar palavra sob cursor'],
+        \ 'b' : ['FzfBuffers'          , 'listar buffers'],
+        \ 'B' : ['FzfBuffers!'         , 'buffers (fullscreen)'],
+        \ 'm' : ['FzfMaps'             , 'listar mapeamentos'],
+        \ 'M' : ['FzfMaps!'            , 'mapeamentos (fullscreen)'],
+        \ 'h' : ['FzfHistory'          , 'histórico de arquivos'],
+        \ 'H' : ['FzfHistory!'         , 'histórico (fullscreen)'],
+        \ 's' : ['FzfHistory/'         , 'histórico de buscas'],
+        \ 'S' : ['FzfHistory/!'        , 'busca histórica (fullscreen)'],
+        \ 'c' : ['FzfHistory:'         , 'histórico de comandos'],
+        \ 'C' : ['FzfHistory:!'        , 'comandos (fullscreen)'],
+        \ 'l' : ['FzfBLinesNoPreview'  , 'linhas no buffer atual'],
+        \ 'L' : ['FzfBLinesNoPreview!' , 'linhas (fullscreen)'],
+    \ }
+
+    " categoria: NERDTree
+    let g:which_key_map['e'] = [':NERDTreeToggle' , 'abrir/fechar NERDTree']
+    let g:which_key_map['nf'] = [':NERDTreeFocus' , 'focar NERDTree']
+
+    " registra o dicionário para o leader <Space>
+    call which_key#register('<Space>', "g:which_key_map")
+endif
+" }}}
+
+
+" vim-devicons ------------------------------------------------------------ {{{
+" https://github.com/ryanoasis/vim-devicons
+let g:has_devicons = isdirectory(g:plugins_dir . '/vim-devicons')
+
+if g:has_devicons
+    " evita os colchetes entre os ícones, melhor carregado por último
+    if g:has_nerdtree
+        augroup DevIconsRefresh
+            autocmd!
+            autocmd VimEnter * call timer_start(100, {->
+                \ execute('if exists(
+                    \":NERDTree") | silent! NERDTreeRefreshRoot | endif')})
+        augroup END
+    endif
+endif
+" }}}
+
+" novo_plugin ------------------------------------------------------------- {{{
+" link/github
+let g:has_novo_plugin = isdirectory(g:plugins_dir . '/novo_plugin')
+
+if g:has_novo_plugin
+endif
+" }}}
+
+" }}}
