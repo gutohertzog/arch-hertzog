@@ -13,6 +13,7 @@
 "       Guto Hertzog - @gutohertzog
 "
 " Sections:
+"    -> FLAGS
 "    -> VARIÁVEIS
 "    -> CONFIGURAÇÕES
 "    -> AUTOMAÇÕES
@@ -26,21 +27,60 @@
 set nocompatible
 
 " =============================================================================
-" VARIÁVEIS {{{
+" FLAGS {{{
 " =============================================================================
+" as variáveis abaixo servem de flags manuais e vão determinar o que vai ser
+" ativado em cada ambiente e as suas específicas configurações
 
-" portátil & vintage ------------------------------------------------------ {{{
-" essas variáveis vão determinar o que vai ser ativado em cada ambiente e as
-" suas específicas configurações
+" plug -------------------------------------------------------------------- {{{
+" gerenciador de plugins
+"   0 = desativado
+"   1 = ativado
+" https://github.com/junegunn/vim-plug
+let g:is_plug_active = 1
+" }}}
 
-" flags manuais
-"   - 0 = arquivos portáteis
-"   — 1 = arquivos locais
-let g:is_portable = 0
-"   - 0 = terminal moderno
-"   — 1 = terminal antigo
+" vintage ----------------------------------------------------------------- {{{
+" para terminais antigos
+"   0 = terminal moderno
+"   1 = terminal antigo
 let g:is_vintage = 0
 " }}}
+
+" toggles de plugins ------------------------------------------------------ {{{
+" 0 = desativa todos os plugins de uma vez (ignora os individuais)
+" necessário adicionar manualmente sempre que um plugin é carregado
+let g:plugins_enabled = 1
+
+" toggles individuais (só têm efeito se g:plugins_enabled = 1)
+let g:enable_airline         = 1
+let g:enable_ale             = 1
+let g:enable_codedark        = 1
+let g:enable_commentary      = 1
+let g:enable_dadbod          = 1
+let g:enable_dadbod_ui       = 1
+let g:enable_devicons        = 1
+let g:enable_fastfold        = 1
+let g:enable_floaterm        = 1
+let g:enable_fugitive        = 1
+let g:enable_fzf             = 1
+let g:enable_gitgutter       = 1
+let g:enable_highlightedyank = 1
+let g:enable_indentline      = 1
+let g:enable_nerdtree        = 1
+let g:enable_nt_s_hl         = 1
+let g:enable_simpylfold      = 1
+let g:enable_surround        = 1
+let g:enable_whichkey        = 1
+
+let g:enable_novo_plugin     = 1
+" }}}
+
+" }}}
+
+" =============================================================================
+" VARIÁVEIS {{{
+" =============================================================================
 
 " ambiente ---------------------------------------------------------------- {{{
 " flags para determinar o ambiente de execução
@@ -57,7 +97,7 @@ let g:is_wsl = has('unix')
 " local de execução do vimrc
 let g:vimrc_root = fnamemodify(resolve(expand('<sfile>:p')), ':h')
 
-" local onde ficarão os diretórios para swap, undo, backup e info
+" local onde ficarão os diretórios para swap, undo, backup, temp, fzf e info
 call mkdir(g:vimrc_root . '/data',   'p')
 let g:data_dir = g:vimrc_root . '/data'
 " }}}
@@ -71,19 +111,18 @@ let $TMP  = g:data_dir . '/temporarios' " $TMP é a variante curta
 
 " runtime path ------------------------------------------------------------ {{{
 " define o local de execução para o local do vimrc, ignorando vimfiles
-" prioriza pacotes da pasta portátil
-execute 'set packpath^=' . g:vimrc_root
-" prioriza scripts da pasta portátil
+" prioriza scripts da pasta portátil e adciona o diretório after ao final
 execute 'set runtimepath^=' . g:vimrc_root
-" adiciona o diretório after ao final
 execute 'set runtimepath+=' . g:vimrc_root . '/after'
-" }}}
 
-" plug -------------------------------------------------------------------- {{{
-" ativa o gerenciador de plugins (0 = desativado, 1 = ativado)
-" https://github.com/junegunn/vim-plug
-" TODO: adicionar um validador para ignorar o pack quando plug estiver ativado
-let g:is_plug_active = 1
+" packpath só é necessário quando os plugins estão na pasta pack
+" com is_plug_active = 1, o plug gerencia tudo e o pack é ignorado
+" também evita que um plugin seja carregado automaticamente do pack
+" e pelo plug
+if !g:is_plug_active
+    " prioriza pacotes da pasta portátil
+    execute 'set packpath^=' . g:vimrc_root
+endif
 " }}}
 
 " }}}
@@ -496,6 +535,7 @@ nnoremap <Leader>bo :call <SID>OnlyCurrentBuffer()<CR>
 
 " limpa termo buscado
 nnoremap \\ :nohlsearch<CR>
+" }}}
 
 " substituição {{{
 " substitui completamente todas ocorrências
@@ -540,8 +580,7 @@ vnoremap > >gv
 let g:ftplugin_sql_omni_key = '<Plug>DisableSqlOmni'
 
 " variáveis --------------------------------------------------------------- {{{
-" usado para verificar se um plugin está instalado (pasta dentro do pack)
-
+" usado para verificar se um plugin está instalado (pack ou plugged)
 if g:is_plug_active
     let g:plugins_dir = g:vimrc_root . '/plugged'
 else
@@ -550,7 +589,7 @@ endif
 " }}}
 
 " plug -------------------------------------------------------------------- {{{
-if g:is_plug_active
+if g:is_plug_active && g:plugins_enabled
     let g:plug_file = g:vimrc_root . '/autoload/plug.vim'
 
     " instala automaticamente o vim-plug, caso não exista
@@ -570,6 +609,7 @@ if g:is_plug_active
     Plug 'tomasiser/vim-code-dark'
     Plug 'vim-airline/vim-airline'
     Plug 'liuchengxu/vim-which-key'
+    Plug 'enricobacis/vim-airline-clock'
     Plug 'machakann/vim-highlightedyank'
 
     " edição
@@ -577,7 +617,7 @@ if g:is_plug_active
     Plug 'tpope/vim-commentary'
 
     " navegação
-    Plug 'junegunn/fzf'
+    " Plug 'junegunn/fzf'
     Plug 'junegunn/fzf.vim'
     Plug 'preservim/nerdtree'
     Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
@@ -607,6 +647,7 @@ endif
 " Asynchronous Lint Engine ------------------------------------------------ {{{
 " https://github.com/dense-analysis/ale
 let g:has_ale = isdirectory(g:plugins_dir . '/ale')
+    \ && g:enable_ale && g:plugins_enabled
 
 if g:has_ale
     " linters: analisam o código e reportam problemas no signcolumn
@@ -663,7 +704,9 @@ endif
 
 " airline ----------------------------------------------------------------- {{{
 " https://github.com/vim-airline/vim-airline
+" https://github.com/enricobacis/vim-airline-clock
 let g:has_airline = isdirectory(g:plugins_dir . '/vim-airline')
+    \ && g:enable_airline && g:plugins_enabled
 
 if g:has_airline
     set noshowmode " oculta --INSERT-- pois o airline já exibe o modo
@@ -682,7 +725,7 @@ if g:has_airline
     let g:airline#extensions#tabline#buffer_nr_show = 1
     " exibe apenas a parte única do nome
     let g:airline#extensions#tabline#formatter = 'unique_tail'
-    " clock
+    " vim-airline-clock
     let g:airline#extensions#clock#auto = 1 " ativa o relógio na statusline
     let g:airline#extensions#clock#format = '%H:%M' " formato 24h
     let g:airline#extensions#clock#updatetime = 1000 " atualiza a cada segundo
@@ -711,6 +754,7 @@ endif
 " NERDTree ---------------------------------------------------------------- {{{
 " https://github.com/preservim/nerdtree
 let g:has_nerdtree = isdirectory(g:plugins_dir . '/nerdtree')
+    \ && g:enable_nerdtree && g:plugins_enabled
 
 if g:has_nerdtree
     " largura da janela
@@ -738,6 +782,7 @@ endif
 " vim-highlightedyank ----------------------------------------------------- {{{
 " https://github.com/machakann/vim-highlightedyank
 let g:has_hly = isdirectory(g:plugins_dir . '/vim-highlightedyank')
+    \ && g:enable_highlightedyank && g:plugins_enabled
 
 if g:has_hly
     let g:highlightedyank_highlight_duration = 250
@@ -747,6 +792,7 @@ endif
 " vim-commentary ---------------------------------------------------------- {{{
 " https://github.com/tpope/vim-commentary
 let g:has_commentary = isdirectory(g:plugins_dir . '/vim-commentary')
+    \ && g:enable_commentary && g:plugins_enabled
 
 if g:has_commentary
     " commentary atalhos (comentários toggle) {{{
@@ -768,6 +814,7 @@ endif
 " indentLine -------------------------------------------------------------- {{{
 " https://github.com/Yggdroot/indentLine
 let g:has_indentline = isdirectory(g:plugins_dir . '/indentLine')
+    \ && g:enable_indentline && g:plugins_enabled
 
 if g:has_indentline
     let g:indentLine_char_list = ['|', '¦', '┆', '┊']
@@ -807,6 +854,7 @@ endif
 " vim-surround ------------------------------------------------------------ {{{
 " https://github.com/tpope/vim-surround
 let g:has_surround = isdirectory(g:plugins_dir . '/vim-surround')
+    \ && g:enable_surround && g:plugins_enabled
 
 if g:has_surround
     " surround (pares, aspas, tags) {{{
@@ -826,13 +874,13 @@ if g:has_surround
     "     yst<tag>      - Adiciona tags ao redor da palavra (ex: yst<em>).
     "     cst<tag>      - Troca a tag atual.
     "
-    "   Delimitadores comung:
-    "     ) ou b - Parênteses ( )
-    "     ] ou r - Colchetes [ ]
-    "     } ou B - Chaves { }
-    "     >       - Tag HTML/XML < >
-    "     "       - Aspas duplas
-    "     '       - Aspas simples
+    "   Delimitadores comuns:
+    "     () ou b - Parênteses ( )
+    "     [] ou r - Colchetes [ ]
+    "     {} ou B - Chaves { }
+    "     <>      - Tag HTML/XML < >
+    "     ""      - Aspas duplas
+    "     ''      - Aspas simples
     " }}}
 endif
 " }}}
@@ -841,6 +889,7 @@ endif
 " https://github.com/junegunn/fzf
 " https://github.com/junegunn/fzf.vim
 let g:has_fzf = isdirectory(g:plugins_dir . '/fzf.vim')
+    \ && g:enable_fzf && g:plugins_enabled
 
 if g:has_fzf
     let g:fzf_vim = {}
@@ -948,6 +997,7 @@ endif
 " SimplyFold -------------------------------------------------------------- {{{
 " https://github.com/tmhedberg/SimpylFold
 let g:has_simplyfold = isdirectory(g:plugins_dir . '/SimplyFold')
+    \ && g:enable_simpylfold && g:plugins_enabled
 
 if g:has_simplyfold
     " exibe a docstring no texto do fold fechado
@@ -962,7 +1012,9 @@ endif
 " https://github.com/tpope/vim-dadbod
 " https://github.com/kristijanhusak/vim-dadbod-ui
 let g:has_dadbod = isdirectory(g:plugins_dir . '/vim-dadbod')
+    \ && g:enable_dadbod && g:plugins_enabled
 let g:has_dadbod_ui = isdirectory(g:plugins_dir . '/vim-dadbod-ui')
+    \ && g:enable_dadbod_ui && g:plugins_enabled
 
 if g:has_dadbod && g:has_dadbod_ui
     call mkdir(g:data_dir . '/dadbod', 'p')
@@ -1054,6 +1106,7 @@ endif
 " vim-fugitive ------------------------------------------------------------ {{{
 " https://github.com/tpope/vim-fugitive
 let g:has_fugitive = isdirectory(g:plugins_dir . '/vim-fugitive')
+    \ && g:enable_fugitive && g:plugins_enabled
 
 if g:has_fugitive
 endif
@@ -1063,6 +1116,7 @@ endif
 " vim-gitgutter ----------------------------------------------------------- {{{
 " https://github.com/airblade/vim-gitgutter
 let g:has_gitgutter = isdirectory(g:plugins_dir . '/vim-gitgutter')
+    \ && g:enable_gitgutter && g:plugins_enabled
 
 if g:has_gitgutter
     set signcolumn=auto " mostra a coluna de sinais
@@ -1084,6 +1138,7 @@ endif
 " FastFold ---------------------------------------------------------------- {{{
 " https://github.com/Konfekt/FastFold
 let g:has_fastfold = isdirectory(g:plugins_dir . '/FastFold')
+    \ && g:enable_fastfold && g:plugins_enabled
 
 if g:has_fastfold
     let g:fastfold_savehook = 1 " atualiza os folds ao salvar o arquivo
@@ -1094,9 +1149,10 @@ endif
 
 " vim-code-dark ----------------------------------------------------------- {{{
 " https://github.com/tomasiser/vim-code-dark
-let g:has_code_dark = isdirectory(g:plugins_dir . '/vim-code-dark')
+let g:has_codedark = isdirectory(g:plugins_dir . '/vim-code-dark')
+    \ && g:enable_codedark && g:plugins_enabled
 
-if g:has_code_dark
+if g:has_codedark
     let g:codedark_transparent = 0 "sem transparência de fundo
     let g:codedark_conservative = 0 " usa a paleta de cores completa do tema
 
@@ -1129,6 +1185,7 @@ endif
 " https://github.com/tiagofumo/vim-nerdtree-syntax-highlight
 let g:has_nt_s_hl = isdirectory(
     \g:plugins_dir . '/vim-nerdtree-syntax-highlight')
+    \ && g:enable_nt_s_hl && g:plugins_enabled
 
 if g:has_nt_s_hl
 endif
@@ -1137,6 +1194,7 @@ endif
 " floaterm ---------------------------------------------------------------- {{{
 " https://github.com/voldikss/vim-floaterm
 let g:has_floaterm = isdirectory(g:plugins_dir . '/vim-floaterm')
+    \ && g:enable_floaterm && g:plugins_enabled
 
 if g:has_floaterm
     " abre/fecha o terminal flutuante
@@ -1162,6 +1220,7 @@ endif
 " whichkey ---------------------------------------------------------------- {{{
 " https://github.com/liuchengxu/vim-which-key
 let g:has_whichkey = isdirectory(g:plugins_dir . '/vim-which-key')
+    \ && g:enable_whichkey && g:plugins_enabled
 
 if g:has_whichkey
     nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
@@ -1238,10 +1297,10 @@ if g:has_whichkey
 endif
 " }}}
 
-
 " vim-devicons ------------------------------------------------------------ {{{
 " https://github.com/ryanoasis/vim-devicons
 let g:has_devicons = isdirectory(g:plugins_dir . '/vim-devicons')
+    \ && g:enable_devicons && g:plugins_enabled
 
 if g:has_devicons
     " evita os colchetes entre os ícones, melhor carregado por último
@@ -1259,9 +1318,11 @@ endif
 " novo_plugin ------------------------------------------------------------- {{{
 " link/github
 let g:has_novo_plugin = isdirectory(g:plugins_dir . '/novo_plugin')
+    \ && g:enable_novo_plugin && g:plugins_enabled
 
 if g:has_novo_plugin
 endif
 " }}}
 
 " }}}
+
