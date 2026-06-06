@@ -1,5 +1,18 @@
+# completions
+fpath+=(
+    $HOME/arch-hertzog/dotfiles/config/zsh/plugins/zsh-completions/src
+)
+
+autoload -Uz compinit
+compinit
+
+# plugins
+source $HOME/arch-hertzog/dotfiles/config/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+source $HOME/arch-hertzog/dotfiles/config/zsh/plugins/fzf-tab/fzf-tab.plugin.zsh
+source $HOME/arch-hertzog/dotfiles/config/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
 # =============================================================================
-# POKEMON + FASTFETCH (sempre por último — gera saída no terminal)
+# POKEMON + FASTFETCH (sempre por último — gera saída no terminal) {{{
 # =============================================================================
 # https://github.com/talwat/pokeget-rs
 
@@ -59,6 +72,7 @@ if [ $pad_lat -lt 0 ]; then
 fi
 
 echo "$sprite" | $FETCHER --file-raw - --logo-padding-top $pad_top --logo-padding-left $pad_lat --logo-padding-right $pad_lat
+# }}}
 
 # =============================================================================
 # INSTANT PROMPT (p10k — deve vir antes de qualquer saída no terminal)
@@ -70,7 +84,7 @@ fi
 # =============================================================================
 # OH-MY-ZSH
 # =============================================================================
-export ZSH="$HOME/.oh-my-zsh"
+# export ZSH="$HOME/.oh-my-zsh"
 
 # tema
 # mais em : https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
@@ -90,7 +104,7 @@ HIST_STAMPS="yyyy-mm-dd"
 
 plugins=(git fzf-tab zsh-completions zsh-autosuggestions zsh-syntax-highlighting)
 
-source $ZSH/oh-my-zsh.sh
+# source $ZSH/oh-my-zsh.sh
 
 # customização do prompt — editar com `p10k configure`
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
@@ -125,6 +139,8 @@ source $HOME/.venv/bin/activate
 # =============================================================================
 eval "$(zoxide init --cmd cd zsh)"
 eval "$(fzf --zsh)"
+export STARSHIP_CONFIG=$HOME/arch-hertzog/dotfiles/config/zsh/starship.toml
+eval "$(starship init zsh)"
 
 # =============================================================================
 # FZF

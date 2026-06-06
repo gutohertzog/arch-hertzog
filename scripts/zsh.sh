@@ -15,33 +15,41 @@ printf " ativando zsh................................"
 chsh -s $(which zsh)
 printf "$OK\n"
 
-printf " oh-my-zsh..................................."
-git clone https://github.com/ohmyzsh/ohmyzsh.git $HOME/.oh-my-zsh
+DESTINO="$HOME/arch-hertzog/dotfiles/config/zsh/plugins"
+
+printf " zsh-completions.............................\n"
+URL="https://github.com/zsh-users/zsh-completions"
+if [ -d "$DESTINO/zsh-completions/.git" ]; then
+    git -C "$DESTINO/zsh-completions" pull
+else
+    git clone $URL "$DESTINO/zsh-completions"
+fi
 printf "$OK\n"
 
-# considerar talvez substiuir powerlevel10k pelo oh-my-posh
-# https://aur.archlinux.org/packages/oh-my-posh
-printf " powerlevel10k..............................."
-rm -rf $HOME/.oh-my-zsh/custom/themes/powerlevel10k
-git clone https://github.com/romkatv/powerlevel10k.git $HOME/.oh-my-zsh/custom/themes/powerlevel10k
+printf " zsh-autosuggestions.........................\n"
+URL="https://github.com/zsh-users/zsh-autosuggestions"
+if [ -d "$DESTINO/zsh-autosuggestions/.git" ]; then
+    git -C "$DESTINO/zsh-autosuggestions" pull
+else
+    git clone $URL "$DESTINO/zsh-autosuggestions"
+fi
 printf "$OK\n"
 
-printf " zsh-completions............................."
-rm -rf $HOME/.oh-my-zsh/custom/plugins/zsh-completions
-git clone https://github.com/zsh-users/zsh-completions.git $HOME/.oh-my-zsh/custom/plugins/zsh-completions
+printf " zsh-syntax-highlighting.....................\n"
+URL="https://github.com/zsh-users/zsh-syntax-highlighting"
+if [ -d "$DESTINO/zsh-syntax-highlighting/.git" ]; then
+    git -C "$DESTINO/zsh-syntax-highlighting" pull
+else
+    git clone $URL "$DESTINO/zsh-syntax-highlighting"
+fi
 printf "$OK\n"
 
-printf " zsh-autosuggestions........................."
-rm -rf $HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions
-git clone https://github.com/zsh-users/zsh-autosuggestions.git $HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+printf " fzf-tab.....................................\n"
+URL="https://github.com/Aloxaf/fzf-tab"
+if [ -d "$DESTINO/fzf-tab/.git" ]; then
+    git -C "$DESTINO/fzf-tab" pull
+else
+    git clone $URL "$DESTINO/fzf-tab"
+fi
 printf "$OK\n"
 
-printf " zsh-syntax-highlighting....................."
-rm -rf $HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
-git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
-printf "$OK\n"
-
-printf " fzf-tab....................................."
-rm -rf $HOME/.oh-my-zsh/custom/plugins/fzf-tab
-git clone https://github.com/Aloxaf/fzf-tab $HOME/.oh-my-zsh/custom/plugins/fzf-tab
-printf "$OK\n"

@@ -92,18 +92,19 @@ sudo pacman -Runs vim
 ./../scripts/extensoes-gnome.sh
 ./../dotfiles/install.sh
 
-ln -s $HOME/arch-hertzog/dotfiles/.zshrc $HOME/.zshrc
-ln -s $HOME/arch-hertzog/dotfiles/.p10k.zsh $HOME/.p10k.zsh
-ln -s $HOME/arch-hertzog/dotfiles/config/vim $HOME/.config/vim
-ln -s $HOME/arch-hertzog/dotfiles/config/kitty $HOME/.config/kitty
-ln -s $HOME/arch-hertzog/dotfiles/config/fastfetch $HOME/.config/fastfetch
-ln -s $HOME/arch-hertzog/dotfiles/Pictures $HOME/Pictures
-ln -s $HOME/arch-hertzog/gnome/dotfiles/themes $HOME/.themes
-ln -s $HOME/arch-hertzog/gnome/dotfiles/.profile $HOME/.profile
-ln -s $HOME/arch-hertzog/gnome/dotfiles/.XCompose $HOME/.XCompose
-
-# copia o meu tema personalizado
-# cp -rv $HOME/arch-hertzog/gnome/dotfiles/themes/* $HOME/.themes
+# -s cria link simbólico
+# -f evita erro se existir
+# -n substitui existe
+ln -sfn $HOME/arch-hertzog/dotfiles/config/vim $HOME/.vim
+ln -sfn $HOME/arch-hertzog/dotfiles/.p10k.zsh $HOME/.p10k.zsh
+ln -sfn $HOME/arch-hertzog/dotfiles/config/zsh/zshrc $HOME/.zshrc
+ln -sfn $HOME/arch-hertzog/dotfiles/config/kitty $HOME/.config/kitty
+ln -sfn $HOME/arch-hertzog/dotfiles/config/fastfetch $HOME/.config/fastfetch
+ln -sfn $HOME/arch-hertzog/dotfiles/Pictures $HOME/Pictures
+ln -sfn $HOME/arch-hertzog/gnome/dotfiles/themes $HOME/.themes
+ln -sfn $HOME/arch-hertzog/gnome/dotfiles/.profile $HOME/.profile
+ln -sfn $HOME/arch-hertzog/gnome/dotfiles/.XCompose $HOME/.XCompose
 
 # carrega as configurações para o gnome
-#dconf load / < $HOME/arch-hertzog/gnome/dotfiles/config/dconf/user-settings.conf
+# dconf load / < $HOME/arch-hertzog/gnome/dotfiles/config/dconf/user-settings.conf
+

@@ -1,0 +1,46 @@
+# https://starship.rs/presets/nerd-font
+"$schema" = 'https://starship.rs/config-schema.json'
+
+format = """
+$os\
+$directory\
+$git_branch\
+$git_status\
+$fill\
+$python\
+$time
+$character
+"""
+
+[fill]
+symbol = " "
+
+[os]
+disabled = false
+format = "[$symbol ]($style)"
+
+[os.symbols]
+Arch = ""
+
+[directory]
+format = "[$read_only]($read_only_style)[$path ]($style)"
+read_only = ""
+
+[git_branch]
+symbol = " "
+format = "[$symbol$branch ]($style)"
+
+[git_status]
+disabled = true
+
+[python]
+format = "[ $virtualenv ]($style)"
+
+[time]
+disabled = false
+time_format = "%H:%M:%S"
+format = "[ $time]($style)"
+
+[character]
+success_symbol = "❯"
+error_symbol = "❯"
