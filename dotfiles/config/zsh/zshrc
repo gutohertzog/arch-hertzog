@@ -1,7 +1,23 @@
+# =============================================================================
+# PLUGINS
+# =============================================================================
 # completions
 fpath+=(
     $HOME/arch-hertzog/dotfiles/config/zsh/plugins/zsh-completions/src
 )
+
+# Case-insensitive
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+
+# Menu de seleção
+zstyle ':completion:*' menu select
+
+# Descrições coloridas
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+
+# Cache de completions
+zstyle ':completion:*' use-cache on
+zstyle ':completion:*' cache-path ~/.cache/zsh
 
 autoload -Uz compinit
 compinit
@@ -77,9 +93,9 @@ echo "$sprite" | $FETCHER --file-raw - --logo-padding-top $pad_top --logo-paddin
 # =============================================================================
 # INSTANT PROMPT (p10k — deve vir antes de qualquer saída no terminal)
 # =============================================================================
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
+# if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  # source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+# fi
 
 # =============================================================================
 # OH-MY-ZSH
@@ -88,26 +104,21 @@ fi
 
 # tema
 # mais em : https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="powerlevel10k/powerlevel10k"
+# ZSH_THEME="powerlevel10k/powerlevel10k"
 
-CASE_SENSITIVE="false"
-HYPHEN_INSENSITIVE="false"
+# CASE_SENSITIVE="false"
+# HYPHEN_INSENSITIVE="false"
 
 # atualização desativada (gerenciado manualmente)
-zstyle ':omz:update' mode disabled  # desativa atualização
+# zstyle ':omz:update' mode disabled  # desativa atualização
 # zstyle ':omz:update' mode auto      # atualiza automaticamente
 # zstyle ':omz:update' mode reminder  # lembra a cada X dias
 # intervalo de atualização em dias
 # zstyle ':omz:update' frequency 13
 
-HIST_STAMPS="yyyy-mm-dd"
+# HIST_STAMPS="yyyy-mm-dd"
 
-plugins=(git fzf-tab zsh-completions zsh-autosuggestions zsh-syntax-highlighting)
-
-# source $ZSH/oh-my-zsh.sh
-
-# customização do prompt — editar com `p10k configure`
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+# plugins=(git fzf-tab zsh-completions zsh-autosuggestions zsh-syntax-highlighting)
 
 # =============================================================================
 # HISTÓRICO

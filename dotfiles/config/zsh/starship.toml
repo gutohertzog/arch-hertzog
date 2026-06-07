@@ -6,8 +6,10 @@ $os\
 $directory\
 $git_branch\
 $git_status\
+
 $fill\
-$python\
+
+$custom\
 $time
 $character
 """
@@ -17,30 +19,36 @@ symbol = " "
 
 [os]
 disabled = false
+style = "cyan"
 format = "[$symbol ]($style)"
 
 [os.symbols]
 Arch = ""
 
-[directory]
-format = "[$read_only]($read_only_style)[$path ]($style)"
-read_only = ""
+# [directory]
+# format = "[$read_only]($read_only_style)[$path ]($style)"
+# read_only = ""
 
-[git_branch]
-symbol = " "
-format = "[$symbol$branch ]($style)"
+# [git_branch]
+# symbol = " "
+# format = "[$symbol$branch ]($style)"
 
-[git_status]
-disabled = true
+# [git_status]
+# disabled = true
 
-[python]
-format = "[ $virtualenv ]($style)"
+[custom.python_project]
+when = '[[ -n "$VIRTUAL_ENV" ]]'
+command = 'basename "$(dirname "$VIRTUAL_ENV")"'
+format = '[ $output ]($style)'
+style = 'green'
+# [custom.python_project]
+# when = '[[ -n "$VIRTUAL_ENV" ]]'
+# command = 'basename "$(dirname "$VIRTUAL_ENV")"'
+# format = '[ $output ]($style)'
+# style = 'green'
 
 [time]
 disabled = false
 time_format = "%H:%M:%S"
 format = "[ $time]($style)"
 
-[character]
-success_symbol = "❯"
-error_symbol = "❯"
