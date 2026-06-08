@@ -13,6 +13,7 @@
 "       Guto Hertzog - @gutohertzog
 "
 " Sections:
+"    -> README
 "    -> FLAGS
 "    -> VARIÁVEIS
 "    -> CONFIGURAÇÕES
@@ -22,6 +23,86 @@
 "    -> PLUGINS
 "
 " =============================================================================
+
+" =============================================================================
+" README {{{
+" =============================================================================
+"
+" Vim portátil — funciona em Windows (CMD, Terminal), Linux e macOS
+" sem instalação, a partir de qualquer pasta ou pendrive.
+"
+" Todos os dados (swap, backup, undo, histórico, temp) são salvos dentro
+" da pasta data/, mantendo o sistema hospedeiro limpo.
+"
+" -----------------------------------------------------------------------------
+" DEPENDÊNCIAS EXTERNAS (opcionais, adicionadas ao PATH via tools/)
+" -----------------------------------------------------------------------------
+"
+"   fd   — busca de arquivos (fzf)
+"   rg   — busca de conteúdo / grep (fzf + ale)
+"   fzf  — fuzzy finder binário (fzf.vim)
+"
+"   Windows : executar setup_path.bat uma vez para registrar tools\bin
+"   Linux   : instalar via gerenciador de pacotes (pacman, apt, etc.)
+"   macOS   : instalar via homebrew
+"
+" -----------------------------------------------------------------------------
+" ESTRUTURA DE PASTAS
+" -----------------------------------------------------------------------------
+"
+"   python/           — python embed
+"   tools/
+"     bin/            — binários portáteis (fd, rg, fzf)
+"   vim/
+"     after/          — configurações aplicadas após os plugins
+"     autoload/       — vim-plug (gerado automaticamente)
+"     data/           — swap, backup, undo, viminfo, fzf-history, temp
+"     pack/
+"       plugins/
+"         start/      — plugins no modo pack (is_plug_active = 0)
+"     plugged/        — plugins no modo plug (is_plug_active = 1)
+"     vimrc           — este arquivo
+"     plugged_to_pack.bat — migra plugged para pack (Windows)
+"
+" -----------------------------------------------------------------------------
+" FLAGS DE CONTROLE
+" -----------------------------------------------------------------------------
+"
+"   g:is_plug_active   1 = plugins em plugged/ gerenciados pelo vim-plug
+"                      0 = plugins em pack/plugins/start/ (modo portátil)
+"
+"   g:is_vintage       1 = terminal limitado (CMD, 16 cores, sem unicode)
+"                      0 = terminal moderno (kitty, Windows Terminal, xterm)
+"
+"   g:plugins_enabled  1 = plugins carregados normalmente
+"                      0 = nenhum plugin carregado (Vim minimalista)
+"
+"   g:enable_*         controle individual por plugin
+"                      só tem efeito quando g:plugins_enabled = 1
+"
+" -----------------------------------------------------------------------------
+" FLUXOS DE USO
+" -----------------------------------------------------------------------------
+"
+"   Instalar / atualizar plugins:
+"     1. g:is_plug_active = 1
+"     2. :PlugInstall ou :PlugUpdate
+"
+"   Preparar para uso portátil (Windows antigo):
+"     1. g:is_plug_active = 1 → instalar/atualizar tudo
+"     2. g:is_plug_active = 0
+"     3. Fechar o Vim
+"     4. Executar plugged_to_pack.bat
+"     5. g:is_vintage = 1 se o destino for CMD limitado
+"
+"   Usar sem plugins (debug / máquina restrita):
+"     1. g:plugins_enabled = 0
+"
+"   Desativar um plugin específico sem desinstalar:
+"     1. g:enable_<nome> = 0
+"
+" =============================================================================
+" }}}
 
 " desativa compatibilidade com VI para todo o resto funcionar
 set nocompatible
@@ -53,6 +134,11 @@ let g:is_vintage = 0
 let g:plugins_enabled = 1
 
 " toggles individuais (só têm efeito se g:plugins_enabled = 1)
+let g:enable_fastfold        = 1
+let g:enable_fzf             = 1
+let g:enable_indentline      = 1
+let g:enable_nerdtree        = 1
+let g:enable_simpylfold      = 1
 let g:enable_airline         = 1
 let g:enable_ale             = 1
 let g:enable_codedark        = 1
@@ -60,22 +146,18 @@ let g:enable_commentary      = 1
 let g:enable_dadbod          = 1
 let g:enable_dadbod_ui       = 1
 let g:enable_devicons        = 1
-let g:enable_fastfold        = 1
 let g:enable_floaterm        = 1
 let g:enable_fugitive        = 1
-let g:enable_fzf             = 1
 let g:enable_gitgutter       = 1
 let g:enable_highlightedyank = 1
-let g:enable_indentline      = 1
-let g:enable_nerdtree        = 1
 let g:enable_nt_s_hl         = 1
-let g:enable_simpylfold      = 1
 let g:enable_surround        = 1
 let g:enable_whichkey        = 1
 
 let g:enable_novo_plugin     = 1
 " }}}
 
+" =============================================================================
 " }}}
 
 " =============================================================================
@@ -119,12 +201,13 @@ execute 'set runtimepath+=' . g:vimrc_root . '/after'
 " com is_plug_active = 1, o plug gerencia tudo e o pack é ignorado
 " também evita que um plugin seja carregado automaticamente do pack
 " e pelo plug
-if !g:is_plug_active
+if !g:is_plug_active && g:plugins_enabled
     " prioriza pacotes da pasta portátil
     execute 'set packpath^=' . g:vimrc_root
 endif
 " }}}
 
+" =============================================================================
 " }}}
 
 " =============================================================================
@@ -167,7 +250,6 @@ set sidescrolloff=0     " mantém 0 colunas de margem ao rolar
 set showmatch           " brevemente indica o par
 set splitbelow          " divide a tela para baixo
 set splitright          " divide a tela para direita
-set splitkeep=screen    " ao dividir, mantém o texto na mesma linha da tela
 set conceallevel=0      " evita que caracteres fiquem invisíveis
 set nolist              " desativa os caracteres de marcação
 set nocursorcolumn      " deixa desativado o destaque da coluna do cursor
@@ -176,6 +258,9 @@ set showmode            " informativo do modo atual
 set title               " adiciona no título do terminal o arquivo e caminho
 set wrap                " quebra de linha visual
 set tm=500              " tempo (ms) para completar sequência de teclas
+if exists('&splitkeep')
+    set splitkeep=screen    " ao dividir, mantém o texto na mesma linha da tela
+endif
 
 if g:is_vintage
     " ajustes importantes para o CMD
@@ -199,30 +284,30 @@ endif
 
 " backup swap undo -------------------------------------------------------- {{{
 " cria os diretórios se não existirem
-call mkdir(g:data_dir . '/swaps',   'p')
 call mkdir(g:data_dir . '/backups', 'p')
+call mkdir(g:data_dir . '/swaps',   'p')
 call mkdir(g:data_dir . '/undos',   'p')
 call mkdir(g:data_dir . '/viminfo', 'p')
 
 " pastas
 let s:backupdir = g:data_dir . '/backups//'
-let s:undodir   = g:data_dir . '/undos//'
 let s:swapdir   = g:data_dir . '/swaps//'
+let s:undodir   = g:data_dir . '/undos//'
 if exists('+shada')
     execute 'set shadafile=' . g:data_dir . '/viminfo/main.shada'
 else
     execute 'set viminfofile=' . g:data_dir . '/viminfo/main.viminfo'
 endif
 
+" aplica as configurações
+execute 'set backupdir=' . s:backupdir
+execute 'set directory=' . s:swapdir
+execute 'set undodir='   . s:undodir
+
 set backup          " habilita arquivos de backup (~)
 set swapfile        " habilita swapfiles (.swp)
 set undofile        " habilita histórico de undo persistente
 set undolevels=1000 " aumenta a quantidade de undo
-
-" aplica as configurações
-execute 'set backupdir=' . s:backupdir
-execute 'set undodir=' . s:undodir
-execute 'set directory=' . s:swapdir
 " }}}
 
 " menu -------------------------------------------------------------------- {{{
@@ -326,6 +411,7 @@ set diffopt+=indent-heuristic    " melhora diff em código indentado
 set diffopt+=algorithm:histogram " algoritmo de comparação
 " }}}
 
+" =============================================================================
 " }}}
 
 " =============================================================================
@@ -402,6 +488,7 @@ augroup RunCurrentPythonFile
 augroup END
 " }}}
 
+" =============================================================================
 " }}}
 
 " =============================================================================
@@ -425,6 +512,7 @@ augroup TrimWhitespace
 augroup END
 " }}}
 
+" =============================================================================
 " }}}
 
 " =============================================================================
@@ -570,6 +658,7 @@ vnoremap < <gv
 vnoremap > >gv
 " }}}
 
+" =============================================================================
 " }}}
 
 " =============================================================================
@@ -617,7 +706,7 @@ if g:is_plug_active && g:plugins_enabled
     Plug 'tpope/vim-commentary'
 
     " navegação
-    " Plug 'junegunn/fzf'
+    Plug 'junegunn/fzf'
     Plug 'junegunn/fzf.vim'
     Plug 'preservim/nerdtree'
     Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
@@ -757,6 +846,37 @@ let g:has_nerdtree = isdirectory(g:plugins_dir . '/nerdtree')
     \ && g:enable_nerdtree && g:plugins_enabled
 
 if g:has_nerdtree
+    augroup NERDTreeFix
+        autocmd!
+
+        " evita que um arquivo abra dentro do buffer do NERDTree
+        " redireciona para a janela anterior e abre lá
+        autocmd BufEnter *
+            \ if bufname('#') =~# '^NERD_tree_' && bufname('%') !~# '^NERD_tree_'
+            \ && winnr('$') > 1 |
+            \     let buf=bufnr() |
+            \     buffer# |
+            \     execute "normal! \<C-W>w" |
+            \     execute 'buffer' . buf |
+            \ endif
+
+        " evita NERDTree duplicado ao dividir janelas
+        " espelha o existente ao invés de abrir um novo
+        autocmd BufWinEnter *
+            \ if &buftype != 'quickfix' && bufname('%') =~# '^NERD_tree_'
+            \ && winnr('$') > 1 |
+            \     silent NERDTreeMirror |
+            \ endif
+
+        " fecha o Vim quando o NERDTree for a única janela restante
+        autocmd BufEnter *
+            \ if winnr('$') == 1 && exists('b:NERDTree')
+            \ && b:NERDTree.isTabTree() |
+            \     quit |
+            \ endif
+
+    augroup END
+
     " largura da janela
     let g:NERDTreeWinSize = 30
     " ocultar arquivos temporários e de backup
@@ -1178,6 +1298,8 @@ if g:has_codedark
     " sobrescreve o tema 'dark' definido no airline
     let g:airline_theme = 'codedark'
     colorscheme codedark
+else
+    colorscheme desert
 endif
 " }}}
 
@@ -1324,5 +1446,5 @@ if g:has_novo_plugin
 endif
 " }}}
 
+" =============================================================================
 " }}}
-
