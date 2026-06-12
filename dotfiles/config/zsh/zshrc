@@ -150,6 +150,9 @@ source $HOME/.venv/bin/activate
 # =============================================================================
 eval "$(zoxide init --cmd cd zsh)"
 eval "$(fzf --zsh)"
+
+# necessário pra manter o prompt do starship
+export VIRTUAL_ENV_DISABLE_PROMPT=1
 export STARSHIP_CONFIG=$HOME/arch-hertzog/dotfiles/config/zsh/starship.toml
 eval "$(starship init zsh)"
 
@@ -201,11 +204,13 @@ alias src="source ~/.zshrc"
 
 # navegação
 alias ls="eza --time-style=long-iso --sort=type"
+alias la="ls -la"
 # alias cdf="cd ./$(fd -t d | fzf)"
 
 # ferramentas
 alias ff="fastfetch"
 alias gpu="watch -n1 nvidia-smi"
+alias wgpu="watch -n1 'nvidia-smi --query-gpu=name,memory.used,utilization.gpu --format=csv'"
 alias canos="$HOME/GitHub/pipes.sh/pipes.sh"
 
 # kitty
@@ -325,4 +330,3 @@ ctx_tabela() {
     rg -l "$tabela" --glob="*.sql" | \
         xargs bat --style=plain > "contexto_${tabela}.txt"
 }
-

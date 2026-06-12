@@ -153,6 +153,7 @@ let g:enable_highlightedyank = 1
 let g:enable_nt_s_hl         = 1
 let g:enable_surround        = 1
 let g:enable_whichkey        = 1
+let g:enable_ollama          = 1
 
 let g:enable_novo_plugin     = 1
 " }}}
@@ -425,7 +426,7 @@ augroup RelNumToggle
     autocmd InsertEnter * set norelativenumber
     autocmd InsertLeave * set relativenumber
 augroup END
-" é necessário já que <C-c> não dispara os eventos Insert Enter/Leave
+" é necessário já que Ctrl+c não dispara os eventos Insert Enter/Leave
 inoremap <C-c> <Esc>:set relativenumber<CR>
 " }}}
 
@@ -465,7 +466,7 @@ augroup FileTypeSettings
     " desativa ctrl+c em arquivos sql
     " autocmd FileType sql setlocal noremap <buffer> <C-C> <Nop>
     " indentação menor
-    autocmd FileType sql setlocal tabstop=2 shiftwidth=2 expandtab
+    autocmd FileType sql setlocal tabstop=4 shiftwidth=4 expandtab
     " garante filetype sql mesmo sem detecção automática
     autocmd BufNewFile,BufRead *.sql set filetype=sql
 
@@ -512,6 +513,24 @@ augroup TrimWhitespace
 augroup END
 " }}}
 
+" Word Count -------------------------------------------------------------- {{{
+function! WordCount()
+    let position = getpos(".")
+    exe ":silent normal g\<c-g>"
+    let stat = v:statusmsg
+    let s:word_count = 0
+    if stat != '--No lines in buffer--'
+        if mode() == "V"
+            let s:word_count = str2nr(split(stat)[5])
+        else
+            let s:word_count = str2nr(split(stat)[11])
+        endif
+    endif
+    call setpos('.', position)
+    return s:word_count
+endfunction
+" }}}
+
 " =============================================================================
 " }}}
 
@@ -519,11 +538,18 @@ augroup END
 " ATALHOS {{{
 " =============================================================================
 
-" vimrc
+" arquivos configuração --------------------------------------------------- {{{
 " abre o vimrc para edição
 nnoremap <Leader>vim :e $MYVIMRC<CR>
 " recarrega o vimrc
 nnoremap <Leader>so :source $MYVIMRC<CR>
+" abre o zshrc
+nnoremap <Leader>zsh :e $HOME/.zshrc<CR>
+" abre o kitty
+nnoremap <Leader>kitty :e $HOME/.config/kitty/kitty.conf<CR>
+" abre o fastfetch
+nnoremap <Leader>fast :e $HOME/.config/fastfetch/config.jsonc<CR>
+" }}}
 
 " salvamentos ------------------------------------------------------------- {{{
 nnoremap <C-s> :w<CR>
@@ -632,6 +658,15 @@ vnoremap <C-r> "hy:%s/<C-r>h//g<Left><Left>
 vnoremap <Leader><C-r> "hy:%s/<C-r>h/<C-r>h/g<Left><Left>
 " }}}
 
+" terminal ---------------------------------------------------------------- {{{
+" Navega entre janelas de dentro do terminal
+" tnoremap <C-h> <C-\><C-N><C-W>h
+" tnoremap <C-h> <C-\><C-N><C-W>h
+" tnoremap <C-l> <C-\><C-N><C-W>l
+" tnoremap <C-j> <C-\><C-N><C-W>j
+" tnoremap <C-k> <C-\><C-N><C-W>k
+" }}}
+
 " toggles ----------------------------------------------------------------- {{{
 nnoremap <Leader><Leader>w :set wrap!<CR>
 nnoremap <Leader><Leader>l :set list!<CR>
@@ -704,6 +739,7 @@ if g:is_plug_active && g:plugins_enabled
     " edição
     Plug 'tpope/vim-surround'
     Plug 'tpope/vim-commentary'
+    Plug 'gutohertzog/vim-ollama'
 
     " navegação
     Plug 'junegunn/fzf'
@@ -802,7 +838,7 @@ if g:has_airline
     let g:airline_theme = 'dark'
 
     " seção central exibe o caminho relativo do arquivo
-    let g:airline_section_c = '%f'
+    let g:airline_section_c = '%f - %{WordCount()} words'
     " seção direita exibe linha:coluna e percentual
     let g:airline_section_z = '%l:%c %p%%'
 
@@ -967,7 +1003,7 @@ if g:has_indentline
     let g:indentLine_defaultGroup = 'Comment'
 
     " lista e desliga
-    nnoremap <Leader>i :IndentLinesToggle<CR>
+    nnoremap <Leader>il :IndentLinesToggle<CR>
 endif
 " }}}
 
@@ -1017,7 +1053,7 @@ if g:has_fzf
 
     " melhora a busca
     if executable('rg')
-        set grepprg=rg\ --vimgrep\ --smart-case
+        set grepprg=rg\ --no-ignore\ --vimgrep\ --smart-case
         set grepformat=%f:%l:%c:%m
     endif
     if g:is_vintage
@@ -1049,7 +1085,7 @@ if g:has_fzf
 
     if executable('fd')
         let $FZF_DEFAULT_COMMAND = '
-            \ fd --type f --hidden --follow --exclude .git'
+            \ fd --type f --hidden --no-ignore --follow --exclude .git'
     endif
     if has('win32') || has('win64')
         let $RG_DEFAULT_OPTS = $RG_DEFAULT_OPTS . ' --no-color --no-heading'
@@ -1434,6 +1470,118 @@ if g:has_devicons
                     \":NERDTree") | silent! NERDTreeRefreshRoot | endif')})
         augroup END
     endif
+endif
+" }}}
+
+" vim-ollama -------------------------------------------------------------- {{{
+" https://github.com/gutohertzog/vim-ollama
+let g:has_ollama = isdirectory(g:plugins_dir . '/vim-ollama')
+    \ && g:enable_ollama && g:plugins_enabled
+
+if g:has_ollama
+    " let g:ollama_venv_path   = '~/.venv'
+    " let g:ollama_use_venv    = 1
+    " configuração dos modelos
+    let g:ollama_enabled = 0
+    let g:ollama_host    = 'http://localhost:11434'
+
+    " {{{
+    " Parâmetros do modelo explicados
+    " temperature
+    " Controla o quanto o modelo 'arrisca' nas respostas.
+    " Funciona como um dial de criatividade.
+    "   0.0  → determinístico, sempre a resposta mais provável
+    "   0.2  → pequena variação, bom para código
+    "   0.7  → criativo, bom para texto e conversas
+    "   1.0+ → caótico, respostas imprevisíveis
+
+    " top_p
+    " Trabalha junto com o temperature, mas de forma diferente.
+    " Em vez de embaralhar as probabilidades, ele limita o universo de escolhas.
+    "   0.95 → considera apenas as palavras que somam 95% de probabilidade
+    "   0.90 → universo menor, respostas mais focadas
+    "   1.0  → considera tudo
+
+    " num_predict
+    " Quantidade máxima de tokens gerados por resposta.
+    " É o teto — o modelo para ao atingir esse número mesmo que não tenha terminado.
+    "   128   → respostas curtas, bom para autocomplete inline
+    "   1024  → respostas médias, bom para chat
+    "   4096  → respostas longas, bom para edição de código
+
+    " max_tokens
+    " Faz a mesma coisa que num_predict mas é o parâmetro da API do Ollama.
+    " Quando os dois estão presentes, o menor vence.
+    " O plugin usa os dois por compatibilidade com diferentes versões do Ollama.
+
+    " num_ctx
+    " O tamanho da context window que o modelo vai usar — quanto de texto
+    " ele 'vê' ao mesmo tempo, incluindo o prompt e a resposta.
+    "   2048  → mínimo útil
+    "   8192  → padrão confortável
+    "   32768 → para análises grandes de código
+
+    " repeat_penalty
+    " Penaliza repetição de conteúdo já gerado.
+    " É o antídoto para o loop do Chaves vendendo churros.
+    "   1.0  → sem penalidade (padrão)
+    "   1.1  → penalidade leve
+    "   1.3  → penalidade moderada, recomendado para chat
+    "   1.5+ → penalidade forte, pode fragmentar o texto
+
+    " keep_alive
+    " Quanto tempo o modelo fica carregado na VRAM após o último uso, em segundos.
+    "   0     → descarrega imediatamente após cada resposta
+    "   1800  → mantém por 30 minutos (padrão do plugin para edit)
+    "   -1    → nunca descarrega
+    " }}}
+    let g:ollama_model       = 'qwen2.5-coder:3b'
+    let g:ollama_model_options = {
+        \ 'temperature': 0,
+        \ 'top_p': 0.90,
+        \ 'num_predict': 128,
+        \ 'repeat_penalty': 1.3,
+        \ 'max_tokens': 500
+    \ }
+    let g:ollama_edit_model  = 'qwen2.5-coder:14b'
+    let g:ollama_edit_options = {
+        \ 'temperature': 0,
+        \ 'top_p': 0.90,
+        \ 'num_predict': 4096,
+        \ 'num_ctx': 8192,
+        \ 'keep_alive': 1800,
+    \ }
+    let g:ollama_chat_model  = 'qwen2.5-coder:14b'
+    let g:ollama_chat_options = {
+        \ 'temperature': 0.2,
+        \ 'top_p': 0.90,
+        \ 'num_predict': 1024,
+        \ 'repeat_penalty': 1.3
+    \ }
+    " tempo até chamada do modelo
+    let g:ollama_debounce_time = 500
+    let g:ollama_split_vertically = 1
+
+    " mapeamento
+    let g:ollama_no_tab_map = v:true
+    inoremap <Tab> <Plug>(ollama-tab-completion)
+    inoremap <C-l> <Plug>(ollama-insert-word)
+    inoremap <C-j> <Plug>(ollama-insert-line)
+
+    nnoremap <Leader>oc :OllamaChat<CR>
+    " BUG: não está funcionando, ver o porquê
+    " nnoremap <Leader>oe :OllamaEdit<CR>
+
+    " revisa o código
+    vnoremap <Leader>or :OllamaReview<CR>
+    nnoremap <Leader>or :%OllamaReview
+
+    " parecido com o review, mas com prompt
+    vnoremap <Leader>ot :OllamaTask
+    nnoremap <Leader>ot :%OllamaTask
+
+    " liga/desliga autocomplete sem mexer na config
+    nnoremap <Leader>od :Ollama toggle<CR>
 endif
 " }}}
 
