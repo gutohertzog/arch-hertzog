@@ -212,6 +212,7 @@ alias ff="fastfetch"
 alias gpu="watch -n1 nvidia-smi"
 alias wgpu="watch -n1 'nvidia-smi --query-gpu=name,memory.used,utilization.gpu --format=csv'"
 alias canos="$HOME/GitHub/pipes.sh/pipes.sh"
+alias FZF="fzf --height=100%"
 
 # kitty
 # alias kitty="kitty --override background_image=\$(ls /home/guto/Pictures/wallpapers/*.png | sort --random-sort | head -1)"

@@ -837,8 +837,13 @@ if g:has_airline
     set noshowmode " oculta --INSERT-- pois o airline já exibe o modo
     let g:airline_theme = 'dark'
 
+    " contagem de palavras
+    let g:airline#extensions#wordcount#enabled = 1
+    let g:airline#extensions#wordcount#formatter = 'ptbr'
+    let g:airline#extensions#wordcount#filetypes = ['all']
+
     " seção central exibe o caminho relativo do arquivo
-    let g:airline_section_c = '%f - %{WordCount()} words'
+    let g:airline_section_c = '%f'
     " seção direita exibe linha:coluna e percentual
     let g:airline_section_z = '%l:%c %p%%'
 
