@@ -1,6 +1,4 @@
 " =============================================================================
-" vim:fileencoding=utf-8:foldmethod=marker:foldlevel=1
-" =============================================================================
 "
 "                    ██╗   ██╗██╗███╗   ███╗██████╗  ██████╗
 "                    ██║   ██║██║████╗ ████║██╔══██╗██╔════╝
@@ -33,10 +31,9 @@
 "
 " Todos os dados (swap, backup, undo, histórico, temp) são salvos dentro
 " da pasta data/, mantendo o sistema hospedeiro limpo.
-"
-" -----------------------------------------------------------------------------
-" DEPENDÊNCIAS EXTERNAS (opcionais, adicionadas ao PATH via tools/)
-" -----------------------------------------------------------------------------
+
+" dependências externas --------------------------------------------------- {{{
+" opcionais, adicionadas ao PATH via tools/
 "
 "   fd   — busca de arquivos (fzf)
 "   rg   — busca de conteúdo / grep (fzf + ale)
@@ -45,11 +42,9 @@
 "   Windows : executar setup_path.bat uma vez para registrar tools\bin
 "   Linux   : instalar via gerenciador de pacotes (pacman, apt, etc.)
 "   macOS   : instalar via homebrew
-"
-" -----------------------------------------------------------------------------
-" ESTRUTURA DE PASTAS
-" -----------------------------------------------------------------------------
-"
+" }}}
+
+" estrutura de pastas ----------------------------------------------------- {{{
 "   python/           — python embed
 "   tools/
 "     bin/            — binários portáteis (fd, rg, fzf)
@@ -63,11 +58,9 @@
 "     plugged/        — plugins no modo plug (is_plug_active = 1)
 "     vimrc           — este arquivo
 "     plugged_to_pack.bat — migra plugged para pack (Windows)
-"
-" -----------------------------------------------------------------------------
-" FLAGS DE CONTROLE
-" -----------------------------------------------------------------------------
-"
+" }}}
+
+" flags de controle ------------------------------------------------------- {{{
 "   g:is_plug_active   1 = plugins em plugged/ gerenciados pelo vim-plug
 "                      0 = plugins em pack/plugins/start/ (modo portátil)
 "
@@ -79,11 +72,9 @@
 "
 "   g:enable_*         controle individual por plugin
 "                      só tem efeito quando g:plugins_enabled = 1
-"
-" -----------------------------------------------------------------------------
-" FLUXOS DE USO
-" -----------------------------------------------------------------------------
-"
+" }}}
+
+" fluxos de uso ----------------------------------------------------------- {{{
 "   Instalar / atualizar plugins:
 "     1. g:is_plug_active = 1
 "     2. :PlugInstall ou :PlugUpdate
@@ -100,7 +91,8 @@
 "
 "   Desativar um plugin específico sem desinstalar:
 "     1. g:enable_<nome> = 0
-"
+" }}}
+
 " =============================================================================
 " }}}
 
@@ -140,11 +132,11 @@ let g:enable_indentline      = 1
 let g:enable_nerdtree        = 1
 let g:enable_simpylfold      = 1
 let g:enable_airline         = 1
-let g:enable_ale             = 1
+let g:enable_ale             = 0
 let g:enable_codedark        = 1
 let g:enable_commentary      = 1
-let g:enable_dadbod          = 1
-let g:enable_dadbod_ui       = 1
+let g:enable_dadbod          = 0
+let g:enable_dadbod_ui       = 0
 let g:enable_devicons        = 1
 let g:enable_floaterm        = 1
 let g:enable_fugitive        = 1
@@ -458,34 +450,14 @@ augroup END
 " ajustes individuais para cada tipo de arquivo
 augroup FileTypeSettings
     autocmd!
-    " Python: PEP8
-    autocmd FileType python setlocal tabstop=4 shiftwidth=4 expandtab
-    autocmd FileType python setlocal textwidth=79 colorcolumn=80,100
-
-    " SQL:
-    " desativa ctrl+c em arquivos sql
-    " autocmd FileType sql setlocal noremap <buffer> <C-C> <Nop>
-    " indentação menor
-    autocmd FileType sql setlocal tabstop=4 shiftwidth=4 expandtab
     " garante filetype sql mesmo sem detecção automática
     autocmd BufNewFile,BufRead *.sql set filetype=sql
-
-    " PHP: padrão PSR-2
-    autocmd FileType php setlocal tabstop=4 shiftwidth=4 expandtab
 
     " define tipo dos para os arquivos do Windows
     autocmd BufNewFile,BufRead *.bat,*.cmd setlocal fileformat=dos
 
     " fecha a janela de preview após completar
     autocmd CompleteDone * silent! pclose
-augroup END
-" }}}
-
-" RunCurrentPythonFile ---------------------------------------------------- {{{
-" roda o arquivo python atual
-augroup RunCurrentPythonFile
-    autocmd!
-    autocmd FileType python nnoremap <buffer> <F5> :w<CR>:bel term python %<CR>
 augroup END
 " }}}
 
@@ -700,9 +672,6 @@ vnoremap > >gv
 " PLUGINS {{{
 " =============================================================================
 
-" desabilita o mapping padrão do autocomplete SQL
-let g:ftplugin_sql_omni_key = '<Plug>DisableSqlOmni'
-
 " variáveis --------------------------------------------------------------- {{{
 " usado para verificar se um plugin está instalado (pack ou plugged)
 if g:is_plug_active
@@ -716,53 +685,93 @@ endif
 if g:is_plug_active && g:plugins_enabled
     let g:plug_file = g:vimrc_root . '/autoload/plug.vim'
 
+    " monta a query para baixar o plug
+    let g:plug_exec = 'silent !curl -fLo ' . g:plug_file . ' --create-dirs '
+    let g:plug_exec = g:plug_exec . 'https://raw.githubusercontent.com/'
+    let g:plug_exec = g:plug_exec . 'junegunn/vim-plug/master/plug.vim'
+
     " instala automaticamente o vim-plug, caso não exista
     if empty(glob(g:plug_file))
-        execute 'silent !curl -fLo ' . g:plug_file . ' --create-dirs'
-            \ ' https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+        execute g:plug_exec
         autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
     endif
 
     call plug#begin(g:plugins_dir)
 
     " aparência
-    Plug 'Konfekt/FastFold'
-    Plug 'Yggdroot/indentLine'
-    Plug 'tmhedberg/SimpylFold'
-    Plug 'voldikss/vim-floaterm'
-    Plug 'tomasiser/vim-code-dark'
-    Plug 'vim-airline/vim-airline'
-    Plug 'liuchengxu/vim-which-key'
-    Plug 'enricobacis/vim-airline-clock'
-    Plug 'machakann/vim-highlightedyank'
+    if g:enable_fastfold
+        Plug 'Konfekt/FastFold'
+    endif
+    if g:enable_indentline
+        Plug 'Yggdroot/indentLine'
+    endif
+    if g:enable_simpylfold
+        Plug 'tmhedberg/SimpylFold'
+    endif
+    if g:enable_floaterm
+        Plug 'voldikss/vim-floaterm'
+    endif
+    if g:enable_codedark
+        Plug 'tomasiser/vim-code-dark'
+    endif
+    if g:enable_whichkey
+        Plug 'liuchengxu/vim-which-key'
+    endif
+    if g:enable_highlightedyank
+        Plug 'machakann/vim-highlightedyank'
+    endif
+    if g:enable_airline
+        Plug 'vim-airline/vim-airline'
+        Plug 'enricobacis/vim-airline-clock' " extensão
+    endif
 
     " edição
-    Plug 'tpope/vim-surround'
-    Plug 'tpope/vim-commentary'
-    Plug 'gutohertzog/vim-ollama'
+    if g:enable_ale
+        Plug 'dense-analysis/ale'
+    endif
+    if g:enable_surround
+        Plug 'tpope/vim-surround'
+    endif
+    if g:enable_commentary
+        Plug 'tpope/vim-commentary'
+    endif
+    if g:enable_ollama
+        Plug 'gutohertzog/vim-ollama'
+    endif
 
     " navegação
-    Plug 'junegunn/fzf'
-    Plug 'junegunn/fzf.vim'
-    Plug 'preservim/nerdtree'
-    Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+    if g:enable_fzf
+        Plug 'junegunn/fzf'
+        Plug 'junegunn/fzf.vim' " dependência
+    endif
+    if g:enable_nerdtree
+        Plug 'preservim/nerdtree'
+        if g:enable_nt_s_hl
+            Plug 'tiagofumo/vim-nerdtree-syntax-highlight' " extensão
+        endif
+    endif
 
     " git
-    Plug 'tpope/vim-fugitive'
-    Plug 'airblade/vim-gitgutter'
+    if g:enable_fugitive
+        Plug 'tpope/vim-fugitive'
+    endif
+    if g:enable_gitgutter
+        Plug 'airblade/vim-gitgutter'
+    endif
 
     " banco de dados
-    Plug 'tpope/vim-dadbod'
-    Plug 'kristijanhusak/vim-dadbod-ui'
+    if g:enable_dadbod
+        Plug 'tpope/vim-dadbod'
+        Plug 'kristijanhusak/vim-dadbod-ui' " extensão
+    endif
 
     " deve carregar por último
-    if !g:is_vintage
+    if !g:is_vintage && g:enable_devicons
         Plug 'ryanoasis/vim-devicons'
     endif
 
     " para testar
     " Plug 'TaDaa/vimade'
-    " Plug 'dense-analysis/ale'
     " Plug 'ycm-core/YouCompleteMe'
 
     call plug#end()
@@ -1058,7 +1067,7 @@ if g:has_fzf
 
     " melhora a busca
     if executable('rg')
-        set grepprg=rg\ --no-ignore\ --vimgrep\ --smart-case
+        set grepprg=rg\ --vimgrep\ --smart-case
         set grepformat=%f:%l:%c:%m
     endif
     if g:is_vintage
@@ -1090,7 +1099,7 @@ if g:has_fzf
 
     if executable('fd')
         let $FZF_DEFAULT_COMMAND = '
-            \ fd --type f --hidden --no-ignore --follow --exclude .git'
+            \ fd --type f --hidden --follow --exclude .git'
     endif
     if has('win32') || has('win64')
         let $RG_DEFAULT_OPTS = $RG_DEFAULT_OPTS . ' --no-color --no-heading'
