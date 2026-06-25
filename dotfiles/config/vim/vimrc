@@ -135,8 +135,6 @@ let g:enable_airline         = 1
 let g:enable_ale             = 0
 let g:enable_codedark        = 1
 let g:enable_commentary      = 1
-let g:enable_dadbod          = 0
-let g:enable_dadbod_ui       = 0
 let g:enable_devicons        = 1
 let g:enable_floaterm        = 1
 let g:enable_fugitive        = 1
@@ -145,7 +143,7 @@ let g:enable_highlightedyank = 1
 let g:enable_nt_s_hl         = 1
 let g:enable_surround        = 1
 let g:enable_whichkey        = 1
-let g:enable_ollama          = 1
+let g:enable_ollama          = 0
 
 let g:enable_novo_plugin     = 1
 " }}}
@@ -190,10 +188,9 @@ let $TMP  = g:data_dir . '/temporarios' " $TMP é a variante curta
 execute 'set runtimepath^=' . g:vimrc_root
 execute 'set runtimepath+=' . g:vimrc_root . '/after'
 
-" packpath só é necessário quando os plugins estão na pasta pack
-" com is_plug_active = 1, o plug gerencia tudo e o pack é ignorado
-" também evita que um plugin seja carregado automaticamente do pack
-" e pelo plug
+" packpath só é necessário quando os plugins estão na pasta pack com
+" is_plug_active = 1, o plug gerencia tudo e o pack é ignorado também evita
+" que um plugin seja carregado automaticamente do pack e pelo plug
 if !g:is_plug_active && g:plugins_enabled
     " prioriza pacotes da pasta portátil
     execute 'set packpath^=' . g:vimrc_root
@@ -503,6 +500,106 @@ function! WordCount()
 endfunction
 " }}}
 
+" Execute SQL ------------------------------------------------------------- {{{
+if !isdirectory(g:vimrc_root . '/local')
+    call mkdir(g:vimrc_root . '/local',   'p')
+endif
+if filereadable(g:vimrc_root . '/local/dbs.vim')
+    execute 'source ' . g:vimrc_root . '/local/dbs.vim'
+endif
+
+" função para executar SQL
+function! s:ExecuteSQL(env, target) range
+    " testa se o ambiente existe antes de começar
+    if !exists('g:sql_servers') || !has_key(g:sql_servers, a:env)
+        let l:msg_erro = 'Ambiente desconhecido ou não configurado : '
+        echohl ErrorMsg | echo l:msg_erro . a:env | echohl None
+        return
+    endif
+
+    " guarda referência ao arquivo atual (antes de mudar de buffer)
+    let current_file = expand('%:p')
+
+    " se for seleção, salva em arquivo temporário
+    if a:target ==# 'visual'
+        let sqlfile = tempname()
+        call writefile(getline(a:firstline, a:lastline), sqlfile)
+    else
+        let sqlfile = current_file
+    endif
+
+    " monta comando do sqlcmd
+    let cmd = 'sqlcmd -S ' . g:sql_servers[a:env] . ' -E -i '
+    let cmd .= shellescape(sqlfile) . ' 2>&1'
+
+    " fecha janela antiga se existir
+    let buf_nr = bufnr('__SQL_RESULT__')
+    if buf_nr != -1
+        silent! execute buf_nr . 'bdelete!'
+    endif
+
+    " abre painel para os resultados
+    botright 15split __SQL_RESULT__
+    setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile modifiable
+    setlocal nonumber norelativenumber nowrap
+
+    " insere cabeçalho
+    call append(0, '--- executada em : ' . toupper(a:env) . ' ---')
+    call append(1, '')
+
+    " remove a linha vazia original (linha 3) antes de ler o resultado
+    silent! 3delete
+    " executa comando e coloca saída
+    execute 'silent! 2r !' . cmd
+
+    " mostra erro no statusline antes de abrir o painel de resultado
+    if v:shell_error != 0
+        let l:msg_erro = 'sqlcmd retornou erro — confira o painel'
+        echohl WarningMsg | echo l:msg_erro | echohl None
+    endif
+
+    " trava buffer e posiciona no topo
+    setlocal nomodifiable
+    normal! gg
+
+    " destaca o cabeçalho
+    " if a:env ==# 'dev'
+    "     syntax match SQLEnvHeader /\%1l.*/
+    "     highlight SQLEnvHeader ctermfg=white ctermbg=darkred
+    " elseif a:env ==# 'hml'
+    "     syntax match SQLEnvHeader /\%1l.*/
+    "     highlight SQLEnvHeader ctermfg=black ctermbg=yellow
+    " endif
+
+    " se usou arquivo temporário, remove
+    if a:target ==# 'visual'
+        call delete(sqlfile)
+    endif
+endfunction
+
+" modelo para o arquivo local/dbs.vim
+" let g:sql_servers = {
+" \   'dev': 'localhost,1111',
+" \   'tst': 'localhost,2222',
+" \   'hml': 'localhost,3333',
+" \   'con': 'localhost,4444'
+" \ }
+
+" ---------------------------------------------------------------------------
+" Atalhos (F4 + nome do servidor)
+" arquivo inteiro
+nnoremap <F4>dev :call <SID>ExecuteSQL('dev', 'file')<CR>
+nnoremap <F4>tst :call <SID>ExecuteSQL('tst', 'file')<CR>
+nnoremap <F4>hml :call <SID>ExecuteSQL('hml', 'file')<CR>
+nnoremap <F4>con :call <SID>ExecuteSQL('con', 'file')<CR>
+
+" seleção visual
+xnoremap <F4>dev :call <SID>ExecuteSQL('dev', 'visual')<CR>
+xnoremap <F4>tst :call <SID>ExecuteSQL('tst', 'visual')<CR>
+xnoremap <F4>hml :call <SID>ExecuteSQL('hml', 'visual')<CR>
+xnoremap <F4>con :call <SID>ExecuteSQL('con', 'visual')<CR>
+" }}}
+
 " =============================================================================
 " }}}
 
@@ -759,12 +856,6 @@ if g:is_plug_active && g:plugins_enabled
         Plug 'airblade/vim-gitgutter'
     endif
 
-    " banco de dados
-    if g:enable_dadbod
-        Plug 'tpope/vim-dadbod'
-        Plug 'kristijanhusak/vim-dadbod-ui' " extensão
-    endif
-
     " deve carregar por último
     if !g:is_vintage && g:enable_devicons
         Plug 'ryanoasis/vim-devicons'
@@ -919,11 +1010,11 @@ if g:has_nerdtree
             \ endif
 
         " fecha o Vim quando o NERDTree for a única janela restante
-        autocmd BufEnter *
-            \ if winnr('$') == 1 && exists('b:NERDTree')
-            \ && b:NERDTree.isTabTree() |
-            \     quit |
-            \ endif
+        " autocmd BufEnter *
+        "     \ if winnr('$') == 1 && exists('b:NERDTree')
+        "     \ && b:NERDTree.isTabTree() |
+        "     \     quit |
+        "     \ endif
 
     augroup END
 
@@ -1175,101 +1266,6 @@ if g:has_simplyfold
     let g:SimpylFold_fold_docstring=1 " fold para as docstrings
     let g:SimpylFold_fold_import=1 " fold para os blocos de import
     let g:SimpylFold_fold_blank=0 " fold para as linhas em branco
-endif
-" }}}
-
-" vim-dadbod & vim-dadbod-ui ---------------------------------------------- {{{
-" https://github.com/tpope/vim-dadbod
-" https://github.com/kristijanhusak/vim-dadbod-ui
-let g:has_dadbod = isdirectory(g:plugins_dir . '/vim-dadbod')
-    \ && g:enable_dadbod && g:plugins_enabled
-let g:has_dadbod_ui = isdirectory(g:plugins_dir . '/vim-dadbod-ui')
-    \ && g:enable_dadbod_ui && g:plugins_enabled
-
-if g:has_dadbod && g:has_dadbod_ui
-    call mkdir(g:data_dir . '/dadbod', 'p')
-    let g:db_ui_save_location   = g:data_dir . '/dadbod'
-
-    " separa o arquivo com as conexões
-    if filereadable(g:vimrc_root . '/local/dbs.vim')
-        execute 'source ' . g:vimrc_root . '/local/dbs.vim'
-    endif
-    " modelos para dbs.vim
-    " let g:dbs = [
-    "\  {
-    "\    'name': 'mssql_user',
-    "\    'url':  'sqlserver://usuario:senha@servidor_mssql:1433/meu_banco'
-    "\  },
-    "\  {
-    "\    'name': 'mssql_ad',
-    "\    'url':  'sqlserver://servidor_mssql:1433/meu_banco'
-    "\  },
-    " \]
-
-    nnoremap <Leader>dq :%DB<CR>
-    " nnoremap <Leader>dl :DB<CR>
-    " modo visual: executa seleção
-    " vnoremap <Leader>dq :DB<CR>
-
-    " interface (UI)
-    if g:is_vintage
-        let g:db_ui_use_nerd_fonts  = 0
-    else
-        let g:db_ui_use_nerd_fonts  = 1
-    endif
-    let g:db_ui_win_position = 'left'
-    let g:db_ui_winwidth = 35
-    let g:db_ui_auto_execute_table_helpers = 1
-    let g:db_execute_on_save = 0
-    let g:db_ui_execute_on_save = 0
-
-    let g:db_ui_icons = {
-        \ 'expanded': '▾',
-        \ 'collapsed': '▸',
-        \ 'saved_query': '*',
-        \ 'new_query': '+',
-        \ 'tables': '~',
-        \ 'buffers': '»',
-        \ 'connection_ok': '✓',
-        \ 'connection_error': '✕',
-    \ }
-
-    " atalhos
-    nnoremap <Leader>db :DBUIToggle<CR>
-    nnoremap <Leader>df :DBUIFindBuffer<CR>
-
-    let g:db_ui_table_helpers = {
-        \   'sqlserver': {
-            \     'Foreign Keys': '
-            \SELECT c.CONSTRAINT_NAME
-            \ ,kcu.COLUMN_NAME as column_name
-            \ ,c2.TABLE_NAME as foreign_table_name
-            \ ,kcu2.COLUMN_NAME as foreign_column_name
-            \ from   INFORMATION_SCHEMA.TABLE_CONSTRAINTS c
-            \ inner join INFORMATION_SCHEMA.KEY_COLUMN_USAGE kcu
-            \ on c.CONSTRAINT_SCHEMA = kcu.CONSTRAINT_SCHEMA
-            \ and c.CONSTRAINT_NAME = kcu.CONSTRAINT_NAME
-            \ inner join INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS rc
-            \ on c.CONSTRAINT_SCHEMA = rc.CONSTRAINT_SCHEMA
-            \ and c.CONSTRAINT_NAME = rc.CONSTRAINT_NAME
-            \ inner join INFORMATION_SCHEMA.TABLE_CONSTRAINTS c2
-            \ on rc.UNIQUE_CONSTRAINT_SCHEMA = c2.CONSTRAINT_SCHEMA
-            \ and rc.UNIQUE_CONSTRAINT_NAME = c2.CONSTRAINT_NAME
-            \ inner join INFORMATION_SCHEMA.KEY_COLUMN_USAGE kcu2
-            \ on c2.CONSTRAINT_SCHEMA = kcu2.CONSTRAINT_SCHEMA
-            \ and c2.CONSTRAINT_NAME = kcu2.CONSTRAINT_NAME
-            \ and kcu.ORDINAL_POSITION = kcu2.ORDINAL_POSITION
-            \ where  c.CONSTRAINT_TYPE = ''FOREIGN KEY''
-            \ and c.TABLE_NAME = ''BUG-ARRUMAR'' and c.TABLE_SCHEMA = ''dbo''
-            \'
-        \ }
-    \ }
-
-    " ainda ajustando os mapeamentos
-    let g:db_ui_disable_mappings = 0
-    let g:db_ui_disable_mappings_dbui = 0
-    let g:db_ui_disable_mappings_dbout = 0
-    let g:db_ui_disable_mappings_sql = 1
 endif
 " }}}
 
@@ -1610,3 +1606,4 @@ endif
 
 " =============================================================================
 " }}}
+
