@@ -20,6 +20,7 @@
     "editor.cursorSmoothCaretAnimation": "on",
     "editor.cursorStyle": "block",
     "editor.cursorSurroundingLines": 2,
+    "editor.defaultFormatter": "ms-python.python",
     "editor.dragAndDrop": true,
     "editor.dropIntoEditor.enabled": true,
     "editor.emptySelectionClipboard": true,
@@ -108,7 +109,7 @@
     "explorer.incrementalNaming": "disabled",
     "explorer.sortOrder": "type",
     "extensions.autoCheckUpdates": false,
-    "extensions.autoUpdate": false,
+    "extensions.autoUpdate": "off",
     // para melhorar performance
     "extensions.experimental.affinity": {
         "vscodevim.vim": 1
@@ -128,9 +129,6 @@
     },
     "files.autoSave": "off",
     "files.autoSaveDelay": 0,
-    // "files.eol": "\r\n",
-    "files.insertFinalNewline": true,
-    "files.trimFinalNewlines": true,
     "files.trimTrailingWhitespace": true,
     "git.confirmSync": false,
     "git.enableStatusBarSync": true,
@@ -158,6 +156,7 @@
     // "python.analysis.inlayHints.pytestParameters": false,
     // "python.analysis.inlayHints.variableTypes": false,
     // "python.analysis.typeCheckingMode": "basic",
+    "pyrefly.trace.server": "verbose",
     "python.defaultInterpreterPath": "",
     "python.envFile": "${workspaceFolder}/.venv",
     "python.interpreter.infoVisibility": "always",
@@ -168,6 +167,7 @@
     "search.defaultViewMode": "tree",
     "search.sortOrder": "countDescending",
     "security.workspace.trust.untrustedFiles": "open",
+    "telemetry.feedback.enabled": false,
     "telemetry.telemetryLevel": "off",
     "terminal.integrated.copyOnSelection": true,
     "terminal.integrated.cursorBlinking": true,
@@ -258,6 +258,5 @@
     "workbench.layoutControl.enabled": false,
     "workbench.statusBar.visible": true,
     "zenMode.hideLineNumbers": false,
-    "zenMode.hideStatusBar": false,
-    "editor.defaultFormatter": "ms-python.python"
+    "zenMode.hideStatusBar": false
 }
