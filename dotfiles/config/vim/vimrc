@@ -132,7 +132,7 @@ let g:enable_indentline      = 1
 let g:enable_nerdtree        = 1
 let g:enable_simpylfold      = 1
 let g:enable_airline         = 1
-let g:enable_ale             = 0
+let g:enable_ale             = 1
 let g:enable_codedark        = 1
 let g:enable_commentary      = 1
 let g:enable_devicons        = 1
@@ -400,6 +400,9 @@ set diffopt+=internal            " algoritmo interno do Vim para diff
 set diffopt+=indent-heuristic    " melhora diff em código indentado
 set diffopt+=algorithm:histogram " algoritmo de comparação
 " }}}
+
+" desabilita o mapping padrão do autocomplete SQL
+let g:ftplugin_sql_omni_key = '<Plug>DisableSqlOmni'
 
 " =============================================================================
 " }}}
@@ -877,7 +880,7 @@ let g:has_ale = isdirectory(g:plugins_dir . '/ale')
 if g:has_ale
     " linters: analisam o código e reportam problemas no signcolumn
     let g:ale_linters = {
-        \ 'python': ['flake8'],
+        \ 'python': ['pyrefly'],
         \ 'sql':    ['sqlfluff'],
         \ 'php':    ['phpcs'],
     \}
@@ -1255,12 +1258,12 @@ if g:has_fzf
 endif
 " }}}
 
-" SimplyFold -------------------------------------------------------------- {{{
+" SimpylFold -------------------------------------------------------------- {{{
 " https://github.com/tmhedberg/SimpylFold
-let g:has_simplyfold = isdirectory(g:plugins_dir . '/SimplyFold')
+let g:has_simpylfold = isdirectory(g:plugins_dir . '/SimpylFold')
     \ && g:enable_simpylfold && g:plugins_enabled
 
-if g:has_simplyfold
+if g:has_simpylfold
     " exibe a docstring no texto do fold fechado
     let g:SimpylFold_docstring_preview=1
     let g:SimpylFold_fold_docstring=1 " fold para as docstrings

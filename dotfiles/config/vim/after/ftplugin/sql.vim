@@ -7,9 +7,6 @@ setlocal foldlevel=1
 setlocal foldmethod=expr
 " }}}
 
-" desabilita o mapping padrão do autocomplete SQL
-let g:ftplugin_sql_omni_key = '<Plug>DisableSqlOmni'
-
 " destaque tabulações {{{
 " define a cor vermelha para as coisas ruins
 highlight BadWhitespace ctermbg=red guibg=red
@@ -94,3 +91,4 @@ function! SqlFold(lnum)
 endfunction
 " }}}
 " }}}
+
