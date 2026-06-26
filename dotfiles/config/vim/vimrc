@@ -532,7 +532,9 @@ function! s:ExecuteSQL(env, target) range
     endif
 
     " monta comando do sqlcmd
-    let cmd = 'sqlcmd -S ' . g:sql_servers[a:env] . ' -E -i '
+    " -f 65001: força leitura do arquivo como UTF-8, convertendo para o
+    " codepage da conexão/banco (evita acentos virando ? em bancos ANSI/Latin1)
+    let cmd = 'sqlcmd -S ' . g:sql_servers[a:env] . ' -E -f 65001 -i '
     let cmd .= shellescape(sqlfile) . ' 2>&1'
 
     " fecha janela antiga se existir

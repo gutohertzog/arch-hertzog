@@ -38,7 +38,7 @@ Arch = " "
 style = "cyan"
 truncation_length = 5
 truncate_to_repo = true
-read_only = " "
+read_only = "  "
 read_only_style = "red"
 format = "[$read_only]($read_only_style)[$path]($style) "
 
@@ -49,6 +49,9 @@ format = "[$symbol$branch]($style) "
 [git_status]
 disabled = false
 style = "green"
+ahead = '${count}⇡'
+diverged = '⇕${ahead_count}⇡${behind_count}⇣'
+behind = '${count}⇣'
 format = "([$all_status$ahead_behind]($style))"
 [custom.giturl_unix]
 # disabled = true
@@ -90,7 +93,7 @@ shell = ["pwsh", "-NoProfile", "-Command", "-"]
 
 # direita superior {{{
 [cmd_duration]
-min_time = 500
+min_time = 1000
 style = "white"
 format = "[ $duration]($style) "
 
