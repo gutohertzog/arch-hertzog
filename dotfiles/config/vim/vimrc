@@ -1,4 +1,6 @@
 " =============================================================================
+" vim:fileencoding=utf-8:foldmethod=marker:foldlevel=1
+" =============================================================================
 "
 "                    ██╗   ██╗██╗███╗   ███╗██████╗  ██████╗
 "                    ██║   ██║██║████╗ ████║██╔══██╗██╔════╝
@@ -667,114 +669,6 @@ vnoremap > >gv
 " }}}
 
 " =============================================================================
-" }}}
-
-" =============================================================================
-" SQL {{{
-" =============================================================================
-
-" arquivo dbs.vim --------------------------------------------------------- {{{
-if !isdirectory(g:vimrc_root . '/local')
-    call mkdir(g:vimrc_root . '/local',   'p')
-endif
-if filereadable(g:vimrc_root . '/local/dbs.vim')
-    execute 'source ' . g:vimrc_root . '/local/dbs.vim'
-endif
-" modelo para o arquivo local/dbs.vim
-" let g:sql_servers = {
-" \   'dev': 'localhost,1111',
-" \   'tst': 'localhost,2222',
-" \   'hml': 'localhost,3333',
-" \   'con': 'localhost,4444'
-" \ }
-" }}}
-
-" funções ----------------------------------------------------------------- {{{
-function! s:ExecuteSQL(env, target) range
-    " testa se o ambiente existe antes de começar
-    if !exists('g:sql_servers') || !has_key(g:sql_servers, a:env)
-        let l:msg_erro = 'Ambiente desconhecido ou não configurado : '
-        echohl ErrorMsg | echo l:msg_erro . a:env | echohl None
-        return
-    endif
-
-    " guarda referência ao arquivo atual (antes de mudar de buffer)
-    let current_file = expand('%:p')
-
-    " se for seleção, salva em arquivo temporário
-    if a:target ==# 'visual'
-        let sqlfile = tempname()
-        call writefile(getline(a:firstline, a:lastline), sqlfile)
-    else
-        let sqlfile = current_file
-    endif
-
-    " monta comando do sqlcmd
-    " -f 65001: força leitura do arquivo como UTF-8, convertendo para o
-    " codepage da conexão/banco (evita acentos virando ? em bancos ANSI/Latin1)
-    let cmd = 'sqlcmd -S ' . g:sql_servers[a:env] . ' -E -f 65001 -i '
-    let cmd .= shellescape(sqlfile) . ' 2>&1'
-
-    " fecha janela antiga se existir
-    let buf_nr = bufnr('__SQL_RESULT__')
-    if buf_nr != -1
-        silent! execute buf_nr . 'bdelete!'
-    endif
-
-    " abre painel para os resultados
-    botright 15split __SQL_RESULT__
-    setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile modifiable
-    setlocal nonumber norelativenumber nowrap
-
-    " insere cabeçalho
-    call append(0, '--- executada em : ' . toupper(a:env) . ' ---')
-    call append(1, '')
-
-    " remove a linha vazia original (linha 3) antes de ler o resultado
-    silent! 3delete
-    " executa comando e coloca saída
-    execute 'silent! 2r !' . cmd
-
-    " mostra erro no statusline antes de abrir o painel de resultado
-    if v:shell_error != 0
-        let l:msg_erro = 'sqlcmd retornou erro — confira o painel'
-        echohl WarningMsg | echo l:msg_erro | echohl None
-    endif
-
-    " trava buffer e posiciona no topo
-    setlocal nomodifiable
-    normal! gg
-
-    " destaca o cabeçalho
-    " if a:env ==# 'dev'
-    "     syntax match SQLEnvHeader /\%1l.*/
-    "     highlight SQLEnvHeader ctermfg=white ctermbg=darkred
-    " elseif a:env ==# 'hml'
-    "     syntax match SQLEnvHeader /\%1l.*/
-    "     highlight SQLEnvHeader ctermfg=black ctermbg=yellow
-    " endif
-
-    " se usou arquivo temporário, remove
-    if a:target ==# 'visual'
-        call delete(sqlfile)
-    endif
-endfunction
-" }}}
-
-" atalhos (F4 + nome do servidor) ----------------------------------------- {{{
-" arquivo inteiro
-nnoremap <F4>dev :call <SID>ExecuteSQL('dev', 'file')<CR>
-nnoremap <F4>tst :call <SID>ExecuteSQL('tst', 'file')<CR>
-nnoremap <F4>hml :call <SID>ExecuteSQL('hml', 'file')<CR>
-nnoremap <F4>con :call <SID>ExecuteSQL('con', 'file')<CR>
-
-" seleção visual
-xnoremap <F4>dev :call <SID>ExecuteSQL('dev', 'visual')<CR>
-xnoremap <F4>tst :call <SID>ExecuteSQL('tst', 'visual')<CR>
-xnoremap <F4>hml :call <SID>ExecuteSQL('hml', 'visual')<CR>
-xnoremap <F4>con :call <SID>ExecuteSQL('con', 'visual')<CR>
-" }}}
-
 " }}}
 
 " =============================================================================
