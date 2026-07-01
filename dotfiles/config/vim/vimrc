@@ -1132,6 +1132,7 @@ let g:has_fugitive = isdirectory(g:plugins_dir . '/vim-fugitive')
     \ && g:enable_fugitive && g:plugins_enabled
 
 if g:has_fugitive
+    nnoremap <Leader>gd :Gdiffsplit<CR>
 endif
 
 " }}}
@@ -1142,19 +1143,16 @@ let g:has_gitgutter = isdirectory(g:plugins_dir . '/vim-gitgutter')
     \ && g:enable_gitgutter && g:plugins_enabled
 
 if g:has_gitgutter
+    " desativa mapeamento padrão
+    let g:gitgutter_map_keys = 0
     set signcolumn=auto " mostra a coluna de sinais
+
+    " mapeamentos
     nnoremap <Leader>gt :GitGutterToggle<CR>
     nnoremap <Leader>gf :GitGutterFold<CR>
     nnoremap <Leader>gh :GitGutterLineHighlightsToggle<CR>
-    nnoremap <Leader>gd :GitGutterDiffOrig<CR>
-    nnoremap <Leader>gj :GitGutterNextHunk<CR>zz
-    nnoremap <Leader>gk :GitGutterPrevHunk<CR>zz
-    " desativa mapeamento padrão
-    nnoremap <Space>hu <Nop>
-    nnoremap <Space>hs <Nop>
-    nnoremap <Space>hp <Nop>
-    nnoremap ]c <Nop>
-    nnoremap [c <Nop>
+    nnoremap <Leader>gj <Plug>(GitGutterNextHunk)zz
+    nnoremap <Leader>gk <Plug>(GitGutterPrevHunk)zz
 endif
 " }}}
 
@@ -1166,7 +1164,7 @@ let g:has_fastfold = isdirectory(g:plugins_dir . '/FastFold')
 if g:has_fastfold
     let g:fastfold_savehook = 1 " atualiza os folds ao salvar o arquivo
     " atualiza os folds manualmente
-    nnoremap <leader>ffz :FastFoldUpdate<CR>
+    nnoremap <leader>fu :FastFoldUpdate<CR>
 endif
 " }}}
 
