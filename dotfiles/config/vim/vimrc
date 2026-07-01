@@ -20,7 +20,6 @@
 "    -> AUTOMAÇÕES
 "    -> FUNÇÕES
 "    -> ATALHOS
-"    -> SQL
 "    -> PLUGINS
 "
 " =============================================================================
@@ -132,10 +131,9 @@ let g:plugins_enabled = 1
 let g:enable_fastfold        = 1
 let g:enable_fzf             = 1
 let g:enable_indentline      = 1
-let g:enable_nerdtree        = 1
 let g:enable_simpylfold      = 1
 let g:enable_airline         = 1
-let g:enable_ale             = 1
+let g:enable_ale             = 0
 let g:enable_codedark        = 1
 let g:enable_commentary      = 1
 let g:enable_devicons        = 1
@@ -143,10 +141,10 @@ let g:enable_floaterm        = 1
 let g:enable_fugitive        = 1
 let g:enable_gitgutter       = 1
 let g:enable_highlightedyank = 1
-let g:enable_nt_s_hl         = 1
 let g:enable_surround        = 1
 let g:enable_whichkey        = 1
 let g:enable_ollama          = 0
+let g:enable_fern            = 1
 
 let g:enable_novo_plugin     = 1
 " }}}
@@ -626,6 +624,16 @@ nnoremap <Leader>bo :call <SID>OnlyCurrentBuffer()<CR>
 nnoremap \\ :nohlsearch<CR>
 " }}}
 
+" tags -------------------------------------------------------------------- {{{
+" autocomplete
+inoremap <C-Space> <C-x><C-]>
+" navegação com ctrl + j/k
+inoremap <expr> <C-j> pumvisible() ? "\<C-n>" : "\<C-j>"
+inoremap <expr> <C-k> pumvisible() ? "\<C-p>" : "\<C-k>"
+" confirma a seleção do popup sem quebrar linha
+inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<CR>"
+" }}}
+
 " substituição {{{
 " substitui completamente todas ocorrências
 vnoremap <C-r> "hy:%s/<C-r>h//g<Left><Left>
@@ -747,11 +755,8 @@ if g:is_plug_active && g:plugins_enabled
         Plug 'junegunn/fzf'
         Plug 'junegunn/fzf.vim' " dependência
     endif
-    if g:enable_nerdtree
-        Plug 'preservim/nerdtree'
-        if g:enable_nt_s_hl
-            Plug 'tiagofumo/vim-nerdtree-syntax-highlight' " extensão
-        endif
+    if g:enable_fern
+        Plug 'lambdalisue/vim-fern'
     endif
 
     " git
@@ -884,65 +889,6 @@ if g:has_airline
         " integração ale e airline
         let g:airline#extensions#ale#enabled = 1
     endif
-endif
-" }}}
-
-" NERDTree ---------------------------------------------------------------- {{{
-" https://github.com/preservim/nerdtree
-let g:has_nerdtree = isdirectory(g:plugins_dir . '/nerdtree')
-    \ && g:enable_nerdtree && g:plugins_enabled
-
-if g:has_nerdtree
-    augroup NERDTreeFix
-        autocmd!
-
-        " evita que um arquivo abra dentro do buffer do NERDTree
-        " redireciona para a janela anterior e abre lá
-        autocmd BufEnter *
-            \ if bufname('#') =~# '^NERD_tree_' && bufname('%') !~# '^NERD_tree_'
-            \ && winnr('$') > 1 |
-            \     let buf=bufnr() |
-            \     buffer# |
-            \     execute "normal! \<C-W>w" |
-            \     execute 'buffer' . buf |
-            \ endif
-
-        " evita NERDTree duplicado ao dividir janelas
-        " espelha o existente ao invés de abrir um novo
-        autocmd BufWinEnter *
-            \ if &buftype != 'quickfix' && bufname('%') =~# '^NERD_tree_'
-            \ && winnr('$') > 1 |
-            \     silent NERDTreeMirror |
-            \ endif
-
-        " fecha o Vim quando o NERDTree for a única janela restante
-        " autocmd BufEnter *
-        "     \ if winnr('$') == 1 && exists('b:NERDTree')
-        "     \ && b:NERDTree.isTabTree() |
-        "     \     quit |
-        "     \ endif
-
-    augroup END
-
-    " largura da janela
-    let g:NERDTreeWinSize = 30
-    " ocultar arquivos temporários e de backup
-    let g:NERDTreeIgnore = ['\.swp$', '\.bak$', '\.orig$']
-    " mostrar arquivos ocultos (0 = não, 1 = sim)
-    let g:NERDTreeShowHidden = 1
-    " mostrar linha do cursor na árvore
-    let g:NERDTreeHighlightCursorline = 1
-    " mantém o NERDTree aberto ao abrir um arquivo
-    let g:NERDTreeQuitOnOpen = 0
-    " mostra as pastas vazias desagrupadas
-    let g:NERDTreeCascadeSingleChildDir=0
-    " mostra total de linhas dos arquivos
-    let g:NERDTreeFileLines = 1
-
-    nnoremap <Leader>e :NERDTreeToggle<CR>
-    nnoremap <Leader>E :NERDTreeFocus<CR>
-    nnoremap <Leader>ntf :NERDTreeFind<CR>
-    nnoremap <Leader>ntr :NERDTreeRefreshRoot<CR>
 endif
 " }}}
 
@@ -1134,6 +1080,9 @@ if g:has_fzf
     " busca por linha no buffer atual
     nnoremap <Leader>fl :FzfBLinesNoPreview<CR>
     nnoremap <Leader>fL :FzfBLinesNoPreview!<CR>
+    " busca tags
+    nnoremap <Leader>ft :FzfTags<CR>
+    nnoremap <Leader>fT :FzfTags!<CR>
     " abre o buscado
     " abre em nova tab, em split horizontal ou split vertical
     let g:fzf_action = {
@@ -1255,16 +1204,6 @@ else
 endif
 " }}}
 
-" vim-nerdtree-syntax-highlight ------------------------------------------- {{{
-" https://github.com/tiagofumo/vim-nerdtree-syntax-highlight
-let g:has_nt_s_hl = isdirectory(
-    \g:plugins_dir . '/vim-nerdtree-syntax-highlight')
-    \ && g:enable_nt_s_hl && g:plugins_enabled
-
-if g:has_nt_s_hl
-endif
-" }}}
-
 " floaterm ---------------------------------------------------------------- {{{
 " https://github.com/voldikss/vim-floaterm
 let g:has_floaterm = isdirectory(g:plugins_dir . '/vim-floaterm')
@@ -1362,9 +1301,9 @@ if g:has_whichkey
         \ 'L' : ['FzfBLinesNoPreview!' , 'linhas (fullscreen)'],
     \ }
 
-    " categoria: NERDTree
-    let g:which_key_map['e'] = [':NERDTreeToggle' , 'abrir/fechar NERDTree']
-    let g:which_key_map['nf'] = [':NERDTreeFocus' , 'focar NERDTree']
+    " categoria: Fern
+    let g:which_key_map['e'] = [':Fern Toggle' , 'abrir/fechar Fern']
+    let g:which_key_map['nf'] = [':Fern Reveal' , 'focar Fern']
 
     " registra o dicionário para o leader <Space>
     call which_key#register('<Space>', "g:which_key_map")
@@ -1377,15 +1316,6 @@ let g:has_devicons = isdirectory(g:plugins_dir . '/vim-devicons')
     \ && g:enable_devicons && g:plugins_enabled
 
 if g:has_devicons
-    " evita os colchetes entre os ícones, melhor carregado por último
-    if g:has_nerdtree
-        augroup DevIconsRefresh
-            autocmd!
-            autocmd VimEnter * call timer_start(100, {->
-                \ execute('if exists(
-                    \":NERDTree") | silent! NERDTreeRefreshRoot | endif')})
-        augroup END
-    endif
 endif
 " }}}
 
@@ -1498,6 +1428,47 @@ if g:has_ollama
 
     " liga/desliga autocomplete sem mexer na config
     nnoremap <Leader>od :Ollama toggle<CR>
+endif
+" }}}
+
+" vim-fern ---------------------------------------------------------------- {{{
+" https://github.com/lambdalisue/vim-fern
+let g:has_fern = isdirectory(g:plugins_dir . '/vim-fern')
+    \ && g:enable_fern && g:plugins_enabled
+
+if g:has_fern
+    let g:fern#disable_default_mappings = 1
+    let g:fern#default_hidden = 1
+    let g:fern#drawer_width   = 30
+
+    " let g:fern#renderer#default#leading = "│"
+    " let g:fern#renderer#default#root_symbol = "┬ "
+    " let g:fern#renderer#default#leaf_symbol = "├─ "
+    " let g:fern#renderer#default#collapsed_symbol = "├─ "
+    " let g:fern#renderer#default#expanded_symbol = "├┬ "
+
+    " abre a janela de navegação
+    nnoremap <Leader>e  :Fern . -drawer -toggle<CR>
+    " muda o foco para a janela de navegação
+    nnoremap <Leader>nf :Fern . -drawer -reveal=%<CR>
+
+    " if g:has_fern_icons
+    "     let g:fern#renderer = 'nerdfont'
+    " endif
+
+    " mapeamentos manuais dentro do buffer fern
+    function! s:InitFern() abort
+        nmap <buffer> ? <Plug>(fern-action-help)
+        nmap <buffer> <C-r> <Plug>(fern-action-reload)
+        nmap <buffer> h <Plug>(fern-action-collapse)
+        nmap <buffer> l <Plug>(fern-action-open-or-expand)
+        nmap <buffer> n <Plug>(fern-action-new-file)
+    endfunction
+
+    augroup FernCustom
+        autocmd!
+        autocmd FileType fern call s:InitFern()
+    augroup END
 endif
 " }}}
 

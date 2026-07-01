@@ -10,6 +10,35 @@ endif
 let b:did_ftplugin_sql_exec = 1
 " }}}
 
+" dbs.vim {{{
+" modelo para o arquivo local/dbs.vim
+" let g:sql_servers = {
+" \   'dev': 'localhost,1111',
+" \   'tst': 'localhost,2222',
+" \   'hml': 'localhost,3333'
+" \ }
+" let g:sql_objects_root = 'C:\caminho\completo\para\sql_objects'
+" }}}
+
+" validação dbs.vim {{{
+if !isdirectory(g:vimrc_root . '/local')
+    call mkdir(g:vimrc_root . '/local',   'p')
+endif
+if filereadable(g:vimrc_root . '/local/dbs.vim')
+    execute 'source ' . g:vimrc_root . '/local/dbs.vim'
+endif
+" }}}
+
+" tags {{{
+" conecta o tags gerado manualmente
+if exists('g:sql_objects_root')
+    let g:tags_file = g:sql_objects_root . '/tags'
+    if filereadable(g:tags_file)
+        execute 'setlocal tags+=' . fnameescape(g:tags_file)
+    endif
+endif
+" }}}
+
 " configurações {{{
 " setlocal foldexpr=SqlFoldLevel(v:lnum)
 setlocal foldexpr=SqlFold(v:lnum)
@@ -100,22 +129,6 @@ function! SqlFold(lnum)
     return '='
 endfunction
 " }}}
-" }}}
-
-" arquivo dbs.vim {{{
-if !isdirectory(g:vimrc_root . '/local')
-    call mkdir(g:vimrc_root . '/local',   'p')
-endif
-if filereadable(g:vimrc_root . '/local/dbs.vim')
-    execute 'source ' . g:vimrc_root . '/local/dbs.vim'
-endif
-" modelo para o arquivo local/dbs.vim
-" let g:sql_servers = {
-" \   'dev': 'localhost,1111',
-" \   'tst': 'localhost,2222',
-" \   'hml': 'localhost,3333',
-" \   'con': 'localhost,4444'
-" \ }
 " }}}
 
 " funções para execução do SQL {{{
