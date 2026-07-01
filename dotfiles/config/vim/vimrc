@@ -145,6 +145,7 @@ let g:enable_surround        = 1
 let g:enable_whichkey        = 1
 let g:enable_ollama          = 0
 let g:enable_fern            = 1
+let g:enable_fern_git        = 1
 
 let g:enable_novo_plugin     = 1
 " }}}
@@ -625,13 +626,11 @@ nnoremap \\ :nohlsearch<CR>
 " }}}
 
 " tags -------------------------------------------------------------------- {{{
-" autocomplete
-inoremap <C-Space> <C-x><C-]>
-" navegação com ctrl + j/k
-inoremap <expr> <C-j> pumvisible() ? "\<C-n>" : "\<C-j>"
-inoremap <expr> <C-k> pumvisible() ? "\<C-p>" : "\<C-k>"
-" confirma a seleção do popup sem quebrar linha
-inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<CR>"
+" <CR> e <BS> para navegação de tags em normal mode
+" exceto em quickfix e command-line window onde <CR> tem função própria
+nnoremap g<CR> g]
+nnoremap <BS> <C-t>
+nnoremap <expr> <CR> &buftype ==# 'quickfix' ? "\<CR>" : "\<C-]>"
 " }}}
 
 " substituição {{{
@@ -757,6 +756,9 @@ if g:is_plug_active && g:plugins_enabled
     endif
     if g:enable_fern
         Plug 'lambdalisue/vim-fern'
+        if g:enable_fern_git
+            Plug 'lambdalisue/vim-fern-git-status' " extensão
+        endif
     endif
 
     " git
@@ -1433,8 +1435,11 @@ endif
 
 " vim-fern ---------------------------------------------------------------- {{{
 " https://github.com/lambdalisue/vim-fern
+" https://github.com/lambdalisue/vim-fern-git-status
 let g:has_fern = isdirectory(g:plugins_dir . '/vim-fern')
     \ && g:enable_fern && g:plugins_enabled
+let g:has_fern_git = isdirectory(g:plugins_dir . '/vim-fern_git')
+    \ && g:enable_fern_git && g:plugins_enabled
 
 if g:has_fern
     let g:fern#disable_default_mappings = 1
@@ -1458,17 +1463,34 @@ if g:has_fern
 
     " mapeamentos manuais dentro do buffer fern
     function! s:InitFern() abort
+        " geral
         nmap <buffer> ? <Plug>(fern-action-help)
+        nmap <buffer> a <Plug>(fern-action-choice)
+        nmap <buffer> <C-C> <Plug>(fern-action-cancel)
+        " tree
+        nmap <buffer> z <Plug>(fern-action-zoom)
         nmap <buffer> <C-r> <Plug>(fern-action-reload)
+        nmap <buffer> ! <Plug>(fern-action-hidden:toggle)
+        " navegação
+        nmap <buffer> <CR> <Plug>(fern-action-enter)
+        nmap <buffer> <BS> <Plug>(fern-action-leave)
         nmap <buffer> h <Plug>(fern-action-collapse)
         nmap <buffer> l <Plug>(fern-action-open-or-expand)
+        " manipulação
         nmap <buffer> n <Plug>(fern-action-new-file)
+        nmap <buffer> c <Plug>(fern-action-copy)
+        nmap <buffer> m <Plug>(fern-action-move)
+        nmap <buffer> d <Plug>(fern-action-trash)
     endfunction
 
     augroup FernCustom
         autocmd!
         autocmd FileType fern call s:InitFern()
     augroup END
+
+    " eventuais configurações do fern git status
+    if g:has_fern_git
+    endif
 endif
 " }}}
 
