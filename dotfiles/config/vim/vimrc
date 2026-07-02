@@ -136,7 +136,6 @@ let g:enable_airline         = 1
 let g:enable_ale             = 0
 let g:enable_codedark        = 1
 let g:enable_commentary      = 1
-let g:enable_devicons        = 1
 let g:enable_floaterm        = 1
 let g:enable_fugitive        = 1
 let g:enable_gitgutter       = 1
@@ -769,11 +768,6 @@ if g:is_plug_active && g:plugins_enabled
         Plug 'airblade/vim-gitgutter'
     endif
 
-    " deve carregar por último
-    if !g:is_vintage && g:enable_devicons
-        Plug 'ryanoasis/vim-devicons'
-    endif
-
     " para testar
     " Plug 'TaDaa/vimade'
     " Plug 'ycm-core/YouCompleteMe'
@@ -848,7 +842,6 @@ let g:has_airline = isdirectory(g:plugins_dir . '/vim-airline')
 
 if g:has_airline
     set noshowmode " oculta --INSERT-- pois o airline já exibe o modo
-    let g:airline_theme = 'dark'
 
     " contagem de palavras
     let g:airline#extensions#wordcount#enabled = 1
@@ -886,6 +879,25 @@ if g:has_airline
     else
         let g:airline_powerline_fonts = 1
     endif
+
+    let g:airline_symbols = {
+        \ 'branch': '',
+        \ 'colnr': '',
+        \ 'crypt': '',
+        \ 'dirty': '!',
+        \ 'ellipsis': '...',
+        \ 'executable': '',
+        \ 'keymap': '',
+        \ 'linenr': '',
+        \ 'maxlinenr': '',
+        \ 'modified': '+',
+        \ 'notexists': '?',
+        \ 'paste': '',
+        \ 'readonly': '',
+        \ 'space': ' ',
+        \ 'spell': '',
+        \ 'whitespace': '',
+    \}
 
     if g:has_ale
         " integração ale e airline
@@ -1310,15 +1322,6 @@ if g:has_whichkey
 endif
 " }}}
 
-" vim-devicons ------------------------------------------------------------ {{{
-" https://github.com/ryanoasis/vim-devicons
-let g:has_devicons = isdirectory(g:plugins_dir . '/vim-devicons')
-    \ && g:enable_devicons && g:plugins_enabled
-
-if g:has_devicons
-endif
-" }}}
-
 " vim-ollama -------------------------------------------------------------- {{{
 " https://github.com/gutohertzog/vim-ollama
 let g:has_ollama = isdirectory(g:plugins_dir . '/vim-ollama')
@@ -1436,28 +1439,25 @@ endif
 " https://github.com/lambdalisue/vim-fern-git-status
 let g:has_fern = isdirectory(g:plugins_dir . '/vim-fern')
     \ && g:enable_fern && g:plugins_enabled
-let g:has_fern_git = isdirectory(g:plugins_dir . '/vim-fern_git')
+let g:has_fern_git = isdirectory(g:plugins_dir . '/vim-fern-git-status')
     \ && g:enable_fern_git && g:plugins_enabled
 
 if g:has_fern
-    let g:fern#disable_default_mappings = 1
+    let g:fern#drawer_width = 30
     let g:fern#default_hidden = 1
-    let g:fern#drawer_width   = 30
+    let g:fern#disable_default_mappings = 1
 
-    " let g:fern#renderer#default#leading = "│"
-    " let g:fern#renderer#default#root_symbol = "┬ "
-    " let g:fern#renderer#default#leaf_symbol = "├─ "
-    " let g:fern#renderer#default#collapsed_symbol = "├─ "
-    " let g:fern#renderer#default#expanded_symbol = "├┬ "
+    " https://en.wikipedia.org/wiki/Box-drawing_characters#Box_Drawing
+    let g:fern#renderer#default#leading = " "
+    let g:fern#renderer#default#root_symbol = "┌ "
+    let g:fern#renderer#default#leaf_symbol = "├ "
+    let g:fern#renderer#default#collapsed_symbol = "├─ "
+    let g:fern#renderer#default#expanded_symbol = "├┬ "
 
     " abre a janela de navegação
     nnoremap <Leader>e  :Fern . -drawer -toggle<CR>
     " muda o foco para a janela de navegação
     nnoremap <Leader>nf :Fern . -drawer -reveal=%<CR>
-
-    " if g:has_fern_icons
-    "     let g:fern#renderer = 'nerdfont'
-    " endif
 
     " mapeamentos manuais dentro do buffer fern
     function! s:InitFern() abort
