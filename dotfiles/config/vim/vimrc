@@ -222,7 +222,7 @@ let maplocalleader=" " " espaço como tecla líder local (por buffer)
 " }}}
 
 " clipboard --------------------------------------------------------------- {{{
-set clipboard=unnamed,unnamedplus " integracom clipboard do sistema (* e +)
+set clipboard=unnamed,unnamedplus " integra com clipboard do sistema (* e +)
 " }}}
 
 " interface --------------------------------------------------------------- {{{
@@ -233,7 +233,6 @@ set background=dark     " orienta o tema a usar paleta para fundo escuro
 set number              " mostra número das linhas
 set relativenumber      " números relativos para navegação
 set ruler               " mostra posição do cursor
-set showcmd             " exibe comandos incompletos
 set laststatus=2        " sempre mostra a barra de status
 set colorcolumn=80,100  " colunas orientação visual
 set scrolloff=3         " mantém 3 linhas de margem ao rolar
@@ -486,24 +485,6 @@ augroup TrimWhitespace
 augroup END
 " }}}
 
-" Word Count -------------------------------------------------------------- {{{
-function! WordCount()
-    let position = getpos(".")
-    exe ":silent normal g\<c-g>"
-    let stat = v:statusmsg
-    let s:word_count = 0
-    if stat != '--No lines in buffer--'
-        if mode() == "V"
-            let s:word_count = str2nr(split(stat)[5])
-        else
-            let s:word_count = str2nr(split(stat)[11])
-        endif
-    endif
-    call setpos('.', position)
-    return s:word_count
-endfunction
-" }}}
-
 " =============================================================================
 " }}}
 
@@ -516,12 +497,15 @@ endfunction
 nnoremap <Leader>vim :e $MYVIMRC<CR>
 " recarrega o vimrc
 nnoremap <Leader>so :source $MYVIMRC<CR>
-" abre o zshrc
-nnoremap <Leader>zsh :e $HOME/.zshrc<CR>
-" abre o kitty
-nnoremap <Leader>kitty :e $HOME/.config/kitty/kitty.conf<CR>
-" abre o fastfetch
-nnoremap <Leader>fast :e $HOME/.config/fastfetch/config.jsonc<CR>
+" atalhos apenas para unix
+if !g:is_windows
+    " abre o zshrc
+    nnoremap <Leader>zsh :e $HOME/.zshrc<CR>
+    " abre o kitty
+    nnoremap <Leader>kitty :e $HOME/.config/kitty/kitty.conf<CR>
+    " abre o fastfetch
+    nnoremap <Leader>fast :e $HOME/.config/fastfetch/config.jsonc<CR>
+endif
 " }}}
 
 " salvamentos ------------------------------------------------------------- {{{
@@ -632,7 +616,7 @@ nnoremap <BS> <C-t>
 nnoremap <expr> <CR> &buftype ==# 'quickfix' ? "\<CR>" : "\<C-]>"
 " }}}
 
-" substituição {{{
+" substituição ------------------------------------------------------------ {{{
 " substitui completamente todas ocorrências
 vnoremap <C-r> "hy:%s/<C-r>h//g<Left><Left>
 " substitui com original como base
@@ -903,6 +887,8 @@ if g:has_airline
         " integração ale e airline
         let g:airline#extensions#ale#enabled = 1
     endif
+else
+    set showcmd " exibe comandos incompletos
 endif
 " }}}
 
@@ -945,9 +931,6 @@ let g:has_indentline = isdirectory(g:plugins_dir . '/indentLine')
 
 if g:has_indentline
     let g:indentLine_char_list = ['|', '¦', '┆', '┊']
-
-    " Desativa a configuração manual de cores pelo plugin
-    let g:indentLine_setColors = 0
 
     " indentLine: opções para g:indentLine_defaultGroup
     "
