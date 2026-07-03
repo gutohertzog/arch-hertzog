@@ -1256,8 +1256,9 @@ if g:has_codedark
         augroup END
     endif
 
-    " sobrescreve o tema 'dark' definido no airline
-    let g:airline_theme = 'codedark'
+    if g:enable_airline
+        let g:airline_theme = 'codedark'
+    endif
     colorscheme codedark
 else
     colorscheme desert
@@ -1303,6 +1304,11 @@ if g:has_whichkey
     " categoria: vimrc
     let g:which_key_map['vim'] = [':e $MYVIMRC'      , 'editar vimrc']
     let g:which_key_map['so']  = [':source $MYVIMRC' , 'recarregar vimrc']
+    if !g:is_windows
+        let g:which_key_map['zsh']   = [':e .zshrc'      , 'editar zshrc']
+        let g:which_key_map['kitty'] = [':e kitty.conf'      , 'editar kitty']
+        let g:which_key_map['fast']  = [':e config.confc'      , 'editar fast']
+    endif
 
     " categoria: janelas (windows)
     let g:which_key_map['w'] = {
@@ -1316,6 +1322,9 @@ if g:has_whichkey
         \ 'j' : ['<C-w>j'  , 'ir para janela abaixo'],
         \ 'k' : ['<C-w>k'  , 'ir para janela acima'],
         \ 'l' : ['<C-w>l'  , 'ir para janela direita'],
+        \ 'r' : ['<C-w>r'  , 'rotaciona sentido horário'],
+        \ '=' : ['<C-w>='  , 'equaliza tamanho'],
+        \ 'm' : ['<C-w>_<C-w>|'  , 'tamanho máximo'],
     \ }
 
     " categoria: tabs
@@ -1325,13 +1334,16 @@ if g:has_whichkey
         \ 'd' : [':tabclose'    , 'fechar tab'],
         \ 'n' : [':tabnext'     , 'tab seguinte'],
         \ 'p' : [':tabprevious' , 'tab anterior'],
+        \ 'h' : [':tabmove -1'  , 'move tab para esquerda'],
+        \ 'p' : [':tabmove +1'  , 'move tab para direita'],
     \ }
 
     " categoria: buffers
     let g:which_key_map['b'] = {
         \ 'name' : '+buffers',
+        \ 'e' : [':enew'       , 'abre buffer vazio'],
         \ 'd' : [':bdelete'    , 'fechar buffer'],
-        \ 'o' : [':w <bar> %bdelete <bar> e# <CR>',
+        \ 'o' : [':call <SID>OnlyCurrentBuffer()<CR>',
             \'fechar todos exceto atual'],
         \ 'n' : [':bnext'      , 'buffer seguinte'],
         \ 'p' : [':bprevious'  , 'buffer anterior'],
