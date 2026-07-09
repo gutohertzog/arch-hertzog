@@ -23,8 +23,14 @@ Ctrl+J § mover seleção para baixo § fzf
 Ctrl+K § mover seleção para cima § fzf
 Tab § marcar item § fzf
 Shift+Tab § desmarcar item § fzf
-Ctrl+A § selecionar todos itens § fzf
-Ctrl+D § desmarcar todos itens § fzf
+Ctrl+A § início da linha (edição da query) § fzf
+Ctrl+D § rolar resultados meia página para baixo (bind custom) § fzf
+Ctrl+U § rolar resultados meia página para cima (bind custom) § fzf
+Alt+J § rolar preview para baixo (bind custom) § fzf
+Alt+K § rolar preview para cima (bind custom) § fzf
+Alt+D § rolar preview meia página para baixo (bind custom) § fzf
+Alt+U § rolar preview meia página para cima (bind custom) § fzf
+Ctrl+Space § alternar exibição do preview (bind custom) § fzf
 Enter § confirmar seleção § fzf
 Esc § sair do fzf § fzf
 Ctrl+T § buscar arquivos no shell § fzf

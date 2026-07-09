@@ -1,7 +1,7 @@
 Ctrl+Shift+T § abrir nova aba § kitty
 Ctrl+Shift+Q § fechar aba atual § kitty
-Ctrl+Shift+Right § ir para próxima aba § kitty
-Ctrl+Shift+Left § ir para aba anterior § kitty
+Ctrl+Shift+Right § mover janela para borda direita da tela (custom, sobrescreve troca de aba) § kitty
+Ctrl+Shift+Left § mover janela para borda esquerda da tela (custom, sobrescreve troca de aba) § kitty
 Ctrl+Shift+L § listar abas abertas § kitty
 Ctrl+Shift+Enter § abrir nova janela (split) § kitty
 Ctrl+Shift+W § fechar janela atual § kitty
@@ -12,8 +12,10 @@ Ctrl+Shift+Z § alternar zoom da janela § kitty
 Ctrl+Shift+C § copiar seleção para clipboard § kitty
 Ctrl+Shift+V § colar do clipboard § kitty
 Ctrl+Shift+S § buscar texto no scrollback § kitty
-Ctrl+Shift+Up § rolar scrollback para cima § kitty
-Ctrl+Shift+Down § rolar scrollback para baixo § kitty
+Ctrl+Shift+Up § mover janela para borda superior da tela (custom, sobrescreve rolagem) § kitty
+Ctrl+Shift+Down § mover janela para borda inferior da tela (custom, sobrescreve rolagem) § kitty
+Ctrl+Shift+K § rolar scrollback para cima (custom) § kitty
+Ctrl+Shift+J § rolar scrollback para baixo (custom) § kitty
 Ctrl+Shift+PageUp § subir uma página no scrollback § kitty
 Ctrl+Shift+PageDown § descer uma página no scrollback § kitty
 Ctrl+Shift+Home § ir para início do scrollback § kitty

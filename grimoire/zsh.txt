@@ -6,17 +6,18 @@ Alt+B § mover cursor uma palavra para trás § zsh
 Alt+F § mover cursor uma palavra para frente § zsh
 Ctrl+D § apagar caractere sob cursor ou logout se linha vazia § zsh
 Backspace § apagar caractere anterior § zsh
-Ctrl+T § trocar posição de dois caracteres § zsh
+Ctrl+T § abrir busca de arquivos via fzf (fzf --zsh sobrescreve transpose-chars) § zsh
 Alt+T § trocar posição de duas palavras § zsh
 Ctrl+U § apagar do cursor até início da linha § zsh
-Ctrl+K § apagar do cursor até fim da linha § zsh
+Ctrl+K § busca no histórico para trás (bindkey custom, sobrescreve kill-line) § zsh
+Ctrl+J § busca no histórico para frente (bindkey custom) § zsh
 Ctrl+W § apagar palavra anterior § zsh
 Alt+D § apagar próxima palavra § zsh
 Ctrl+Y § colar último texto apagado § zsh
 Alt+Y § rotacionar histórico do kill ring § zsh
 Ctrl+P § histórico comando anterior § zsh
 Ctrl+N § histórico próximo comando § zsh
-Ctrl+R § busca reversa no histórico § zsh
+Ctrl+R § busca fuzzy no histórico via fzf (fzf --zsh sobrescreve busca reversa nativa) § zsh
 Ctrl+S § busca para frente no histórico § zsh
 Ctrl+G § cancelar busca no histórico § zsh
 Ctrl+L § limpar tela do terminal § zsh
