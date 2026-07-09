@@ -271,7 +271,6 @@ set sidescrolloff=0     " mantém 0 colunas de margem ao rolar
 set showmatch           " brevemente indica o par
 set splitbelow          " divide a tela para baixo
 set splitright          " divide a tela para direita
-set conceallevel=0      " evita que caracteres fiquem invisíveis
 set nolist              " desativa os caracteres de marcação
 set nocursorcolumn      " deixa desativado o destaque da coluna do cursor
 set matchpairs+=<:>     " amplia o funcionamento do % para mais pares
@@ -1021,8 +1020,18 @@ if g:has_indentline
     "       :IndentLinesReset
     let g:indentLine_defaultGroup = 'Comment'
 
+    let g:indentLine_setConceal = 2
+    " default ''.
+    " n for Normal mode
+    " v for Visual mode
+    " i for Insert mode
+    " c for Command line editing, for 'incsearch'
+    let g:indentLine_concealcursor = "nc"
+
     " lista e desliga
     nnoremap <Leader>il :IndentLinesToggle<CR>
+else
+    set conceallevel=0 " evita que caracteres fiquem invisíveis
 endif
 " }}}
 
@@ -1335,7 +1344,7 @@ if g:has_whichkey
         \ 'n' : [':tabnext'     , 'tab seguinte'],
         \ 'p' : [':tabprevious' , 'tab anterior'],
         \ 'h' : [':tabmove -1'  , 'move tab para esquerda'],
-        \ 'p' : [':tabmove +1'  , 'move tab para direita'],
+        \ 'l' : [':tabmove +1'  , 'move tab para direita'],
     \ }
 
     " categoria: buffers
