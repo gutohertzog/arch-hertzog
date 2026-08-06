@@ -77,6 +77,7 @@ Abaixo está a seleção de pacotes que são instalados.
 | [tray-icons-reloaded](https://github.com/martinpl/tray-icons-reloaded) | mostra os ícones ativos |
 | [lockkeys](https://github.com/kazysmaster/gnome-shell-extension-lockkeys) | mostra as teclas num e caps lock ativas |
 | [vitals](https://github.com/corecoding/Vitals) | monitorador de hardware |
+| [hide-cursor](https://github.com/elcste/hide-cursor) | esconde o mouse após inatividade (wayland) |
 
 ## Pacotes Sistema
 |||
@@ -96,7 +97,6 @@ Abaixo está a seleção de pacotes que são instalados.
 | [eza](https://archlinux.org/packages/extra/x86_64/eza) | ls moderno com ícones |
 | [fastfetch](https://archlinux.org/packages/extra/x86_64/fastfetch) | mostra informações do hardware e software |
 | [curl](https://archlinux.org/packages/core/x86_64/curl) | ferramenta de linha de comando para transferir dados com urls |
-| [unclutter](https://archlinux.org/packages/extra/x86_64/unclutter) | esconde o mouse |
 | [words](https://archlinux.org/packages/extra/any/words) | dicionário de palavras |
 | [tk](https://archlinux.org/packages/extra/x86_64/tk) | ferramenta para desenvolver aplicativos gráficos |
 | [hosts](https://github.com/StevenBlack/hosts) | bloqueador de rastreadores |
@@ -120,7 +120,6 @@ Abaixo está a seleção de pacotes que são instalados.
 | *Ícones* ||
 | [papirus-icon-theme](https://github.com/PapirusDevelopmentTeam/papirus-icon-theme) | píxel ícones perfeitos |
 | *Cursores* ||
-| [oreo-cursors](https://github.com/varlesh/oreo-cursors) | cursores oreo |
 | [bibata-cursors](https://github.com/ful1e5/Bibata_Cursor) | cursores bibata |
 | *Fontes* ||
 | [ttf-cascadia-code-nerd](https://archlinux.org/packages/extra/any/ttf-cascadia-code-nerd) | CaskaydiaCove Nerd Font |

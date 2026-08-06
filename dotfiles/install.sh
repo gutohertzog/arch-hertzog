@@ -69,10 +69,6 @@ wget -qO- https://git.io/papirus-icon-theme-install | env DESTDIR="$HOME/.icons"
 rm -rf $HOME/.icons/ePapirus* # remove ícones não necessários
 printf "$OK\n"
 
-#printf " copiando oreo cursores......................"
-#for f in $HOME/arch-hertzog/dotfiles/icons/*.tar.gz; do tar xfv "$f" -C $HOME/.icons/; done
-#printf "$OK\n"
-
 printf " copiando bibata cursores...................."
 for f in $HOME/arch-hertzog/dotfiles/icons/*.tar.xz; do tar xfv "$f" -C $HOME/.icons/; done
 printf "$OK\n"

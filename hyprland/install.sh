@@ -212,15 +212,11 @@ function instala_tudo() {
     printf $OK
 
     printf "\n"
-    printf " Installing Oreo Cursores....................."
-    # https://github.com/varlesh/oreo-cursors
-    # yay -S oreo-cursors # this way install A LOT OF dependencies
+    printf " Installing Bibata Cursores..................."
+    # https://github.com/ful1e5/Bibata_Cursor
     rm -rf $HOME/.icons > /dev/null 2>&1
     mkdir $HOME/.icons/
-    cp -r $1/dotfiles/.icons/defaults $HOME/.icons/ > /dev/null 2>&1
-    for f in $1/dotfiles/.icons/*.tar.gz; do tar xfv "$f" -C $HOME/.icons/; done
-    # for f in $HOME/.icons/*.tar.gz; do tar xf "$f"; done
-    # rm $HOME/.icons/*.tar.xz > /dev/null 2>&1
+    for f in $HOME/arch-hertzog/dotfiles/icons/*.tar.xz; do tar xfv "$f" -C $HOME/.icons/; done
     printf $OK
 
     printf "\n"

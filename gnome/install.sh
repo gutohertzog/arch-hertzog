@@ -66,8 +66,6 @@ pacotes=(
     # "yelp"
 
     "gnome-tweaks"
-    # esconde o mouse
-    "unclutter"
     "dconf-editor" # editor do gnome
 )
 

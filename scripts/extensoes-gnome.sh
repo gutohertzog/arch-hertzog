@@ -49,6 +49,13 @@ mv gnome-shell-extension-lockkeys/lockkeys@vaina.lt $HOME/.local/share/gnome-she
 rm -rf gnome-shell-extension-lockkeys
 printf "\n"
 
+# esconde o mouse após inatividade (substituto wayland do unclutter)
+printf "\n\n\thide cursor\n"
+git clone https://github.com/elcste/hide-cursor
+make -C hide-cursor install
+rm -rf hide-cursor
+printf "\n"
+
 printf "\n\n\tvitals\n"
 git clone https://aur.archlinux.org/gnome-shell-extension-vitals-git.git/
 cd gnome-shell-extension-vitals-git
