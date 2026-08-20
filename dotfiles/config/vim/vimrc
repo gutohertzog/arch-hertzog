@@ -133,7 +133,7 @@ let g:enable_fzf             = 1
 let g:enable_indentline      = 1
 let g:enable_simpylfold      = 1
 let g:enable_airline         = 1
-let g:enable_ale             = 0
+let g:enable_ale             = 1
 let g:enable_codedark        = 1
 let g:enable_commentary      = 1
 let g:enable_floaterm        = 1
@@ -145,6 +145,7 @@ let g:enable_whichkey        = 1
 let g:enable_ollama          = 0
 let g:enable_fern            = 1
 let g:enable_fern_git        = 1
+let g:enable_context         = 1
 
 let g:enable_novo_plugin     = 1
 " }}}
@@ -365,10 +366,13 @@ set path+=**        " permite :find buscar recursivamente em subpastas
 set updatetime=300  " ms antes do evento CursorHold (afeta gitgutter e ale)
 " }}}
 
-" som de erros ------------------------------------------------------------ {{{
+" notificação de erros ---------------------------------------------------- {{{
 set noerrorbells " desativa o beep em erros
 set novisualbell " desativa o flash visual em erros
 set t_vb=        " esvazia a sequência de flash do terminal
+if exists('&belloff')
+    set belloff=all
+endif
 " }}}
 
 " edição ------------------------------------------------------------------ {{{
@@ -547,6 +551,37 @@ function! s:OpenFileManager() abort
 endfunction
 
 nnoremap <Leader>fo :call <SID>OpenFileManager()<CR>
+" }}}
+
+" CSV Colors {{{
+" function! s:CSVColors() abort
+"     if &background ==# 'dark'
+"         highlight csvCol1 guifg=#7AA2F7 ctermfg=117
+"         highlight csvCol2 guifg=#73DACA ctermfg=116
+"         highlight csvCol3 guifg=#9ECE6A ctermfg=150
+"         highlight csvCol4 guifg=#E0AF68 ctermfg=179
+"         highlight csvCol5 guifg=#BB9AF7 ctermfg=141
+"         highlight csvCol6 guifg=#FF9E64 ctermfg=215
+"         highlight csvCol7 guifg=#F7768E ctermfg=210
+"         highlight csvCol8 guifg=#C0CAF5 ctermfg=189
+"     else
+"         highlight csvCol1 guifg=#2455A4 ctermfg=25
+"         highlight csvCol2 guifg=#006D77 ctermfg=30
+"         highlight csvCol3 guifg=#357A38 ctermfg=28
+"         highlight csvCol4 guifg=#806000 ctermfg=94
+"         highlight csvCol5 guifg=#7048A8 ctermfg=54
+"         highlight csvCol6 guifg=#A84B00 ctermfg=130
+"         highlight csvCol7 guifg=#A32945 ctermfg=125
+"         highlight csvCol8 guifg=#505050 ctermfg=240
+"     endif
+" endfunction
+
+" augroup csv_colors
+"     autocmd!
+"     autocmd ColorScheme * call <SID>CSVColors()
+" augroup END
+
+" call s:CSVColors()
 " }}}
 
 " =============================================================================
@@ -780,6 +815,9 @@ if g:is_plug_active && g:plugins_enabled
     if g:enable_airline
         Plug 'vim-airline/vim-airline'
         Plug 'enricobacis/vim-airline-clock' " extensão
+    endif
+    if g:enable_context
+        Plug 'wellle/context.vim'
     endif
 
     " edição
@@ -1558,6 +1596,38 @@ if g:has_fern
     " eventuais configurações do fern git status
     if g:has_fern_git
     endif
+endif
+" }}}
+
+" context ----------------------------------------------------------------- {{{
+" https://github.com/wellle/context.vim
+let g:has_context = isdirectory(g:plugins_dir . '/context.vim')
+    \ && g:enable_context && g:plugins_enabled
+
+if g:has_context
+    " configuração padrão
+    let g:context_enabled = 1
+    let g:context_filetype_blacklist = []
+    let g:context_buftype_blacklist = []
+    let g:context_add_mappings = 0
+    let g:context_add_autocmds = 1
+    " let g:context_presenter = <depends>
+    let g:context_max_height = 21
+    let g:context_max_per_indent = 5
+    let g:context_max_join_parts = 5
+    let g:context_ellipsis_char = '·'
+    let g:context_border_char = '━'
+    if !g:is_vintage
+        let g:context_highlight_normal = 'Normal'
+        let g:context_highlight_border = 'Comment'
+        " let g:context_highlight_tag    = 'Special'
+        let g:context_highlight_tag = '<hide>'
+    endif
+    let g:context_skip_regex = '^\s*\($\|#\|//\|/\*\|\*\($\|/s\|\/\)\)'
+    let g:context_extend_regex = '^\s*\([]{})]\|end\|else\|case\>\|default\>\)'
+    let g:context_join_regex = '^\W*$'
+    let g:Context_indent = { line -> [indent(line), indent(line)] }
+    " let g:Context_border_indent = function('indent')
 endif
 " }}}
 
