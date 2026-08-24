@@ -5,68 +5,68 @@ set -e
 # referência : https://archlinux.org/groups/x86_64/gnome/
 #              https://archlinux.org/groups/any/gnome-extra/
 pacotes=(
-    "baobab"
-    # "decibels"
-    # "epiphany"
-    # "evince"
-    "gdm"
-    "gnome-backgrounds"
-    "gnome-calculator"
-    "gnome-calendar"
-    "gnome-characters"
-    "gnome-clocks"
-    "gnome-color-manager"
-    # "gnome-connections"
-    # "gnome-console"
-    "gnome-contacts"
-    "gnome-control-center"
-    "gnome-disk-utility"
-    "gnome-font-viewer"
-    "gnome-keyring"
-    "gnome-logs"
-    # "gnome-maps"
-    "gnome-menus"
-    # "gnome-music"
-    "gnome-remote-desktop"
-    "gnome-session"
-    "gnome-settings-daemon"
-    "gnome-shell"
-    "gnome-shell-extensions"
-    # "gnome-software"
-    "gnome-system-monitor"
-    "gnome-text-editor"
-    # "gnome-tour"
-    # "gnome-user-docs"
-    "gnome-user-share"
-    "gnome-weather"
-    # "grilo-plugins"
-    "gvfs"
-    "gvfs-afc"
-    "gvfs-dnssd"
-    # "gvfs-goa"
-    "gvfs-google"
-    # "gvfs-gphoto2"
-    # "gvfs-mtp"
-    # "gvfs-nfs"
-    "gvfs-onedrive"
-    "gvfs-smb"
-    "gvfs-wsdd"
-    "loupe"
-    # "malcontent"
-    "nautilus"
-    # "orca"
-    # "rygel"
-    # "simple-scan"
-    # "snapshot"
-    "sushi"
-    "tecla"
-    # "totem"
-    "xdg-desktop-portal-gnome"
-    "xdg-user-dirs-gtk"
-    # "yelp"
+    "baobab" # A graphical directory tree analyzer
+    # "decibels" # Audio player for GNOME
+    # "epiphany" # A GNOME web browser based on the WebKit rendering engine
+    "gdm" # Display manager and login screen
+    "gnome-backgrounds" # Background images and data for GNOME
+    "gnome-calculator" # GNOME Scientific calculator
+    "gnome-calendar" # Simple and beautiful calendar application designed to perfectly fit the GNOME desktop
+    "gnome-characters" # A character map application
+    "gnome-clocks" # Clocks applications for GNOME
+    "gnome-color-manager" # GNOME Color Profile Tools
+    # "gnome-connections" # Remote desktop client for the GNOME desktop environment
+    # "gnome-console" # A simple user-friendly terminal emulator for the GNOME desktop
+    "gnome-contacts" # Contacts Manager for GNOME
+    "gnome-control-center" # GNOME's main interface to configure various aspects of the desktop
+    "gnome-disk-utility" # Disk Management Utility for GNOME
+    "gnome-font-viewer" # A font viewer utility for GNOME
+    "gnome-keyring" # Stores passwords and encryption keys
+    "gnome-logs" # A log viewer for the systemd journal
+    # "gnome-maps" # Find places around the world
+    "gnome-menus" # GNOME menu specifications
+    # "gnome-music" # Music player and management application
+    "gnome-remote-desktop" # GNOME Remote Desktop server
+    "gnome-session" # The GNOME Session Handler
+    "gnome-settings-daemon" # GNOME Settings Daemon
+    "gnome-shell" # Next generation desktop shell
+    # "gnome-software" # Allows you to find and install new apps
+    "gnome-system-monitor" # View current processes and monitor system state
+    "gnome-text-editor" # A simple text editor for the GNOME desktop
+    # "gnome-tour" # Guided tour and greeter for GNOME
+    # "gnome-user-docs" # User documentation for GNOME
+    "gnome-user-share" # Easy to use user-level file sharing for GNOME
+    "gnome-weather" # Access current weather conditions and forecasts
+    # "grilo-plugins" # A collection of plugins for the Grilo framework
+    "gst-thumbnailers" # GStreamer video and audio file thumbnailer
+    "gvfs" # Virtual filesystem implementation for GIO
+    "gvfs-afc" # Virtual filesystem implementation for GIO - AFC backend (Apple mobile devices)
+    "gvfs-dnssd" # DNS-SD and WebDAV backend (macOS file sharing)
+    # "gvfs-goa" # Gnome Online Accounts backend (e.g. OwnCloud)
+    # "gvfs-gphoto2" # gphoto2 backend (PTP camera, MTP media player)
+    # "gvfs-mtp" # MTP backend (Android, media player)
+    # "gvfs-nfs" # NFS backend
+    "gvfs-onedrive" # Microsoft OneDrive backend
+    "gvfs-smb" # SMB/CIFS backend (Windows file sharing)
+    "gvfs-wsdd" # Web Services Dynamic Discovery backend (Windows discovery)
+    "loupe" # A simple image viewer for GNOME
+    # "malcontent" # Parental control support for applications
+    "nautilus" # Default file manager for GNOME
+    # "orca" # Screen reader for individuals who are blind or visually impaired
+    # "papers" # Document viewer for PDF and other document formats aimed at the GNOME desktop
+    # "rygel" # UPnP AV MediaServer and MediaRenderer
+    # "showtime" # Video player for GNOME
+    # "simple-scan" # Simple scanning utility
+    # "snapshot" # Take pictures and videos
+    "sushi" # A quick previewer for Nautilus
+    "tecla" # Keyboard layout viewer
+    "xdg-desktop-portal-gnome" # Backend implementation for xdg-desktop-portal for the GNOME desktop environment
+    "xdg-user-dirs-gtk" # Creates user dirs and asks to relocalize them
+    # "yelp" # Get help with GNOME
 
-    "gnome-tweaks"
-    "dconf-editor" # editor do gnome
+    "dconf-editor" # GSettings editor for GNOME
+    "gnome-shell-extensions" # Extensions for GNOME shell, including classic mode
+    "gnome-tweaks" # Graphical interface for advanced GNOME 3 settings (Tweak Tool)
 )
 
 printf "\n"
@@ -87,14 +87,18 @@ mkdir $HOME/GitHub
 # remove o vim para instalar o gvim
 sudo pacman -Runs vim
 
-./../scripts/extensoes-gnome.sh
+# primeiro dotfiles para garantir aplicativos básicos
 ./../dotfiles/install.sh
+./../scripts/extensoes-gnome.sh
+
+# renomeia as pastas originais, caso já existam
+mv $HOME/.config/kitty $HOME/.config/kitty.bak
+mv $HOME/Pictures $HOME/Pictures.bak
 
 # -s cria link simbólico
 # -f evita erro se existir
 # -n substitui existe
 ln -sfn $HOME/arch-hertzog/dotfiles/config/vim $HOME/.vim
-ln -sfn $HOME/arch-hertzog/dotfiles/.p10k.zsh $HOME/.p10k.zsh
 ln -sfn $HOME/arch-hertzog/dotfiles/config/zsh/zshrc $HOME/.zshrc
 ln -sfn $HOME/arch-hertzog/dotfiles/config/kitty $HOME/.config/kitty
 ln -sfn $HOME/arch-hertzog/dotfiles/config/fastfetch $HOME/.config/fastfetch
@@ -104,5 +108,5 @@ ln -sfn $HOME/arch-hertzog/gnome/dotfiles/.profile $HOME/.profile
 ln -sfn $HOME/arch-hertzog/gnome/dotfiles/.XCompose $HOME/.XCompose
 
 # carrega as configurações para o gnome
-# dconf load / < $HOME/arch-hertzog/gnome/dotfiles/config/dconf/user-settings.conf
+dconf load / < $HOME/arch-hertzog/gnome/dotfiles/config/dconf/user-settings.conf
 
