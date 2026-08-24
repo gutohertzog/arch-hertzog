@@ -8,7 +8,7 @@ printf " #                  firefox                   #\n"
 printf " ##############################################\n"
 printf "\n"
 
-sudo pacman --noconfirm -S firefox
+sudo pacman --noconfirm -S firefox firefox-developer-edition
 
 cd $HOME
 git clone https://github.com/gutohertzog/firefox-mod-blur

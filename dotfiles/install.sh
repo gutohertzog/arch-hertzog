@@ -9,7 +9,6 @@ pacotes=(
     "nvidia-settings"
 
     # pacotes terminal
-    "kitty" # emulador do terminal
     "gvim" # tui editor
     "fzf" # busca pelo terminal
     "ripgrep" # busca por letra
@@ -22,18 +21,25 @@ pacotes=(
     "git" # gerenciador de versionamento
     "p7zip" # manipulador de arquivos compactados
     "nm-connection-editor" # editor de conexão
+    "openvpn" # conexão remota via openvpn
     "networkmanager-openvpn" # extensão openvpn para nm
+    "cifs-utils" # ferramentas para mapeamentos do Windows
+    "less" # pacote para ver conteúdo de arquivos
+    "which" # mostra caminho dos pacotes
+    "make" # monta pacotes
 
     # aplicativos
+    "kitty" # emulador do terminal
     "keepassxc" # gerenciador de senhas
     "remmina" # conexão remota
     "freerdp" # para conexão no Windows
+    "pavucontrol" # controle do áudio
 
     # fontes
     # para codar
     "ttf-cascadia-code-nerd"
     "ttf-cascadia-mono-nerd"
-    # caracteres diversos para fontes
+    # caracteres diversos para browser
     "noto-fonts-cjk"
     "noto-fonts-emoji"
     "noto-fonts"
@@ -72,3 +78,4 @@ printf "$OK\n"
 printf " copiando bibata cursores...................."
 for f in $HOME/arch-hertzog/dotfiles/icons/*.tar.xz; do tar xfv "$f" -C $HOME/.icons/; done
 printf "$OK\n"
+
