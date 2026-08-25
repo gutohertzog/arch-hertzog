@@ -17,3 +17,4 @@ Então agrupei todas as instalações/configurações em um repositório, de mod
 - cada ambiente terá seu arquivo de instalação;
 - todos irão executar o script em `dotfiles/install.sh`;
 - a pasta `scripts` tem scripts usados para instalar/atualizar os pacotes que não estão disponíveis com `pacman`;
+

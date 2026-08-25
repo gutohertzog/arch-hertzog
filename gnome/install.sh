@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# encerra em caso de erro
 set -e
 
 # referência : https://archlinux.org/groups/x86_64/gnome/
@@ -77,36 +78,10 @@ printf "\n"
 
 sudo pacman --noconfirm -S "${pacotes[@]}"
 
-printf " ativando gdm"
+printf "\n\n ativando gdm"
 sudo systemctl enable gdm
 
-printf " criando pastas"
-#mkdir $HOME/.icons
-mkdir $HOME/GitHub
-
-# remove o vim para instalar o gvim
-sudo pacman -Runs vim
-
-# primeiro dotfiles para garantir aplicativos básicos
-./../dotfiles/install.sh
-./../scripts/extensoes-gnome.sh
-
-# renomeia as pastas originais, caso já existam
-mv $HOME/.config/kitty $HOME/.config/kitty.bak
-mv $HOME/Pictures $HOME/Pictures.bak
-
-# -s cria link simbólico
-# -f evita erro se existir
-# -n substitui existe
-ln -sfn $HOME/arch-hertzog/dotfiles/config/vim $HOME/.vim
-ln -sfn $HOME/arch-hertzog/dotfiles/config/zsh/zshrc $HOME/.zshrc
-ln -sfn $HOME/arch-hertzog/dotfiles/config/kitty $HOME/.config/kitty
-ln -sfn $HOME/arch-hertzog/dotfiles/config/fastfetch $HOME/.config/fastfetch
-ln -sfn $HOME/arch-hertzog/dotfiles/Pictures $HOME/Pictures
-ln -sfn $HOME/arch-hertzog/gnome/dotfiles/themes $HOME/.themes
-ln -sfn $HOME/arch-hertzog/gnome/dotfiles/.profile $HOME/.profile
-ln -sfn $HOME/arch-hertzog/gnome/dotfiles/.XCompose $HOME/.XCompose
-
 # carrega as configurações para o gnome
+printf "\n ativando gdm"
 dconf load / < $HOME/arch-hertzog/gnome/dotfiles/config/dconf/user-settings.conf
 
