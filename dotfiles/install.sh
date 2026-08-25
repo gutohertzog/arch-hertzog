@@ -53,6 +53,9 @@ pacotes=(
     # reprodutor áudio e vídeo
     "vlc"
     "vlc-plugin-ffmpeg"
+    "vlc-plugin-freetype"
+    "vlc-plugin-ass"
+    "vlc-plugin-srt"
 )
 
 printf "\n"
