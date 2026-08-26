@@ -5,6 +5,8 @@ set -e
 
 # referência : https://archlinux.org/groups/x86_64/gnome/
 #              https://archlinux.org/groups/any/gnome-extra/
+
+# data da última verificação dos pacotes 2026-08-24
 pacotes=(
     "baobab" # A graphical directory tree analyzer
     # "decibels" # Audio player for GNOME
@@ -78,10 +80,19 @@ printf "\n"
 
 sudo pacman --noconfirm -S "${pacotes[@]}"
 
-printf "\n\n ativando gdm"
+printf "\n\n ativando gdm\n"
 sudo systemctl enable gdm
 
+./extensoes-gnome.sh
+
 # carrega as configurações para o gnome
-printf "\n ativando gdm"
+printf "\n carregando configurações\n"
 dconf load / < $HOME/arch-hertzog/gnome/dotfiles/config/dconf/user-settings.conf
+
+# -s cria link simbólico
+# -f evita erro se existir
+# -n substitui existe
+ln -sfn $HOME/arch-hertzog/gnome/dotfiles/themes $HOME/.themes
+ln -sfn $HOME/arch-hertzog/gnome/dotfiles/.profile $HOME/.profile
+ln -sfn $HOME/arch-hertzog/gnome/dotfiles/.XCompose $HOME/.XCompose
 

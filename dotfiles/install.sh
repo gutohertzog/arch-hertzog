@@ -3,11 +3,6 @@
 OK="\e[0;32mOK\e[0m"
 
 pacotes=(
-    # pacotes nvidia
-    "nvidia"
-    "nvidia-utils"
-    "nvidia-settings"
-
     # pacotes terminal
     "gvim" # tui editor
     "fzf" # busca pelo terminal
@@ -40,9 +35,9 @@ pacotes=(
     "ttf-cascadia-code-nerd"
     "ttf-cascadia-mono-nerd"
     # caracteres diversos para browser
+    "noto-fonts"
     "noto-fonts-cjk"
     "noto-fonts-emoji"
-    "noto-fonts"
 
     # dicionário
     "words"
@@ -52,10 +47,10 @@ pacotes=(
 
     # reprodutor áudio e vídeo
     "vlc"
-    "vlc-plugin-ffmpeg"
-    "vlc-plugin-freetype"
     "vlc-plugin-ass"
     "vlc-plugin-srt"
+    "vlc-plugin-ffmpeg"
+    "vlc-plugin-freetype"
 )
 
 printf "\n"
@@ -64,21 +59,10 @@ printf " #             instalando extras              #\n"
 printf " ##############################################\n"
 printf "\n"
 
+printf "\nremovendo vim para instalar gvim\n"
+sudo pacman --noconfirm -Runs vim
+printf "\n$OK\n"
+
 sudo pacman --noconfirm -S "${pacotes[@]}"
-
-./../scripts/zsh.sh
-./../scripts/hosts.sh
-./../scripts/python.sh
-./../scripts/firefox.sh
-./../scripts/vs-code.sh
-
-# interface do sistema
-printf " copiando ícone papirus......................"
-wget -qO- https://git.io/papirus-icon-theme-install | env DESTDIR="$HOME/.icons" sh
-rm -rf $HOME/.icons/ePapirus* # remove ícones não necessários
-printf "$OK\n"
-
-printf " copiando bibata cursores...................."
-for f in $HOME/arch-hertzog/dotfiles/icons/*.tar.xz; do tar xfv "$f" -C $HOME/.icons/; done
-printf "$OK\n"
+printf "\n$OK\n"
 

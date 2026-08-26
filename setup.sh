@@ -13,12 +13,18 @@ printf " criando pastas"
 #mkdir $HOME/.icons
 mkdir $HOME/GitHub
 
-# remove o vim para instalar o gvim
-sudo pacman -Runs vim
-
-# primeiro dotfiles para garantir aplicativos básicos
+# primeiro dotfiles para aplicativos básicos
 ./dotfiles/install.sh
-./scripts/extensoes-gnome.sh
+
+# agora pacotes individuais
+./scripts/interface.sh
+./scripts/nvidia.sh
+./scripts/zsh.sh
+./scripts/hosts.sh
+./scripts/python.sh
+./scripts/firefox.sh
+./scripts/vs-code.sh
+./scripts/adguardhome.sh
 
 # renomeia as pastas originais, caso já existam
 mv $HOME/.config/kitty $HOME/.config/kitty.bak
@@ -32,7 +38,4 @@ ln -sfn $HOME/arch-hertzog/dotfiles/config/zsh/zshrc $HOME/.zshrc
 ln -sfn $HOME/arch-hertzog/dotfiles/config/kitty $HOME/.config/kitty
 ln -sfn $HOME/arch-hertzog/dotfiles/config/fastfetch $HOME/.config/fastfetch
 ln -sfn $HOME/arch-hertzog/dotfiles/Pictures $HOME/Pictures
-ln -sfn $HOME/arch-hertzog/gnome/dotfiles/themes $HOME/.themes
-ln -sfn $HOME/arch-hertzog/gnome/dotfiles/.profile $HOME/.profile
-ln -sfn $HOME/arch-hertzog/gnome/dotfiles/.XCompose $HOME/.XCompose
 
