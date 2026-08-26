@@ -3,7 +3,7 @@
 OK="\e[0;32mOK\e[0m"
 
 pacotes=(
-    "nvidia"
+    "nvidia-open"
     "nvidia-utils"
     "nvidia-settings"
 )

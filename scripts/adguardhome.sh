@@ -16,23 +16,23 @@ WORK_DIR="$HOME/GitHub"
 mkdir -p "$WORK_DIR"
 cd "$WORK_DIR"
 
-printf " Baixando e descompactando o AdGuard Home"
+printf " → Baixando e descompactando o AdGuard Home"
 wget -q https://static.adguard.com/adguardhome/release/AdGuardHome_linux_amd64.tar.gz
 tar -xzf AdGuardHome_linux_amd64.tar.gz > /dev/null 2>&1
 rm AdGuardHome_linux_amd64.tar.gz
 printf "$OK\n"
 
-printf " Instalando o AdGuard Home"
+printf " → Instalando o AdGuard Home"
 cd AdGuardHome
 sudo ./AdGuardHome -s install > /dev/null 2>&1
 printf "$OK\n"
 
-printf " Configurando o AdGuard Home como serviço systemd"
+printf " → Configurando o AdGuard Home como serviço systemd"
 sudo systemctl enable AdGuardHome > /dev/null 2>&1
 sudo systemctl start AdGuardHome
 printf "$OK\n"
 
-printf " Configurando DNS para utilizar o AdGuard Home"
+printf " → Configurando DNS para utilizar o AdGuard Home"
 sudo tee /etc/NetworkManager/conf.d/dns.conf > /dev/null <<EOL
 [main]
 dns=none

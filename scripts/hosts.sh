@@ -47,3 +47,4 @@ printf " → Reiniciando NetworkManager\n"
 sudo systemctl restart NetworkManager.service
 
 printf "\n$OK\n"
+
