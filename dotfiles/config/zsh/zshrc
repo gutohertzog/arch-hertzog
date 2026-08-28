@@ -216,8 +216,28 @@ alias instalados="pacman -Qe"
 # }}}
 
 # atalhos ----------------------------------------------------------------- {{{
-bindkey '^k' history-search-backward
-bindkey '^j' history-search-forward
+zmodload zsh/terminfo
+
+bindkey '^k' history-beginning-search-backward
+bindkey '^j' history-beginning-search-forward
+
+# Ativa o modo "aplicativo" do teclado enquanto o zle está editando,
+# e desativa ao terminar. Sem isso, Home/End podem mandar sequências
+# diferentes das que khome/kend declaram.
+function zle-line-init() {
+    emulate -L zsh
+    [[ -n "${terminfo[smkx]}" ]] && printf '%s' "${terminfo[smkx]}"
+}
+function zle-line-finish() {
+    emulate -L zsh
+    [[ -n "${terminfo[rmkx]}" ]] && printf '%s' "${terminfo[rmkx]}"
+}
+zle -N zle-line-init
+zle -N zle-line-finish
+
+bindkey "${terminfo[khome]}" beginning-of-line
+bindkey "${terminfo[kend]}"  end-of-line
+bindkey "${terminfo[kdch1]}" delete-char
 # }}}
 # }}}
 
