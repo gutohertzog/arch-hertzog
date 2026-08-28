@@ -19,8 +19,7 @@ ln -s $HOME/arch-hertzog/dotfiles/config/Code/User/keybindings.json $HOME/.confi
 # printf " code-features..............................."
 # git clone https://aur.archlinux.org/code-features.git
 # cd code-features
-# makepkg
-# makepkg --install
+# makepkg -si PKGBUILD
 # cd $HOME/GitHub
 # rm -rf code-features
 # printf "$OK\n"
@@ -28,8 +27,7 @@ ln -s $HOME/arch-hertzog/dotfiles/config/Code/User/keybindings.json $HOME/.confi
 # printf " code-marketplace............................"
 # git clone https://aur.archlinux.org/code-marketplace.git
 # cd code-marketplace
-# makepkg
-# makepkg --install
+# makepkg -si PKGBUILD
 # cd $HOME/GitHub
 # rm -rf code-marketplace
 # printf "$OK\n"

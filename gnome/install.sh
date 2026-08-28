@@ -83,8 +83,6 @@ sudo pacman --noconfirm -S "${pacotes[@]}"
 printf "\n\n ativando gdm\n"
 sudo systemctl enable gdm
 
-./extensoes-gnome.sh
-
 # carrega as configurações para o gnome
 printf "\n carregando configurações\n"
 dconf load / < $HOME/arch-hertzog/gnome/dotfiles/config/dconf/user-settings.conf
@@ -93,6 +91,5 @@ dconf load / < $HOME/arch-hertzog/gnome/dotfiles/config/dconf/user-settings.conf
 # -f evita erro se existir
 # -n substitui existe
 ln -sfn $HOME/arch-hertzog/gnome/dotfiles/themes $HOME/.themes
-ln -sfn $HOME/arch-hertzog/gnome/dotfiles/.profile $HOME/.profile
 ln -sfn $HOME/arch-hertzog/gnome/dotfiles/.XCompose $HOME/.XCompose
 

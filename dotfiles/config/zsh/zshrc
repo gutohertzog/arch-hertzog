@@ -4,6 +4,7 @@
 # PATHs {{{
 # =============================================================================
 export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/Apps:$PATH"
 # }}}
 
 # =============================================================================
@@ -30,9 +31,10 @@ zstyle ':completion:*' cache-path ~/.cache/zsh
 autoload -Uz compinit
 
 # plugins
-source $HOME/arch-hertzog/dotfiles/config/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-source $HOME/arch-hertzog/dotfiles/config/zsh/plugins/fzf-tab/fzf-tab.plugin.zsh
-source $HOME/arch-hertzog/dotfiles/config/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+ZSH_DIR="$HOME/arch-hertzog/dotfiles/config/zsh/plugins"
+source "$ZSH_DIR/zsh-autosuggestions/zsh-autosuggestions.zsh"
+source "$ZSH_DIR/fzf-tab/fzf-tab.plugin.zsh"
+source "$ZSH_DIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 # }}}
 
 # =============================================================================
@@ -62,10 +64,10 @@ if [ $ALL -eq 1 ]; then
         pikachu
     )
     random_index=$(( RANDOM % ${#POKEMON_LIST[@]} + 1 ))
-    sprite=$("$HOME/Apps/pokeget" "${POKEMON_LIST[random_index]}" --hide-name)
+    sprite=$(pokeget "${POKEMON_LIST[random_index]}" --hide-name)
 else
     # obtém sprite aleatório apenas da região
-    sprite=$("$HOME/Apps/pokeget" kanto --hide-name)
+    sprite=$(pokeget kanto --hide-name)
 fi
 
 # altura do sprite
