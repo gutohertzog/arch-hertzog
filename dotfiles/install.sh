@@ -4,31 +4,35 @@ OK="\e[0;32mOK\e[0m"
 
 pacotes=(
     # pacotes terminal
-    "gvim" # tui editor
-    "fzf" # busca pelo terminal
-    "ripgrep" # busca por letra
-    "fd" # melhor find
-    "bat" # melhor cat
-    "zoxide" # melhor cd
-    "fastfetch" # informação sistema
-    "eza" # melhor ls e ícones
-    "wget" # baixador
-    "git" # gerenciador de versionamento
-    "p7zip" # manipulador de arquivos compactados
-    "nm-connection-editor" # editor de conexão
-    "openvpn" # conexão remota via openvpn
-    "networkmanager-openvpn" # extensão openvpn para nm
-    "cifs-utils" # ferramentas para mapeamentos do Windows
-    "less" # pacote para ver conteúdo de arquivos
-    "which" # mostra caminho dos pacotes
-    "make" # monta pacotes
+    "bat" # Cat clone with syntax highlighting and git integration
+    "cifs-utils" # CIFS filesystem user-space tools
+    "eza" # A modern replacement for ls (community fork of exa)
+    "fastfetch" # A feature-rich and performance oriented neofetch like system information tool
+    "fd" # Simple, fast and user-friendly alternative to find
+    "fzf" # Command-line fuzzy finder
+    "git" # the fast distributed version control system
+    "gvim" # Vi Improved, a highly configurable, improved version of the vi text editor (with advanced features, such as a GUI)
+    "less" # A terminal based program for viewing text files
+    "networkmanager-openvpn" # NetworkManager VPN plugin for OpenVPN (with GUI)
+    "nm-connection-editor" # NetworkManager GUI connection editor and widgets
+    "openvpn" # An easy-to-use, robust and highly configurable VPN (Virtual Private Network)
+    "p7zip" # File archiver for extremely high compression
+    "ripgrep" # A search tool that combines the usability of ag with the raw speed of grep
+    "wget" # Network utility to retrieve files from the web
+    "which" # A utility to show the full path of commands
+    "zoxide" # A smarter cd command for your terminal
+
+    # pacotes para compilações
+    "debugedit" # Tool to mangle source locations in .debug files
+    "fakeroot" # Tool for simulating superuser privileges
+    "gcc" # The GNU Compiler Collection - C and C++ frontends
+    "make" # GNU make utility to maintain groups of programs
 
     # aplicativos
-    "kitty" # emulador do terminal
-    "keepassxc" # gerenciador de senhas
-    "remmina" # conexão remota
-    "freerdp" # para conexão no Windows
-    "pavucontrol" # controle do áudio
+    "freerdp" # Free implementation of the Remote Desktop Protocol (RDP)
+    "keepassxc" # Cross-platform community-driven port of Keepass password manager
+    "kitty" # A modern, hackable, featureful, OpenGL-based terminal emulator
+    "pavucontrol" # PulseAudio Volume Control
 
     # fontes
     # para codar
@@ -38,19 +42,6 @@ pacotes=(
     "noto-fonts"
     "noto-fonts-cjk"
     "noto-fonts-emoji"
-
-    # dicionário
-    "words"
-
-    # gui para python
-    "tk"
-
-    # reprodutor áudio e vídeo
-    "vlc"
-    "vlc-plugin-ass"
-    "vlc-plugin-srt"
-    "vlc-plugin-ffmpeg"
-    "vlc-plugin-freetype"
 )
 
 printf "\n"

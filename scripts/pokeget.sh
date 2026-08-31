@@ -35,7 +35,7 @@ esac
 
 mkdir -p "$APP_DIR"
 
-URL="${BASE_URL}/pokeget-${ARCH}-unknown-linux-gnu"
+URL="${BASE_URL}/pokeget-Linux-${ARCH}.tar.gz"
 
 echo "Downloading pokeget ${VERSION}..."
 curl -fL "$URL" -o "$APP_DIR/$APP_NAME"
