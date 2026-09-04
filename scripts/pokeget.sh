@@ -36,14 +36,26 @@ esac
 mkdir -p "$APP_DIR"
 
 URL="${BASE_URL}/pokeget-Linux-${ARCH}.tar.gz"
+TMP_FILE="$(mktemp --suffix=.tar.gz)"
+TMP_DIR="$(mktemp -d)"
+
+trap 'rm -f "$TMP_FILE"; rm -rf "$TMP_DIR"' EXIT
 
 echo "Downloading pokeget ${VERSION}..."
-curl -fL "$URL" -o "$APP_DIR/$APP_NAME"
+curl -fL "$URL" -o "$TMP_FILE"
 
 # ------------------------------------------------------------------------------
-# Make executable
+# Extract
 # ------------------------------------------------------------------------------
 
+echo "Extracting..."
+tar -xzf "$TMP_FILE" -C "$TMP_DIR"
+
+# ------------------------------------------------------------------------------
+# Install
+# ------------------------------------------------------------------------------
+
+mv "$TMP_DIR/pokeget" "$APP_DIR/$APP_NAME"
 chmod +x "$APP_DIR/$APP_NAME"
 
 echo "Installed: $APP_DIR/$APP_NAME"
