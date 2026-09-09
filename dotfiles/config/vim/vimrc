@@ -1294,6 +1294,16 @@ if g:has_codedark
         let g:codedark_italics = 1 " habilita itálico no tema
         highlight Comment gui=italic cterm=italic
 
+        " paleta ANSI do terminal (:terminal / floaterm), pra bater com o
+        " VS Code Dark+ — ordem: preto, vermelho, verde, amarelo, azul,
+        " magenta, ciano, branco (normais), depois os mesmos 8 'bright'
+        let g:terminal_ansi_colors = [
+            \ '#1e1e1e', '#cd3131', '#0dbc79', '#e5e510',
+            \ '#2472c8', '#bc3fbc', '#11a8cd', '#e5e5e5',
+            \ '#666666', '#f14c4c', '#23d18b', '#f5f543',
+            \ '#3b8eea', '#d670d6', '#29b8db', '#e5e5e5'
+            \ ]
+
         " necessário para sobreescrever os ajustes do tema
         augroup MyCodeDarkTweaks
             autocmd!
