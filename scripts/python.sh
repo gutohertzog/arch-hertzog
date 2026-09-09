@@ -11,7 +11,7 @@ set -e
 
 source "$(dirname "$0")/funcoes.sh"
 
-versao="3.14.1"
+versao="3.14.7"
 pasta="3.14"
 
 # baixa o Python

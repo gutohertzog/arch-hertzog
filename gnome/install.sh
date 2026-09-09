@@ -19,7 +19,7 @@ pacotes=(
     "gnome-clocks" # Clocks applications for GNOME
     "gnome-color-manager" # GNOME Color Profile Tools
     # "gnome-connections" # Remote desktop client for the GNOME desktop environment
-    # "gnome-console" # A simple user-friendly terminal emulator for the GNOME desktop
+    "gnome-console" # A simple user-friendly terminal emulator for the GNOME desktop
     "gnome-contacts" # Contacts Manager for GNOME
     "gnome-control-center" # GNOME's main interface to configure various aspects of the desktop
     "gnome-disk-utility" # Disk Management Utility for GNOME
@@ -83,8 +83,6 @@ sudo pacman --noconfirm -S "${pacotes[@]}"
 printf "\n\n ativando gdm\n"
 sudo systemctl enable gdm
 
-./extensoes-gnome.sh
-
 # carrega as configurações para o gnome
 printf "\n carregando configurações\n"
 dconf load / < $HOME/arch-hertzog/gnome/dotfiles/config/dconf/user-settings.conf
@@ -93,6 +91,5 @@ dconf load / < $HOME/arch-hertzog/gnome/dotfiles/config/dconf/user-settings.conf
 # -f evita erro se existir
 # -n substitui existe
 ln -sfn $HOME/arch-hertzog/gnome/dotfiles/themes $HOME/.themes
-ln -sfn $HOME/arch-hertzog/gnome/dotfiles/.profile $HOME/.profile
 ln -sfn $HOME/arch-hertzog/gnome/dotfiles/.XCompose $HOME/.XCompose
 

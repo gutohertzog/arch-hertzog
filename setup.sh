@@ -16,6 +16,10 @@ mkdir $HOME/GitHub
 # primeiro dotfiles para aplicativos básicos
 ./dotfiles/install.sh
 
+# previsa vir depois do dotfiles/install.sh
+# por dependências de pacotes prévios
+./gnome/extensoes-gnome.sh
+
 # agora pacotes individuais
 ./scripts/interface.sh
 ./scripts/nvidia.sh
