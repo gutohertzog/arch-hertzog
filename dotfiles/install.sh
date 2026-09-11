@@ -13,9 +13,6 @@ pacotes=(
     "git" # the fast distributed version control system
     "gvim" # Vi Improved, a highly configurable, improved version of the vi text editor (with advanced features, such as a GUI)
     "less" # A terminal based program for viewing text files
-    "networkmanager-openvpn" # NetworkManager VPN plugin for OpenVPN (with GUI)
-    "nm-connection-editor" # NetworkManager GUI connection editor and widgets
-    "openvpn" # An easy-to-use, robust and highly configurable VPN (Virtual Private Network)
     "p7zip" # File archiver for extremely high compression
     "ripgrep" # A search tool that combines the usability of ag with the raw speed of grep
     "wget" # Network utility to retrieve files from the web
@@ -32,7 +29,6 @@ pacotes=(
     "freerdp" # Free implementation of the Remote Desktop Protocol (RDP)
     "keepassxc" # Cross-platform community-driven port of Keepass password manager
     "kitty" # A modern, hackable, featureful, OpenGL-based terminal emulator
-    "pavucontrol" # PulseAudio Volume Control
 
     # fontes
     # para codar
