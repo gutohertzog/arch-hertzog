@@ -29,9 +29,9 @@ mkdir $HOME/GitHub
 ./scripts/firefox.sh
 ./scripts/vs-code.sh
 ./scripts/adguardhome.sh
+./scripts/vlc.sh
 
 # renomeia as pastas originais, caso já existam
-mv $HOME/.config/kitty $HOME/.config/kitty.bak
 mv $HOME/Pictures $HOME/Pictures.bak
 
 # -s cria link simbólico

@@ -85,7 +85,7 @@ sudo systemctl enable gdm
 
 # carrega as configurações para o gnome
 printf "\n carregando configurações\n"
-dconf load / < $HOME/arch-hertzog/gnome/dotfiles/config/dconf/user-settings.conf
+./$HOME/arch-hertzog/gnome/dotfiles/config/dconf/install-dconf.sh
 
 # -s cria link simbólico
 # -f evita erro se existir

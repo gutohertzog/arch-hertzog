@@ -157,6 +157,7 @@
     // "python.analysis.inlayHints.variableTypes": false,
     // "python.analysis.typeCheckingMode": "basic",
     "pyrefly.trace.server": "verbose",
+    "python.createEnvironment.trigger": "off",
     "python.defaultInterpreterPath": "",
     "python.envFile": "${workspaceFolder}/.venv",
     "python.interpreter.infoVisibility": "always",
