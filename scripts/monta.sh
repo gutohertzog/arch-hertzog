@@ -1,4 +1,5 @@
 #!/bin/bash
+set -Eeuo pipefail
 
 # usuário para conexão
 USUARIO="meu.usuario"

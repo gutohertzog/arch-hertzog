@@ -1,33 +1,37 @@
 #!/bin/bash
+set -Eeuo pipefail
 
-OK="\e[0;32mOK\e[0m"
+# -----------------------------------------------------------------------------
+# https://archlinux.org/packages/extra/x86_64/networkmanager/
+# https://archlinux.org/packages/extra/x86_64/networkmanager-openvpn/
+# https://archlinux.org/packages/extra/x86_64/nm-connection-editor/
+# https://archlinux.org/packages/extra/x86_64/openvpn/
+# -----------------------------------------------------------------------------
+
+source "$(dirname "$0")/conf.sh"
 
 pacotes=(
-    # gerenciamento de rede
-    "networkmanager"
-    "networkmanager-openvpn"
+    "networkmanager" # Network connection manager and user applications
 
-    # conexão via VPN
-    "openvpn"
+    "openvpn" # An easy-to-use, robust and highly configurable VPN (Virtual Private Network)
+    "networkmanager-openvpn" # NetworkManager VPN plugin for OpenVPN (with GUI)
 
-    # gerenciador GUI (opcional)
-    "nm-connection-editor"
+    "nm-connection-editor" # NetworkManager GUI connection editor and widgets
 )
 
 printf "\n"
 printf " ##############################################\n"
-printf " #       instalando networkmanager            #\n"
+printf " #               networkmanager               #\n"
 printf " ##############################################\n"
 printf "\n"
 
-sudo pacman --noconfirm -S "${pacotes[@]}"
+instalar_pacotes "${pacotes[@]}"
 
-printf "\n"
-printf " Ativando NetworkManager...\n"
-
+printf " → Ativando NetworkManager\n"
 sudo systemctl enable NetworkManager
 sudo systemctl start NetworkManager
 # sudo systemctl enable --now NetworkManager
+printf "${OK}"
 
-printf "\n$OK\n"
+printf "${FIM}"
 

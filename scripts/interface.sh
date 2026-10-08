@@ -1,13 +1,24 @@
 #!/bin/bash
+set -Eeuo pipefail
 
-OK="\e[0;32mOK\e[0m"
+# -----------------------------------------------------------------------------
+# https://github.com/PapirusDevelopmentTeam/papirus-icon-theme
+# https://github.com/ful1e5/Bibata_Cursorc
+# -----------------------------------------------------------------------------
 
-printf " copiando ícone papirus......................"
+source "$(dirname "$0")/conf.sh"
+
+printf " → Copiando ícone Papirus\n"
 wget -qO- https://git.io/papirus-icon-theme-install | env DESTDIR="$HOME/.icons" sh
-rm -rf $HOME/.icons/ePapirus* # remove ícones não necessários
-printf "$OK\n"
+printf "${OK}"
 
-printf " copiando bibata cursores...................."
+printf " → Removendo ícones que não uso\n"
+rm -rf $HOME/.icons/ePapirus*
+printf "${OK}"
+
+printf " → Copiando cursores Bibata\n"
 for f in $HOME/arch-hertzog/dotfiles/icons/*.tar.xz; do tar xfv "$f" -C $HOME/.icons/; done
-printf "$OK\n"
+printf "${OK}"
+
+printf "${FIM}"
 

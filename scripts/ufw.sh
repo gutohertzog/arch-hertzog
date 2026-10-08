@@ -1,7 +1,10 @@
 #!/bin/bash
+set -Eeuo pipefail
 
-# --------------------------------------------------------------
+# =============================================================================
 # Firewall - UFW
+# https://archlinux.org/packages/extra/any/ufw/
+# https://archlinux.org/packages/extra/any/gufw/
 #
 # Instala e configura o UFW com uma política padrão segura:
 #   - entrada: negar
@@ -51,9 +54,9 @@
 # CUIDADO:
 # Se estiver conectado remotamente à máquina, não ative o UFW
 # antes de liberar o serviço pelo qual está conectado.
-# --------------------------------------------------------------
+# =============================================================================
 
-OK="\e[0;32mOK\e[0m"
+source "$(dirname "$0")/conf.sh"
 
 pacotes=(
     "ufw"
@@ -66,31 +69,31 @@ printf " #               firewall - ufw               #\n"
 printf " ##############################################\n"
 printf "\n"
 
-printf " → Instalando ufw.............................."
-sudo pacman --noconfirm -S "${pacotes[@]}"
-printf "$OK\n"
+instalar_pacotes "${pacotes[@]}"
 
-printf " → Configurando política padrão................"
+printf " → Configurando política padrão"
 sudo ufw default deny incoming
 sudo ufw default allow outgoing
 sudo ufw default deny routed
-printf "$OK\n"
+printf "${OK}"
 
-printf " → Ativando logging............................"
+printf " → Ativando logging"
 sudo ufw logging low
-printf "$OK\n"
+printf "${OK}"
 
-printf " → Habilitando UFW no boot....................."
+printf " → Habilitando UFW no boot"
 sudo systemctl enable ufw.service
-printf "$OK\n"
+printf "${OK}"
 
-printf " → Ativando firewall..........................."
+printf " → Ativando firewall"
 sudo ufw --force enable
-printf "$OK\n"
+printf "${OK}"
 
 printf "\n"
 printf " → Firewall configurado e habilitado no boot.\n"
 printf "\n"
 
 sudo ufw status verbose
+
+printf "${FIM}"
 

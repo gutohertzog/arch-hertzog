@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -o pipefail
+set -Eeuo pipefail
 
 RDP_HOST="$1"
 RDP_USER="${2:-augusto}"

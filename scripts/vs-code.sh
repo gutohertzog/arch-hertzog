@@ -1,5 +1,18 @@
 #!/bin/bash
-OK="\e[0;32mOK\e[0m"
+set -Eeuo pipefail
+
+# =============================================================================
+# https://archlinux.org/packages/extra/x86_64/code/
+# =============================================================================
+
+source "$(dirname "$0")/conf.sh"
+
+DIR_SRC=$HOME/arch-hertzog/dotfiles/config/Code/User/
+DIR_DST=$HOME/.config/Code\ -\ OSS/User
+
+pacotes=(
+    "code" # The Open Source build of Visual Studio Code (vscode) editor
+)
 
 printf "\n"
 printf " ##############################################\n"
@@ -7,14 +20,13 @@ printf " #                  vs code                   #\n"
 printf " ##############################################\n"
 printf "\n"
 
-printf " vs code....................................."
-sudo pacman --noconfirm -S code
-printf "$OK\n"
+instalar_pacotes "${pacotes[@]}"
 
 # cria a pasta para linkar as configurações
+printf " → Criando links simbólicos para arquivos de configuração\n"
 mkdir -p $HOME/.config/Code\ -\ OSS/User
-ln -s $HOME/arch-hertzog/dotfiles/config/Code/User/settings.json $HOME/.config/Code\ -\ OSS/User
-ln -s $HOME/arch-hertzog/dotfiles/config/Code/User/keybindings.json $HOME/.config/Code\ -\ OSS/User
+ln -s "$DIR_SRC/settings.json" "$DIR_DST"
+ln -s "$DIR_SRC/keybindings.json" "$DIR_DST"
 
 # printf " code-features..............................."
 # git clone https://aur.archlinux.org/code-features.git
@@ -32,20 +44,19 @@ ln -s $HOME/arch-hertzog/dotfiles/config/Code/User/keybindings.json $HOME/.confi
 # rm -rf code-marketplace
 # printf "$OK\n"
 
-printf " extensões vs code...........................\n"
-printf " ....vscode-icons............................"
+printf " → Instalando extensões vs code\n"
+printf "     → vscode-icons\n"
 code --install-extension vscode-icons-team.vscode-icons
-printf "$OK\n"
-printf " ....indent-rainbow.........................."
+printf "${OK}"
+printf "     → indent-rainbow\n"
 code --install-extension oderwat.indent-rainbow
-printf "$OK\n"
-printf " ....vim....................................."
+printf "${OK}"
+printf "     → vim\n"
 code --install-extension vscodevim.vim
-printf "$OK\n"
-printf " ....python.................................."
+printf "${OK}"
+printf "     → python\n"
 code --install-extension ms-python.python
-printf "$OK\n"
-printf " ....peacock................................."
-code --install-extension johnpapa.vscode-peacock
-printf "$OK\n"
+printf "${OK}"
+
+printf "${FIM}"
 

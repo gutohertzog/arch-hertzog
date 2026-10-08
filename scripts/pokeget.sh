@@ -1,63 +1,47 @@
 #!/usr/bin/env bash
+set -Eeuo pipefail
+
+# =============================================================================
+# https://github.com/talwat/pokeget-rs
+# =============================================================================
+
+source "$(dirname "$0")/conf.sh"
 
 set -euo pipefail
 
-# ==============================================================================
-# pokeget
-# ==============================================================================
-
 VERSION="1.6.7"
-APP_DIR="$HOME/Apps"
+APP_DIR="${HOME}/Apps"
 APP_NAME="pokeget"
 
 BASE_URL="https://github.com/talwat/pokeget-rs/releases/download/${VERSION}"
+URL="${BASE_URL}/pokeget-Linux-x86_64.tar.gz"
 
-# ------------------------------------------------------------------------------
-# Detect architecture
-# ------------------------------------------------------------------------------
-
-case "$(uname -m)" in
-    x86_64)
-        ARCH="x86_64"
-        ;;
-    aarch64)
-        ARCH="aarch64"
-        ;;
-    *)
-        echo "Unsupported architecture: $(uname -m)"
-        exit 1
-        ;;
-esac
-
-# ------------------------------------------------------------------------------
-# Download
-# ------------------------------------------------------------------------------
-
+printf " → Criando diretório Apps\n"
 mkdir -p "$APP_DIR"
+printf "${OK}"
 
-URL="${BASE_URL}/pokeget-Linux-${ARCH}.tar.gz"
+printf " → Ajustando arquivo e pasta temporários\n"
 TMP_FILE="$(mktemp --suffix=.tar.gz)"
 TMP_DIR="$(mktemp -d)"
-
 trap 'rm -f "$TMP_FILE"; rm -rf "$TMP_DIR"' EXIT
 
-echo "Downloading pokeget ${VERSION}..."
+printf " → Baixando pokeget v${VERSION}\n"
 curl -fL "$URL" -o "$TMP_FILE"
+printf "${OK}"
 
-# ------------------------------------------------------------------------------
-# Extract
-# ------------------------------------------------------------------------------
-
-echo "Extracting..."
+printf " → Extraindo\n"
 tar -xzf "$TMP_FILE" -C "$TMP_DIR"
+printf "${OK}"
 
-# ------------------------------------------------------------------------------
-# Install
-# ------------------------------------------------------------------------------
-
+printf " → Movendo para ${APP_DIR}\n"
 mv "$TMP_DIR/pokeget" "$APP_DIR/$APP_NAME"
-chmod +x "$APP_DIR/$APP_NAME"
+printf "${OK}"
 
-echo "Installed: $APP_DIR/$APP_NAME"
-echo "Version:   $VERSION"
+printf " → Deixando executável\n"
+chmod +x "$APP_DIR/$APP_NAME"
+printf "${OK}"
+
+printf " → Instalado em ${APP_DIR}/${APP_NAME}\n"
+
+printf "${FIM}"
 

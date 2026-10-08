@@ -1,7 +1,9 @@
 #!/bin/bash
+set -Eeuo pipefail
 
-# --------------------------------------------------------------
+# =============================================================================
 # Timeshift
+# https://archlinux.org/packages/extra/x86_64/timeshift/
 #
 # Ferramenta para criação e restauração de snapshots do sistema.
 #
@@ -42,9 +44,13 @@
 #
 # A configuração do Timeshift é deliberadamente deixada para o usuário.
 # Este script apenas instala a ferramenta.
-# --------------------------------------------------------------
+# =============================================================================
 
-OK="\e[0;32mOK\e[0m"
+source "$(dirname "$0")/conf.sh"
+
+pacotes=(
+    "timeshift" # A system restore utility for Linux
+)
 
 printf "\n"
 printf " ##############################################\n"
@@ -52,17 +58,15 @@ printf " #                  timeshift                 #\n"
 printf " ##############################################\n"
 printf "\n"
 
-printf " → Instalando timeshift........................"
-sudo pacman --noconfirm -S timeshift
-printf "$OK\n"
+instalar_pacotes "${pacotes[@]}"
 
 printf "\n"
-printf " Timeshift instalado.\n"
-printf "\n"
-printf " Para configurar:\n"
+printf " → Para configurar:\n"
 printf "   timeshift-gtk\n"
 printf "\n"
-printf " Para consultar os snapshots:\n"
+printf " → Para consultar snapshots:\n"
 printf "   sudo timeshift --list\n"
 printf "\n"
+
+printf "${FIM}"
 

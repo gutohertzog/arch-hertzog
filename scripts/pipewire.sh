@@ -1,35 +1,35 @@
 #!/bin/bash
+set -Eeuo pipefail
 
-OK="\e[0;32mOK\e[0m"
+# =============================================================================
+# https://archlinux.org/packages/extra/x86_64/pipewire/
+# https://archlinux.org/packages/extra/x86_64/pipewire-alsa/
+# https://archlinux.org/packages/extra/x86_64/pipewire-audio/
+# https://archlinux.org/packages/extra/x86_64/pipewire-pulse/
+#
+# https://archlinux.org/packages/extra/x86_64/wireplumber/
+# https://archlinux.org/packages/extra/x86_64/pipewire-session-manager/
+# =============================================================================
+
+source "$(dirname "$0")/conf.sh"
 
 pacotes=(
-    # servidor de áudio
-    "pipewire"
-    "pipewire-alsa"
-    "pipewire-audio"
-    "pipewire-pulse"
-    "wireplumber"
+    "pipewire" # Low-latency audio/video router and processor
+    "pipewire-alsa" # - ALSA configuration
+    "pipewire-audio" # - Audio support
+    "pipewire-pulse" # - PulseAudio replacement
 
-    # gerenciador de sessão
-    "pipewire-session-manager"
-
-    # suporte a Bluetooth
-    "bluez"
-    "bluez-utils"
+    "wireplumber" # Session / policy manager implementation for PipeWire
+    "pipewire-session-manager" # - system services
 )
 
 printf "\n"
 printf " ##############################################\n"
-printf " #           instalando pipewire              #\n"
+printf " #                  pipewire                  #\n"
 printf " ##############################################\n"
 printf "\n"
 
-sudo pacman --noconfirm -S "${pacotes[@]}"
+instalar_pacotes "${pacotes[@]}"
 
-printf "\n"
-printf " Ativando Bluetooth...\n"
-
-sudo systemctl enable --now bluetooth
-
-printf "\n$OK\n"
+printf "${FIM}"
 

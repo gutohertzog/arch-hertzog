@@ -1,5 +1,17 @@
 #!/bin/bash
-OK="\e[0;32mOK\e[0m"
+set -Eeuo pipefail
+
+# =============================================================================
+# https://archlinux.org/packages/extra/x86_64/zsh/
+# =============================================================================
+
+source "$(dirname "$0")/conf.sh"
+
+DIR_DST="$HOME/arch-hertzog/dotfiles/config/zsh/plugins"
+
+pacotes=(
+    "zsh" # A very advanced and programmable command interpreter (shell) for UNIX
+)
 
 printf "\n"
 printf " ##############################################\n"
@@ -7,49 +19,47 @@ printf " #                    zsh                     #\n"
 printf " ##############################################\n"
 printf "\n"
 
-printf " zsh........................................."
-sudo pacman --noconfirm -S zsh
-printf "$OK\n"
+instalar_pacotes "${pacotes[@]}"
 
-printf " ativando zsh................................"
+printf " → Ativando zsh\n"
 chsh -s $(which zsh)
-printf "$OK\n"
+printf "${OK}"
 
-DESTINO="$HOME/arch-hertzog/dotfiles/config/zsh/plugins"
-
-printf " zsh-completions.............................\n"
+printf " → Instalando zsh-completions\n"
 URL="https://github.com/zsh-users/zsh-completions"
-if [ -d "$DESTINO/zsh-completions/.git" ]; then
-    git -C "$DESTINO/zsh-completions" pull
+if [ -d "$DIR_DST/zsh-completions/.git" ]; then
+    git -C "$DIR_DST/zsh-completions" pull
 else
-    git clone $URL "$DESTINO/zsh-completions"
+    git clone $URL "$DIR_DST/zsh-completions"
 fi
-printf "$OK\n"
+printf "${OK}"
 
-printf " zsh-autosuggestions.........................\n"
+printf " → zsh-autosuggestions\n"
 URL="https://github.com/zsh-users/zsh-autosuggestions"
-if [ -d "$DESTINO/zsh-autosuggestions/.git" ]; then
-    git -C "$DESTINO/zsh-autosuggestions" pull
+if [ -d "$DIR_DST/zsh-autosuggestions/.git" ]; then
+    git -C "$DIR_DST/zsh-autosuggestions" pull
 else
-    git clone $URL "$DESTINO/zsh-autosuggestions"
+    git clone $URL "$DIR_DST/zsh-autosuggestions"
 fi
-printf "$OK\n"
+printf "${OK}"
 
-printf " zsh-syntax-highlighting.....................\n"
+printf " → zsh-syntax-highlighting\n"
 URL="https://github.com/zsh-users/zsh-syntax-highlighting"
-if [ -d "$DESTINO/zsh-syntax-highlighting/.git" ]; then
-    git -C "$DESTINO/zsh-syntax-highlighting" pull
+if [ -d "$DIR_DST/zsh-syntax-highlighting/.git" ]; then
+    git -C "$DIR_DST/zsh-syntax-highlighting" pull
 else
-    git clone $URL "$DESTINO/zsh-syntax-highlighting"
+    git clone $URL "$DIR_DST/zsh-syntax-highlighting"
 fi
-printf "$OK\n"
+printf "${OK}"
 
-printf " fzf-tab.....................................\n"
+printf " → Baixando fzf-tab\n"
 URL="https://github.com/Aloxaf/fzf-tab"
-if [ -d "$DESTINO/fzf-tab/.git" ]; then
-    git -C "$DESTINO/fzf-tab" pull
+if [ -d "$DIR_DST/fzf-tab/.git" ]; then
+    git -C "$DIR_DST/fzf-tab" pull
 else
-    git clone $URL "$DESTINO/fzf-tab"
+    git clone $URL "$DIR_DST/fzf-tab"
 fi
-printf "$OK\n"
+printf "${OK}"
+
+printf "${FIM}"
 
