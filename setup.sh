@@ -35,8 +35,8 @@ mkdir $HOME/GitHub
 mv $HOME/Pictures $HOME/Pictures.bak
 
 # -s cria link simbólico
-# -f evita erro se existir
-# -n substitui existe
+# -f substitui o que existir
+# -n trata o destino como arquivo
 ln -sfn $HOME/arch-hertzog/dotfiles/config/vim $HOME/.vim
 ln -sfn $HOME/arch-hertzog/dotfiles/config/zsh/zshrc $HOME/.zshrc
 ln -sfn $HOME/arch-hertzog/dotfiles/config/kitty $HOME/.config/kitty
