@@ -32,5 +32,9 @@ augroup csv_colors
 augroup END
 " }}}
 
+" let b:csv_delimiter = ';'
+" autocmd BufRead,BufNewFile *.csv setfiletype csv
+" autocmd FileType csv let b:csv_delimiter = ';'
+
 call s:CSVColors()
 
