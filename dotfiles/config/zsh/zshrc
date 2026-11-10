@@ -215,6 +215,10 @@ alias cpd="sudo openvpn --config ~/Documents/vpn-cpd-v1.1.ovpn"
 # pacman
 alias orfaos="pacman -Qtd"
 alias instalados="pacman -Qe"
+
+# montagem
+alias monta="$HOME/arch-hertzog/scripts/mapeamentos.sh montar"
+alias desmonta="$HOME/arch-hertzog/scripts/mapeamentos.sh desmontar"
 # }}}
 
 # atalhos ----------------------------------------------------------------- {{{

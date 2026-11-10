@@ -1,0 +1,17 @@
+# Servidores para o monta.sh
+# Copie este arquivo para servidores.conf (que fica fora do git) e edite.
+#
+# Formato (uma conexão por linha):
+#   pasta_local|caminho_remoto|usuario_padrao|dominio
+#
+# - pasta_local é relativa ao $HOME (ex.: root -> ~/root)
+# - usuario_padrao e dominio são opcionais
+# - linhas começando com # são ignoradas (comente para não montar)
+# - linhas em branco são ignoradas
+
+# modelos aceitos
+root|//meu.servidor
+root|//meu.servidor|
+root|//meu.servidor||
+outro/servidor|//meu.servidor/compartilhamento||DOMINIO
+
