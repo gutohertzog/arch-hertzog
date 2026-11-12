@@ -67,9 +67,12 @@ pacotes=(
     "xdg-user-dirs-gtk" # Creates user dirs and asks to relocalize them
     # "yelp" # Get help with GNOME
 
-    "dconf-editor" # GSettings editor for GNOME
-    "gnome-shell-extensions" # Extensions for GNOME shell, including classic mode
     "gnome-tweaks" # Graphical interface for advanced GNOME 3 settings (Tweak Tool)
+
+    # https://archlinux.org/packages/extra/x86_64/dconf-editor/
+    "dconf-editor" # GSettings editor for GNOME
+    # https://archlinux.org/packages/extra/x86_64/extension-manager/
+    "extension-manager" # A native tool for browsing, installing, and managing GNOME Shell Extensions
 )
 
 printf "\n"

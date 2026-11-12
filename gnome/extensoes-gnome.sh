@@ -32,17 +32,6 @@ cd ..
 rm -rf gnome-shell-extension-caffeine
 printf "\n"
 
-printf "\n\n\ttray icons reloaded\n"
-sudo pacman -S zip --noconfirm
-git clone https://github.com/martinpl/tray-icons-reloaded
-cd tray-icons-reloaded
-make zip
-unzip trayIconsReloaded@selfmade.pl.zip -d ~/.local/share/gnome-shell/extensions/trayIconsReloaded@selfmade.pl
-cd ..
-rm -rf tray-icons-reloaded
-sudo pacman -R zip --noconfirm
-printf "\n"
-
 printf "\n\n\tlockkeys\n"
 git clone https://github.com/kazysmaster/gnome-shell-extension-lockkeys
 mv gnome-shell-extension-lockkeys/lockkeys@vaina.lt $HOME/.local/share/gnome-shell/extensions
