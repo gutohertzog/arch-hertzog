@@ -125,6 +125,36 @@ Cada pessoa/dispositivo que vai acessar gera a sua própria chave.
 ssh-keygen -t ed25519 -C "$(whoami)@$(hostname)-acesso-remoto"
 ```
 
+- Saída esperada:
+    ```bash
+    Generating public/private ed25519 key pair.
+    Enter file in which to save the key (/home/<usuario>/.ssh/id_ed25519):
+    Created directory '/home/<usuario>/.ssh'.
+    Enter passphrase for "/home/<usuario>/.ssh/id_ed25519" (empty for no passphrase):
+    Enter same passphrase again:
+    Your identification has been saved in /home/<usuario>/.ssh/id_ed25519
+    Your public key has been saved in /home/<usuario>/.ssh/id_ed25519.pub
+    The key fingerprint is:
+    SHA256:[43 caracteres aleatórios] <usuario>@<hostname>-acesso-remoto
+    The key's randomart image is:
+    +--[ED25519 256]--+
+    |      .o+o.      |
+    |    .=B@@@B=.    |
+    |   +@O..o..O@+   |
+    |  B@  ^   ^  @B  |
+    |  *@    S    @*  |
+    |  =@ ^.===.^ @=  |
+    |   +@O=...=O@+   |
+    |    .*@@E@@*.    |
+    |      ..o..      |
+    +----[SHA256]-----+
+    ```
+
+- **`Enter file in which to save the key`**: só pressione `Enter` para aceitar o caminho padrão. O Passo C1 assume esse caminho.
+- **`Created directory`**: aparece apenas se a pasta `~/.ssh` ainda não existia. Se ela já existir, essa linha não é exibida.
+- **Passphrase**: nada aparece na tela enquanto você digita. É o comportamento normal, não travou.
+- **Fingerprint e randomart**: mudam a cada chave gerada, então os seus serão diferentes dos mostrados aqui. Os dois são só uma forma resumida de identificar a chave e não precisam ser guardados.
+
 > No Windows, rode o mesmo comando no PowerShell trocando o comentário por um texto fixo, por exemplo `-C "fulano@notebook-acesso-remoto"`.
 >
 > Defina uma **passphrase** quando for solicitada. Ela protege a chave caso o dispositivo seja perdido ou roubado.
@@ -239,15 +269,22 @@ grep -i '^Include' /etc/ssh/sshd_config
     Include /etc/ssh/sshd_config.d/*.conf
     ```
 
-Valide a configuração e inicie o serviço:
+Gere as chaves de host, valide a configuração e inicie o serviço:
 
 📍 **Onde:** 🖥️ máquina remota
 ```bash
+# gera as chaves de host que ainda não existirem (não sobrescreve as existentes)
+sudo ssh-keygen -A
+
 # não imprime nada se a configuração estiver válida
 sudo sshd -t
 
 sudo systemctl enable --now sshd
 ```
+
+> **Chaves de host x chave do Passo A2.** As chaves de host (`/etc/ssh/ssh_host_*_key`) são a identidade da **máquina remota**. É a impressão digital delas que o cliente pede para confirmar no primeiro acesso (Passo C3.1), e é com elas que ele detecta se alguém está se passando pela máquina. A chave do Passo A2 é a identidade de **quem acessa**. São coisas diferentes e uma não substitui a outra.
+>
+> No Arch, as chaves de host são criadas automaticamente pelo `sshdgenkeys.service` na primeira vez que o `sshd` sobe. Como aqui o `sshd -t` roda **antes** dessa primeira subida, sem o `ssh-keygen -A` ele falha com `no hostkeys available -- exiting`.
 
 ## Passo B3 — Configurar o firewall
 
@@ -302,17 +339,6 @@ To                         Action      From
 --                         ------      ----
 22/tcp                     LIMIT IN    <IP_GATEWAY_VPN>
 ```
-
-> ⚠️ **Migrando de uma instalação anterior (v0.x), que liberava a 3389 diretamente?**
->
-> Primeiro adicione a regra do SSH e **teste a conexão SSH a partir de uma máquina cliente na VPN** (Parte C). Só depois remova a regra antiga:
->
-> 📍 **Onde:** 🖥️ máquina remota
-> ```bash
-> sudo ufw delete allow from <IP_GATEWAY_VPN> to any port 3389 proto tcp
-> ```
->
-> Se a ordem for invertida e a configuração estiver sendo feita remotamente, você perde o acesso à máquina.
 
 ## Passo B4 — Gerar o certificado TLS
 
@@ -536,7 +562,7 @@ nc: connect to [nome da máquina] port 3389 (tcp) timed out: Operation now in pr
 ```
 
 - A porta **22 deve responder** — mas só vindo pela VPN, que é o que a regra do Passo B3 garante.
-- A porta **3389 deve falhar** (timeout). Se ela responder, existe uma regra antiga no firewall liberando o RDP diretamente: confira o aviso de migração no Passo B3.
+- A porta **3389 deve falhar** (timeout). Se ela responder, existe alguma regra no firewall liberando o RDP diretamente: confira o `sudo ufw status verbose` na máquina remota (Passo B3) e remova qualquer regra que mencione a porta 3389.
 
 > No Windows, sem `nc`, o equivalente no PowerShell é `Test-NetConnection <host> -Port 22` (e `-Port 3389`): o campo `TcpTestSucceeded` deve ser `True` para a 22 e `False` para a 3389.
 
@@ -668,12 +694,13 @@ Depois disso, siga normalmente com o Passo C2.
 
 | Sintoma | Onde olhar | Causa provável |
 |---|---|---|
+| `sshd: no hostkeys available -- exiting` | 🖥️ remota | chaves de host ainda não geradas — rode `sudo ssh-keygen -A` (Passo B2.2) |
 | `ssh` não conecta (timeout) | 💻 cliente | VPN desconectada, regra do ufw errada, ou gateway da VPN mudou — repita o Passo A1 |
 | `Permission denied (publickey)` | 💻 → 🖥️ | chave não está no `authorized_keys`, permissões de `~/.ssh` diferentes de `700`/`600`, ou usuário fora do `AllowUsers` — diagnóstico: `ssh -v acesso-remoto` |
 | `channel open failed: administratively prohibited` | 💻 cliente | destino do túnel não bate com o `PermitOpen` — o `LocalForward` deve apontar para `localhost:3389` |
 | `bind: Address already in use` | 💻 cliente | porta 13389 já ocupada, geralmente por outro túnel aberto — feche-o ou troque a porta local |
 | Túnel abre mas o cliente RDP não conecta | 💻 / 🖥️ | cliente apontando para a porta errada (deve ser `127.0.0.1:13389`), ou `gnome-remote-desktop` parado — veja o Passo B6 |
-| Porta 3389 responde de fora (Passo C2) | 🖥️ remota | regra antiga do RDP ainda no ufw — veja o aviso de migração no Passo B3 |
+| Porta 3389 responde de fora (Passo C2) | 🖥️ remota | alguma regra liberando a 3389 no ufw — confira com `sudo ufw status numbered` e remova com `sudo ufw delete <número>` |
 | `grdctl rdp enable` falha | 🖥️ remota | certificado/chave ainda não configurados — repita os Passos B4 e B5 |
 | Máquina ainda suspende/hiberna | 🖥️ remota | faltou reiniciar depois do Passo B1 |
 | Firewall inativo após reboot | 🖥️ remota | faltou `sudo systemctl enable ufw` no Passo B3 |
@@ -683,7 +710,7 @@ Depois disso, siga normalmente com o Passo C2.
 
 ---
 
-*v1.1.0 — documento vivo, ajustar conforme surgirem novos casos durante os testes.*
+*v1.1.3 — documento vivo, ajustar conforme surgirem novos casos durante os testes.*
 
 <!--
 CHANGELOG
@@ -692,6 +719,33 @@ Convenção de versão (MAJOR.MINOR.PATCH):
   MAJOR: mudança na arquitetura de acesso (ex.: troca de protocolo, nova camada de segurança)
   MINOR: passo novo ou alterado, reorganização do fluxo, novo cliente suportado, nova verificação
   PATCH: correção de texto, comando ou saída esperada, sem mudar o fluxo
+
+v1.1.3 (2026-11-12)
+  Removido
+  - Aviso de migração de v0.x no Passo B3. Só o autor usou a v0.x; quem for
+    configurar uma máquina daqui em diante já parte da versão com túnel SSH.
+
+  Corrigido
+  - Passo C2 e troubleshooting apontavam para o aviso de migração removido.
+    Passaram a orientar a conferir e remover qualquer regra da 3389 no ufw.
+
+v1.1.2 (2026-11-12)
+  Corrigido
+  - Passo B2.2: "sshd -t" falhava com "no hostkeys available -- exiting" numa
+    instalação nova, porque as chaves de host só são geradas pelo
+    sshdgenkeys.service na primeira subida do sshd. Incluído "ssh-keygen -A"
+    antes da validação. Encontrado durante o teste real do guia.
+  - Nota explicando a diferença entre chaves de host (identidade da máquina
+    remota) e a chave do Passo A2 (identidade de quem acessa).
+  - Nova linha no troubleshooting para o erro.
+
+v1.1.1 (2026-11-12)
+  Adicionado
+  - Saída esperada do ssh-keygen no Passo A2, a partir de um teste real, com
+    notas sobre o caminho padrão, a linha "Created directory", a passphrase
+    invisível e o fato de fingerprint e randomart mudarem a cada chave.
+  - O randomart de exemplo é ilustrativo. Quem olhar com atenção vai encontrar
+    um peão orc de presas para cima, pronto para o trabalho. Work, work.
 
 v1.1.0 (2026-11-09)
   Contexto: um colega teve dúvida sobre em qual máquina executar cada comando,
