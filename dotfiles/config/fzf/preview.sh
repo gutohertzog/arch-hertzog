@@ -9,7 +9,7 @@ if [ -d "$file" ]; then
     --level=2 \
     --group-directories-first \
     --color=always \
-    --icons \
+    --icons=always \
     "$file" | head -200
 fi
 
