@@ -182,9 +182,11 @@ cat ~/.ssh/id_ed25519.pub
 
 **Todos os comandos desta parte são executados na máquina remota**, sentado na frente dela.
 
-## Passo B1 — Desabilitar suspensão e hibernação
+## Passo B1 — Desabilitar suspensão, hibernação e desligamento acidental
 
-Necessário porque o acesso remoto só funciona com a máquina acordada 24/7. É o primeiro passo porque exige um reboot.
+Necessário porque o acesso remoto só funciona com a máquina ligada e acordada 24/7. É o primeiro passo porque exige um reboot.
+
+### B1.1 — Suspensão e hibernação
 
 📍 **Onde:** 🖥️ máquina remota
 ```bash
@@ -202,6 +204,53 @@ AllowHybridSleep=no
 AllowSuspendThenHibernate=no
 EOL
 ```
+
+### B1.2 — Desligamento pelo menu do sistema
+
+Um clique em **Power Off** no lugar de **Restart** deixa a máquina inacessível até alguém ir até ela. A regra abaixo bloqueia o desligamento pelo menu do GNOME (local ou pela sessão remota). **Reiniciar continua liberado.**
+
+📍 **Onde:** 🖥️ máquina remota
+```bash
+sudo tee /etc/polkit-1/rules.d/10-bloqueia-desligamento.rules > /dev/null <<EOL
+// Bloqueia o desligamento pela interface gráfica e pelo systemctl sem sudo.
+// Reiniciar continua liberado. Para desligar: sudo systemctl poweroff
+polkit.addRule(function(action, subject) {
+    if (action.id.indexOf("org.freedesktop.login1.power-off") === 0 ||
+        action.id.indexOf("org.freedesktop.login1.halt") === 0) {
+        return polkit.Result.NO;
+    }
+});
+EOL
+```
+
+**Para desligar a máquina de propósito**, use:
+
+```bash
+sudo systemctl poweroff
+```
+
+> **Por que o `sudo` passa e o menu não:** o GNOME pede o desligamento ao `systemd-logind`, que consulta o polkit, e a regra responde "não". Já o `sudo systemctl poweroff` roda como root, que tem a capacidade de desligar o sistema (`CAP_SYS_BOOT`). Nesse caso o `systemd` nem consulta o polkit. Sem `sudo`, o `systemctl poweroff` também é bloqueado.
+
+O polkit relê as regras sozinho, sem reboot. Para conferir:
+
+📍 **Onde:** 🖥️ máquina remota
+```bash
+busctl call org.freedesktop.login1 /org/freedesktop/login1 \
+    org.freedesktop.login1.Manager CanPowerOff
+
+busctl call org.freedesktop.login1 /org/freedesktop/login1 \
+    org.freedesktop.login1.Manager CanReboot
+```
+
+- Saída esperada:
+    ```bash
+    s "no"
+    s "yes"
+    ```
+
+> Rode **sem** `sudo`: a ideia é ver a resposta que o seu usuário (e portanto o GNOME) recebe. Como root, as duas respostas seriam `yes`.
+
+No menu do GNOME, a opção **Power Off** deve sumir ou passar a falhar. **Restart** continua funcionando normalmente.
 
 > ⚠️ **Pare aqui e reinicie a máquina.**
 >
@@ -703,6 +752,8 @@ Depois disso, siga normalmente com o Passo C2.
 | Porta 3389 responde de fora (Passo C2) | 🖥️ remota | alguma regra liberando a 3389 no ufw — confira com `sudo ufw status numbered` e remova com `sudo ufw delete <número>` |
 | `grdctl rdp enable` falha | 🖥️ remota | certificado/chave ainda não configurados — repita os Passos B4 e B5 |
 | Máquina ainda suspende/hiberna | 🖥️ remota | faltou reiniciar depois do Passo B1 |
+| Preciso desligar a máquina e o menu não deixa | 🖥️ remota | comportamento esperado (Passo B1.2) — use `sudo systemctl poweroff` |
+| Power Off ainda aparece e funciona no menu | 🖥️ remota | regra do polkit não está em `/etc/polkit-1/rules.d/` ou tem erro de sintaxe — confira com `journalctl -u polkit` |
 | Firewall inativo após reboot | 🖥️ remota | faltou `sudo systemctl enable ufw` no Passo B3 |
 | SSH ainda aceita senha | 🖥️ remota | sobrou o `05-bootstrap-temporario.conf` do Apêndice — remova-o |
 | macOS pede senha mesmo com senha certa | 💻 cliente | truque do `redirection server name` (Passo C3.2) |
@@ -710,7 +761,7 @@ Depois disso, siga normalmente com o Passo C2.
 
 ---
 
-*v1.1.3 — documento vivo, ajustar conforme surgirem novos casos durante os testes.*
+*v1.2.1 — documento vivo, ajustar conforme surgirem novos casos durante os testes.*
 
 <!--
 CHANGELOG
@@ -719,6 +770,35 @@ Convenção de versão (MAJOR.MINOR.PATCH):
   MAJOR: mudança na arquitetura de acesso (ex.: troca de protocolo, nova camada de segurança)
   MINOR: passo novo ou alterado, reorganização do fluxo, novo cliente suportado, nova verificação
   PATCH: correção de texto, comando ou saída esperada, sem mudar o fluxo
+
+v1.2.1 (2026-11-17)
+  Removido
+  - Passo B1.3 (botão físico de energia). O bloqueio pelo menu do sistema
+    (B1.2) foi considerado suficiente para o risco real, que é o clique
+    acidental em Power Off.
+  - Aviso de reboot do B1 voltou a citar só o sleep.conf.d.
+
+v1.2.0 (2026-11-16)
+  Contexto: risco de alguém clicar em Power Off em vez de Restart, deixando a
+  máquina inacessível até uma ida presencial.
+
+  Adicionado
+  - Passo B1.2: regra do polkit (/etc/polkit-1/rules.d/10-bloqueia-desligamento.rules)
+    negando as ações org.freedesktop.login1.power-off* e halt*. Reiniciar continua
+    liberado; desligar passa a exigir "sudo systemctl poweroff", que roda como root
+    (CAP_SYS_BOOT) e não passa pelo polkit.
+  - Verificação com busctl (CanPowerOff = no, CanReboot = yes).
+  - Passo B1.3 (opcional): botão físico de energia ignorado via gsettings
+    (power-button-action) e logind.conf.d (HandlePowerKey=ignore).
+  - Duas linhas no troubleshooting sobre o bloqueio de desligamento.
+
+  Alterado
+  - Passo B1 renomeado e dividido em B1.1 (suspensão/hibernação), B1.2 e B1.3.
+  - Aviso de reboot passou a cobrir também o logind.conf.d.
+
+  A testar
+  - Comportamento exato do menu do GNOME com CanPowerOff = no (se a opção some ou
+    só falha ao clicar) e se o Restart segue disponível em todas as telas.
 
 v1.1.3 (2026-11-12)
   Removido
