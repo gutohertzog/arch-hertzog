@@ -17,8 +17,16 @@
 -- require("myColors")
 
 
-require("monitors")
-require("window-rules")
+------------------
+---- MONITORS ----
+------------------
+
+-- settings monitors {{{
+-- See https://wiki.hypr.land/configuring/core/monitors/
+-- fallback
+-- hl.monitor({ output = "", mode = "preferred", position = "auto", scale = 1 })
+hl.monitor({ output = "HDMI-A-1", mode = "preferred", position = "1920x0", scale = 1 })
+hl.monitor({ output = "DP-1", mode = "preferred", position = "0x0", scale = 1 })
 
 
 ---------------------
@@ -56,8 +64,9 @@ end)
 
 -- See https://wiki.hypr.land/configuring/core/environment-variables/
 
-hl.env("XCURSOR_SIZE", "24")
-hl.env("HYPRCURSOR_SIZE", "24")
+hl.env("HYPRCURSOR_THEME", "Bibata-Modern-Classic")
+hl.env("XCURSOR_SIZE", "22")
+hl.env("HYPRCURSOR_SIZE", "22")
 
 
 -----------------------
@@ -191,23 +200,23 @@ hl.animation({ leaf = "zoomFactor",    enabled = true,  speed = 7,    bezier = "
 
 -- See https://wiki.hypr.land/configuring/layouts/dwindle-layout/ for more
 hl.config({
-    dwindle = {
-        preserve_split = true, -- You probably want this
-    },
+  dwindle = {
+    preserve_split = true, -- You probably want this
+  },
 })
 
 -- See https://wiki.hypr.land/configuring/layouts/master-layout/ for more
 hl.config({
-    master = {
-        new_status = "master",
-    },
+  master = {
+    new_status = "master",
+  },
 })
 
 -- See https://wiki.hypr.land/configuring/layouts/scrolling-layout/ for more
 hl.config({
-    scrolling = {
-        fullscreen_on_one_column = true,
-    },
+  scrolling = {
+    fullscreen_on_one_column = true,
+  },
 })
 
 ----------------
@@ -215,10 +224,10 @@ hl.config({
 ----------------
 
 hl.config({
-    misc = {
-        force_default_wallpaper = -1,    -- Set to 0 or 1 to disable the anime mascot wallpapers
-        disable_hyprland_logo   = false, -- If true disables the random hyprland logo / anime girl background. :(
-    },
+  misc = {
+    force_default_wallpaper = -1,    -- Set to 0 or 1 to disable the anime mascot wallpapers
+    disable_hyprland_logo   = false, -- If true disables the random hyprland logo / anime girl background. :(
+  },
 })
 
 
@@ -227,9 +236,9 @@ hl.config({
 ----------------
 
 hl.config({
-    layers = {
-        allow_new_top_layers_over_existing_fullscreen = true, -- Set to false to make newly mapped top layers render below existing covering fullscreen window
-    },
+  layers = {
+    allow_new_top_layers_over_existing_fullscreen = true, -- Set to false to make newly mapped top layers render below existing covering fullscreen window
+  },
 })
 
 
@@ -245,7 +254,7 @@ hl.config({
     kb_options = "",
     kb_rules   = "",
 
-    repeat_rate = 50,
+    repeat_rate  = 50,
     repeat_delay = 250,
 
     follow_mouse = 1,
@@ -259,16 +268,16 @@ hl.config({
 })
 
 hl.gesture({
-    fingers = 3,
-    direction = "horizontal",
-    action = "workspace"
+  fingers   = 3,
+  direction = "horizontal",
+  action    = "workspace"
 })
 
 -- Example per-device config
 -- See https://wiki.hypr.land/configuring/core/devices/ for more
 hl.device({
-    name        = "epic-mouse-v1",
-    sensitivity = -0.5,
+  name        = "epic-mouse-v1",
+  sensitivity = -0.5,
 })
 
 
@@ -301,9 +310,9 @@ hl.bind(mainMod .. " + J", hl.dsp.focus({ direction = "down" }))
 -- Switch workspaces with mainMod + [0-9]
 -- Move active window to a workspace with mainMod + SHIFT + [0-9]
 for i = 1, 10 do
-    local key = i % 10 -- 10 maps to key 0
-    hl.bind(mainMod .. " + " .. key,             hl.dsp.focus({ workspace = i}))
-    hl.bind(mainMod .. " + SHIFT + " .. key,     hl.dsp.window.move({ workspace = i }))
+  local key = i % 10 -- 10 maps to key 0
+  hl.bind(mainMod .. " + " .. key,             hl.dsp.focus({ workspace = i}))
+  hl.bind(mainMod .. " + SHIFT + " .. key,     hl.dsp.window.move({ workspace = i }))
 end
 
 -- Example special workspace (scratchpad)
@@ -332,6 +341,119 @@ hl.bind("XF86AudioPause", hl.dsp.exec_cmd("playerctl play-pause"), { locked = tr
 hl.bind("XF86AudioPlay",  hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
 hl.bind("XF86AudioPrev",  hl.dsp.exec_cmd("playerctl previous"),   { locked = true })
 
+
+--------------------------------
+---- WINDOWS AND WORKSPACES ----
+--------------------------------
+
+-- See https://wiki.hypr.land/configuring/core/rules/
+
+-- Example window rules that are useful
+
+local suppressMaximizeRule = hl.window_rule({
+  -- Ignore maximize requests from all apps. You'll probably like this.
+  name  = "suppress-maximize-events",
+  match = { class = ".*" },
+
+  suppress_event = "maximize",
+})
+-- suppressMaximizeRule:set_enabled(false)
+
+hl.window_rule({
+  -- Fix some dragging issues with XWayland
+  name  = "fix-xwayland-drags",
+  match = {
+    class      = "^$",
+    title      = "^$",
+    xwayland   = true,
+    float      = true,
+    fullscreen = false,
+    pin        = false,
+  },
+
+  no_focus = true,
+})
+
+-- Layer rules also return a handle.
+-- local overlayLayerRule = hl.layer_rule({
+--     name  = "no-anim-overlay",
+--     match = { namespace = "^my-overlay$" },
+--     no_anim = true,
+-- })
+-- overlayLayerRule:set_enabled(false)
+
+-- Hyprland-run windowrule
+hl.window_rule({
+  name  = "move-hyprland-run",
+  match = { class = "hyprland-run" },
+
+  move  = "20 monitor_h-120",
+  float = true,
+})
+
+
+------------------
+---- NOCTALIA ----
+------------------
+
+-- Noctalia Settings
+hl.window_rule({
+    match = { class = "dev.noctalia.Noctalia" },
+    float = true,
+    size  = { 1080, 920 },
+})
+
+hl.layer_rule({
+  name = "noctalia-no-anim",
+  match = {
+    namespace = "^noctalia-(bar-.+|notification|dock|panel|attached-panel|osd|window-switcher)$",
+  },
+  no_anim = true,
+})
+
+hl.layer_rule({
+  name = "noctalia-blur",
+  match = {
+    namespace = "^noctalia-(bar-.+|notification|dock|panel|attached-panel|osd|window-switcher)$",
+  },
+  ignore_alpha = 0.5,
+  blur = true,
+  blur_popups = true,
+})
+
+-------------
+---- MEU ----
+-------------
+-- hyprctl clients para listar todos janelas abertas
+-- https://wiki.hypr.land/configuring/core/rules/window-rules/
+
+hl.window_rule({
+  match = { class = "kitty" },
+  float = true,
+  size  = { 1290, 900 },
+})
+
+hl.window_rule({
+  match = { class = "firefox", title = "Picture-in-Picture" },
+  float = true,
+  pin   = true,
+  size  = { 740, 420 },
+})
+
+local flutuantes = {
+  "nwg-look",
+  "org.gnome.Nautilus",
+  "org.keepassxc.KeePassXC",
+  "org.pulseaudio.pavucontrol",
+}
+
+for _, class in ipairs(flutuantes) do
+  hl.window_rule({
+    match = { class = class },
+    float = true,
+    size  = { 1000, 700 },
+  })
+end
 
 ------------------
 ---- NOCTALIA ----
