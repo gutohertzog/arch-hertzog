@@ -7,6 +7,10 @@ shadow = false
 
 [dock]
 magnification = false
+icon_shadow = false
+
+[lockscreen]
+transition = [ "fade" ]
 
 [shell]
 popup_shadows = false
