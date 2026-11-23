@@ -1,0 +1,16 @@
+[include]
+files = ["../../full-config.toml"]
+
+[bar.default]
+compositor_blur = false
+shadow = false
+
+[dock]
+magnification = false
+
+[shell]
+popup_shadows = false
+
+[shell.animation]
+enabled = false
+

@@ -17,29 +17,42 @@
 -- require("myColors")
 
 
-------------------
----- MONITORS ----
-------------------
-
--- settings monitors {{{
--- See https://wiki.hypr.land/configuring/core/monitors/
--- fallback
--- hl.monitor({ output = "", mode = "preferred", position = "auto", scale = 1 })
-hl.monitor({ output = "HDMI-A-1", mode = "preferred", position = "1920x0", scale = 1 })
-hl.monitor({ output = "DP-1", mode = "preferred", position = "0x0", scale = 1 })
-
-
----------------------
----- MY PROGRAMS ----
----------------------
+-------------------
+---- VARIABLES ----
+-------------------
 
 -- Set programs that you use
 local terminal    = "kitty"
 local fileManager = "nautilus"
--- local menu        = "hyprlauncher"
 local code        = "code"
 local firefox     = "firefox"
 local firefoxdev  = "firefox-developer-edition"
+local noctalia    = "noctalia"
+
+local f = io.open("/etc/hostname")
+local host = f and f:read("*l") or ""
+if f then f:close() end
+
+if host ~= "archlinux" then
+  noctalia = "NOCTALIA_CONFIG_HOME=$HOME/.config/noctalia/light noctalia"
+end
+
+
+------------------
+---- MONITORS ----
+------------------
+
+-- See https://wiki.hypr.land/configuring/core/monitors/
+-- fallback
+-- hl.monitor({ output = "", mode = "preferred", position = "auto", scale = 1 })
+
+if host ~= "archlinux" then
+  hl.monitor({ output = "DP-1", mode = "preferred", position = "0x0", scale = 1 })
+  hl.monitor({ output = "VGA-1", mode = "preferred", position = "1920x0", scale = 1 })
+else
+  hl.monitor({ output = "HDMI-A-1", mode = "preferred", position = "1920x0", scale = 1 })
+  hl.monitor({ output = "DP-1", mode = "preferred", position = "0x0", scale = 1 })
+end
 
 
 -------------------
@@ -52,9 +65,8 @@ local firefoxdev  = "firefox-developer-edition"
 -- Or execute your favorite apps at launch like this:
 --
 hl.on("hyprland.start", function ()
-  hl.exec_cmd("noctalia")
+  hl.exec_cmd(noctalia)
   hl.exec_cmd(terminal)
---   hl.exec_cmd("waybar & hyprpaper & firefox")
 end)
 
 
@@ -473,4 +485,11 @@ hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd(ipc .. "volume-down"))
 hl.bind("XF86AudioMute", hl.dsp.exec_cmd(ipc .. "volume-mute"))
 hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd(ipc .. "brightness-up"))
 hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd(ipc .. "brightness-down"))
+
+if host ~= "archlinux" then
+  hl.config({
+    decoration = { blur = { enabled = false }, shadow = { enabled = false } },
+    animations = { enabled = false },
+  })
+end
 
