@@ -29,6 +29,10 @@ local firefox     = "firefox"
 local firefoxdev  = "firefox-developer-edition"
 local noctalia    = "noctalia"
 
+local ipc = "noctalia msg "
+
+local scripts = os.getenv("HOME") .. "/.config/hypr/scripts/"
+
 local f = io.open("/etc/hostname")
 local host = f and f:read("*l") or ""
 if f then f:close() end
@@ -77,8 +81,9 @@ end)
 -- See https://wiki.hypr.land/configuring/core/environment-variables/
 
 hl.env("HYPRCURSOR_THEME", "Bibata-Modern-Classic")
-hl.env("XCURSOR_SIZE", "22")
 hl.env("HYPRCURSOR_SIZE", "22")
+hl.env("XCURSOR_THEME", "Bibata-Modern-Classic")
+hl.env("XCURSOR_SIZE", "22")
 
 
 -----------------------
@@ -231,17 +236,6 @@ hl.config({
   },
 })
 
-----------------
-----  MISC  ----
-----------------
-
-hl.config({
-  misc = {
-    force_default_wallpaper = -1,    -- Set to 0 or 1 to disable the anime mascot wallpapers
-    disable_hyprland_logo   = false, -- If true disables the random hyprland logo / anime girl background. :(
-  },
-})
-
 
 ----------------
 ---- LAYERS ----
@@ -288,8 +282,8 @@ hl.gesture({
 -- Example per-device config
 -- See https://wiki.hypr.land/configuring/core/devices/ for more
 hl.device({
-  name        = "epic-mouse-v1",
-  sensitivity = -0.5,
+  name        = "hp--inc-hyperx-pulsefire-haste-2",
+  sensitivity = 0.1,
 })
 
 
@@ -310,16 +304,16 @@ hl.bind(mainMod .. " + C", hl.dsp.exec_cmd(code), { description = "Open Code - O
 hl.bind(mainMod .. " + SHIFT + F", hl.dsp.exec_cmd(firefoxdev), { description = "Open Firefox Developer Edition" })
 
 -- Actions
-hl.bind(mainMod .. " + W", hl.dsp.window.float({ action = "toggle" }))
-hl.bind(mainMod .. " + V", hl.dsp.layout("togglesplit"))    -- dwindle only
--- hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())    -- dwindle only
+hl.bind(mainMod .. " + W", hl.dsp.window.float({ action = "toggle" }), { description = "Toggle Float" })
+hl.bind(mainMod .. " + V", hl.dsp.layout("togglesplit"), { description = "Toggle Split" })  -- dwindle only
+-- hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())  -- dwindle only
 
 -- Focus Control {{{
 -- Move focus -> SUPER + H/J/K/L
-hl.bind(mainMod .. " + H", hl.dsp.focus({ direction = "left" }))
-hl.bind(mainMod .. " + L", hl.dsp.focus({ direction = "right" }))
-hl.bind(mainMod .. " + K", hl.dsp.focus({ direction = "up" }))
-hl.bind(mainMod .. " + J", hl.dsp.focus({ direction = "down" }))
+hl.bind(mainMod .. " + H", hl.dsp.focus({ direction = "left" }), { description = "Move Focus Left" })
+hl.bind(mainMod .. " + L", hl.dsp.focus({ direction = "right" }), { description = "Move Focus Right" })
+hl.bind(mainMod .. " + K", hl.dsp.focus({ direction = "up" }), { description = "Move Focus Up" })
+hl.bind(mainMod .. " + J", hl.dsp.focus({ direction = "down" }), { description = "Move Focus Down" })
 -- }}}
 
 -- Workspaces Control {{{
@@ -327,29 +321,33 @@ hl.bind(mainMod .. " + J", hl.dsp.focus({ direction = "down" }))
 -- Move active window to a workspace -> SUPER + SHIFT + [0-9]
 for i = 1, 10 do
   local key = i % 10 -- 10 maps to key 0
-  hl.bind(mainMod .. " + "         .. key, hl.dsp.focus({ workspace = i}))
-  hl.bind(mainMod .. " + SHIFT + " .. key, hl.dsp.window.move({ workspace = i }))
+  hl.bind(mainMod .. " + " .. key, hl.dsp.focus({ workspace = i }),
+    { description = "Go to Workspace" })
+  hl.bind(mainMod .. " + SHIFT + " .. key, function()
+    hl.dispatch(hl.dsp.window.move({ workspace = i }))
+    hl.dispatch(hl.dsp.window.center())
+  end, { description = "Move Window to Workspace" })
 end
 
 -- Special workspace -> SUPER + (SHIFT) + S
-hl.bind(mainMod .. " + S",         hl.dsp.workspace.toggle_special("magic"))
-hl.bind(mainMod .. " + SHIFT + S", hl.dsp.window.move({ workspace = "special:magic" }))
+hl.bind(mainMod .. " + S",         hl.dsp.workspace.toggle_special("magic"), { description = "Open Special Workspace" })
+hl.bind(mainMod .. " + SHIFT + S", hl.dsp.window.move({ workspace = "special:magic" }), { description = "Move to Special Workspace" })
 
 -- Scroll through existing workspaces -> SUPER + CTRL + H/L
-hl.bind(mainMod .. " + CTRL + H", hl.dsp.focus({ workspace = "e-1" }))
-hl.bind(mainMod .. " + CTRL + L", hl.dsp.focus({ workspace = "e+1" }))
+hl.bind(mainMod .. " + CTRL + H", hl.dsp.focus({ workspace = "e-1" }), { description = "Scroll Left Existing Workspace" })
+hl.bind(mainMod .. " + CTRL + L", hl.dsp.focus({ workspace = "e+1" }), { description = "Scroll Right Existing Workspace" })
 
 -- Scroll through next available workspaces -> SUPER + SHIFT + H/L
-hl.bind(mainMod .. " + SHIFT + H", hl.dsp.focus({ workspace = "r-1" }))
-hl.bind(mainMod .. " + SHIFT + L", hl.dsp.focus({ workspace = "r+1" }))
+hl.bind(mainMod .. " + SHIFT + H", hl.dsp.focus({ workspace = "r-1" }), { description = "Scroll Left to Next Available Workspace" })
+hl.bind(mainMod .. " + SHIFT + L", hl.dsp.focus({ workspace = "r+1" }), { description = "Scroll Right to Next Available Workspace" })
 
 -- Move focus to the next empty workspace -> SUPER + CTRL + J
-hl.bind(mainMod .. " + CTRL + J", hl.dsp.focus({ workspace = "empty" }))
+hl.bind(mainMod .. " + CTRL + J", hl.dsp.focus({ workspace = "empty" }), { description = "Go to Next Empty Workspace" })
 -- }}}
 
 -- Move/resize windows -> SUPER + LMB/RMB + dragging
-hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(),   { mouse = true })
-hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
+hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(),   { mouse = true, description = "Move Window (Mouse Left Button)" })
+hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true, description = "Resize Window (Mouse Right Button)" })
 
 -- Laptop multimedia keys for volume and LCD brightness
 -- hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"), { locked = true, repeating = true })
@@ -364,6 +362,28 @@ hl.bind("XF86AudioNext",  hl.dsp.exec_cmd("playerctl next"),       { locked = tr
 hl.bind("XF86AudioPause", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
 hl.bind("XF86AudioPlay",  hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
 hl.bind("XF86AudioPrev",  hl.dsp.exec_cmd("playerctl previous"),   { locked = true })
+
+-- Entrar no modo de redimensionar -> SUPER + R
+-- hl.bind(mainMod .. " + R", hl.dsp.submap("resize"),
+  -- { description = "Resize Mode (H/J/K/L, Esc/Enter sai)" })
+hl.bind(mainMod .. " + R", function()
+  hl.dispatch(hl.dsp.submap("resize"))
+  hl.dispatch(hl.dsp.exec_cmd(ipc .. "notification-show 'Modo resize' 'H/J/K/L redimensiona · Esc/Enter sai'"))
+end, { description = "Resize Mode" })
+
+local pxs = 20
+
+hl.define_submap("resize", function()
+  -- Redimensionar com H/J/K/L (estilo Vim)
+  hl.bind("L", hl.dsp.window.resize({ x =  pxs, y =   0, relative = true }), { repeating = true })
+  hl.bind("H", hl.dsp.window.resize({ x = -pxs, y =   0, relative = true }), { repeating = true })
+  hl.bind("K", hl.dsp.window.resize({ x =   0, y = -pxs, relative = true }), { repeating = true })
+  hl.bind("J", hl.dsp.window.resize({ x =   0, y =  pxs, relative = true }), { repeating = true })
+
+  -- Sair do submap
+  hl.bind("escape", hl.dsp.submap("reset"))
+  hl.bind("Return", hl.dsp.submap("reset"))
+end)
 
 
 --------------------------------
@@ -381,7 +401,6 @@ local suppressMaximizeRule = hl.window_rule({
 
   suppress_event = "maximize",
 })
--- suppressMaximizeRule:set_enabled(false)
 
 hl.window_rule({
   -- Fix some dragging issues with XWayland
@@ -428,7 +447,7 @@ hl.window_rule({
 })
 
 hl.layer_rule({
-  name = "noctalia-no-anim",
+  name  = "noctalia-no-anim",
   match = {
     namespace = "^noctalia-(bar-.+|notification|dock|panel|attached-panel|osd|window-switcher)$",
   },
@@ -436,18 +455,20 @@ hl.layer_rule({
 })
 
 hl.layer_rule({
-  name = "noctalia-blur",
+  name  = "noctalia-blur",
   match = {
     namespace = "^noctalia-(bar-.+|notification|dock|panel|attached-panel|osd|window-switcher)$",
   },
   ignore_alpha = 0.5,
-  blur = true,
-  blur_popups = true,
+  blur         = true,
+  blur_popups  = true,
 })
+
 
 -------------
 ---- MEU ----
 -------------
+
 -- hyprctl clients para listar todos janelas abertas
 -- https://wiki.hypr.land/configuring/core/rules/window-rules/
 
@@ -464,11 +485,24 @@ hl.window_rule({
   size  = { 740, 420 },
 })
 
+hl.window_rule({
+  match = { class = "steam" },
+  float = true,
+  size  = { 1500, 900 },
+})
+
+hl.window_rule({
+  match = { class = "steam", title = "Friends List" },
+  float = true,
+  size  = { 400, 700 },
+})
+
 local flutuantes = {
   "nwg-look",
   "org.gnome.Nautilus",
   "org.keepassxc.KeePassXC",
   "org.pulseaudio.pavucontrol",
+  "org.remmina.Remmina",
 }
 
 for _, class in ipairs(flutuantes) do
@@ -479,30 +513,29 @@ for _, class in ipairs(flutuantes) do
   })
 end
 
+
 ------------------
 ---- NOCTALIA ----
 ------------------
-local ipc = "noctalia msg "
 
 -- Core binds
-hl.bind(mainMod .. "+Space", hl.dsp.exec_cmd(ipc .. "panel-toggle launcher"))
--- hl.bind(mainMod .. "+S", hl.dsp.exec_cmd(ipc .. "panel-toggle control-center"))
-hl.bind(mainMod .. "+comma", hl.dsp.exec_cmd(ipc .. "settings-toggle"))
-hl.bind("ALT + Tab", hl.dsp.exec_cmd(ipc .. "window-switcher hold"))
-hl.bind("ALT + SHIFT + Tab", hl.dsp.exec_cmd(ipc .. "window-switcher hold reverse"))
+hl.bind(mainMod .. " + Space", hl.dsp.exec_cmd(ipc .. "panel-toggle launcher"), { description = "Open Launcher" })
+hl.bind(mainMod .. " + comma", hl.dsp.exec_cmd(ipc .. "settings-toggle"), { description = "Open Settings" })
+
+hl.bind("ALT + Tab",         hl.dsp.exec_cmd(ipc .. "window-switcher hold"), { description = "Switch Window" })
+hl.bind("ALT + SHIFT + Tab", hl.dsp.exec_cmd(ipc .. "window-switcher hold reverse"), { description = "Switch Window Reverse" })
 
 -- Media keys
-hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd(ipc .. "volume-up"))
-hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd(ipc .. "volume-down"))
-hl.bind("XF86AudioMute", hl.dsp.exec_cmd(ipc .. "volume-mute"))
-hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd(ipc .. "brightness-up"))
+hl.bind("XF86AudioRaiseVolume",  hl.dsp.exec_cmd(ipc .. "volume-up"))
+hl.bind("XF86AudioLowerVolume",  hl.dsp.exec_cmd(ipc .. "volume-down"))
+hl.bind("XF86AudioMute",         hl.dsp.exec_cmd(ipc .. "volume-mute"))
+hl.bind("XF86MonBrightnessUp",   hl.dsp.exec_cmd(ipc .. "brightness-up"))
 hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd(ipc .. "brightness-down"))
 
 -- Printscreen
-local ipc = "noctalia msg "
-hl.bind("Print", hl.dsp.exec_cmd(ipc .. "screenshot-fullscreen"))
-hl.bind("SHIFT + Print", hl.dsp.exec_cmd(ipc .. "screenshot-region"))
-hl.bind(mainMod .. " + Print", hl.dsp.exec_cmd(ipc .. "screenshot-window"))
+hl.bind(              "Print", hl.dsp.exec_cmd(ipc .. "screenshot-region"), { description = "Screenshot Region" })
+hl.bind(mainMod .. " + Print", hl.dsp.exec_cmd(ipc .. "screenshot-window"), { description = "Screenshot Window" })
+hl.bind(      "SHIFT + Print", hl.dsp.exec_cmd(ipc .. "screenshot-fullscreen"), { description = "Screenshot Screen" })
 
 
 if host ~= "archlinux" then
@@ -511,4 +544,20 @@ if host ~= "archlinux" then
     animations = { enabled = false },
   })
 end
+
+
+----------------
+-- CHEATSHEET --
+----------------
+hl.bind(mainMod .. " + F1",
+  hl.dsp.exec_cmd(
+    terminal .. " -o confirm_os_window_close=0 --class hypr-atalhos " .. scripts .. "atalhos.sh"),
+  { description = "Show keybinds" })
+
+hl.window_rule({
+  match  = { class = "hypr-atalhos" },
+  float  = true,
+  size   = { 900, 600 },
+  center = true,
+})
 
